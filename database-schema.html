@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Bare3 — Database Schema</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap');
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Cairo',sans-serif;background:#0F172A;color:#E2E8F0;overflow-x:auto;min-height:100vh}
+
+  /* HEADER */
+  .top-bar{background:linear-gradient(135deg,#1E293B,#0F172A);border-bottom:1px solid #1E293B;padding:1rem 2rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:100}
+  .top-bar h1{font-size:1.2rem;font-weight:800;color:#F8FAFC}
+  .top-bar span{font-size:.8rem;color:#64748B}
+  .legend{display:flex;gap:1rem;margin-right:auto;flex-wrap:wrap}
+  .leg-item{display:flex;align-items:center;gap:.4rem;font-size:.75rem;color:#94A3B8}
+  .leg-dot{width:12px;height:12px;border-radius:3px}
+
+  /* CANVAS */
+  .canvas{padding:2rem;min-width:1600px}
+
+  /* GROUP LABELS */
+  .group-label{font-size:.68rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.6rem;opacity:.7}
+
+  /* TABLE CARD */
+  .tbl{background:#1E293B;border-radius:12px;border:1px solid #334155;overflow:hidden;width:220px;flex-shrink:0;box-shadow:0 4px 24px rgba(0,0,0,.3)}
+  .tbl-head{padding:.6rem .9rem;display:flex;align-items:center;gap:.5rem;font-size:.82rem;font-weight:800}
+  .tbl-head i{font-size:.9rem}
+  .tbl-body{padding:.3rem 0}
+  .col{display:flex;align-items:center;justify-content:space-between;padding:.28rem .9rem;font-size:.72rem;border-bottom:1px solid rgba(255,255,255,.03)}
+  .col:last-child{border-bottom:none}
+  .col-name{color:#CBD5E1;display:flex;align-items:center;gap:.35rem}
+  .col-name.pk{color:#FBBF24;font-weight:700}
+  .col-name.fk{color:#60A5FA}
+  .col-type{color:#475569;font-size:.65rem}
+  .badge-pk{background:#FBBF24;color:#0F172A;font-size:.55rem;font-weight:800;padding:.05rem .3rem;border-radius:3px}
+  .badge-fk{background:#3B82F6;color:#fff;font-size:.55rem;font-weight:800;padding:.05rem .3rem;border-radius:3px}
+  .badge-uk{background:#8B5CF6;color:#fff;font-size:.55rem;font-weight:800;padding:.05rem .3rem;border-radius:3px}
+
+  /* GROUPS */
+  .groups{display:flex;flex-direction:column;gap:3rem}
+  .group{display:flex;flex-direction:column;gap:.6rem}
+  .group-row{display:flex;gap:1.5rem;flex-wrap:wrap;align-items:flex-start}
+
+  /* GROUP COLORS */
+  .g-users .tbl-head   {background:linear-gradient(135deg,#0E7490,#0C4A6E)}
+  .g-content .tbl-head {background:linear-gradient(135deg,#7C3AED,#4C1D95)}
+  .g-learning .tbl-head{background:linear-gradient(135deg,#15803D,#14532D)}
+  .g-gamify .tbl-head  {background:linear-gradient(135deg,#B45309,#78350F)}
+  .g-payment .tbl-head {background:linear-gradient(135deg,#9D174D,#4C0519)}
+  .g-blog .tbl-head    {background:linear-gradient(135deg,#1D4ED8,#1E3A5F)}
+  .g-users .tbl        {border-color:#0E7490}
+  .g-content .tbl      {border-color:#7C3AED}
+  .g-learning .tbl     {border-color:#15803D}
+  .g-gamify .tbl       {border-color:#B45309}
+  .g-payment .tbl      {border-color:#9D174D}
+  .g-blog .tbl         {border-color:#1D4ED8}
+
+  /* GROUP CONTAINERS */
+  .g-users   .group-label{color:#38BDF8}
+  .g-content .group-label{color:#A78BFA}
+  .g-learning .group-label{color:#4ADE80}
+  .g-gamify  .group-label{color:#FCD34D}
+  .g-payment .group-label{color:#F9A8D4}
+  .g-blog    .group-label{color:#93C5FD}
+
+  /* RELATION ARROWS SVG LAYER */
+  .schema-wrap{position:relative}
+  svg.arrows{position:absolute;top:0;right:0;width:100%;height:100%;pointer-events:none;overflow:visible}
+
+  /* DIVIDER */
+  .group-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,#334155,transparent);margin:.5rem 0}
+
+  /* ENUM BADGE */
+  .enum-val{color:#94A3B8;font-style:italic}
+
+  /* SCROLL HINT */
+  .scroll-hint{text-align:center;padding:1rem;color:#334155;font-size:.78rem}
+
+  /* STATS BAR */
+  .stats-bar{display:flex;gap:2rem;padding:.6rem 2rem;background:#1E293B;border-bottom:1px solid #334155;flex-wrap:wrap}
+  .stat-item{display:flex;flex-direction:column}
+  .stat-val{font-size:1.3rem;font-weight:900;color:#F8FAFC}
+  .stat-lbl{font-size:.7rem;color:#64748B}
+</style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <img src="/images/logo.png" style="height:32px;filter:brightness(0) invert(1)" alt="بارع" onerror="this.style.display='none'"/>
+  <div>
+    <h1>Bare3 — Database Schema</h1>
+    <span>منصة بارع التعليمية · تصميم قاعدة البيانات الكاملة</span>
+  </div>
+  <div class="legend">
+    <div class="leg-item"><div class="leg-dot" style="background:#0E7490"></div> المستخدمون</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#7C3AED"></div> المحتوى</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#15803D"></div> التعلّم</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#B45309"></div> التحفيز</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#9D174D"></div> المدفوعات</div>
+    <div class="leg-item"><div class="leg-dot" style="background:#1D4ED8"></div> المدونة</div>
+    <div class="leg-item"><span class="badge-pk">PK</span> Primary Key</div>
+    <div class="leg-item"><span class="badge-fk">FK</span> Foreign Key</div>
+    <div class="leg-item"><span class="badge-uk">UK</span> Unique</div>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stat-item"><span class="stat-val">30</span><span class="stat-lbl">جدول</span></div>
+  <div class="stat-item"><span class="stat-val">6</span><span class="stat-lbl">مجموعات</span></div>
+  <div class="stat-item"><span class="stat-val">24</span><span class="stat-lbl">علاقة</span></div>
+  <div class="stat-item"><span class="stat-val">5</span><span class="stat-lbl">بوابات</span></div>
+</div>
+
+<div class="canvas">
+<div class="groups">
+
+<!-- ══════════ GROUP 1: USERS ══════════ -->
+<div class="group g-users">
+  <div class="group-label">👤 المستخدمون — Users & Auth</div>
+  <div class="group-row">
+
+    <div class="tbl" id="t-users">
+      <div class="tbl-head"><i class="fa-solid fa-user"></i> users</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string — الاسم الرباعي</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>email</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">password</span><span class="col-type">hashed</span></div>
+        <div class="col"><span class="col-name">phone</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">role</span><span class="col-type enum-val">admin|student|parent|teacher</span></div>
+        <div class="col"><span class="col-name">avatar</span><span class="col-type">string nullable</span></div>
+        <div class="col"><span class="col-name">gender</span><span class="col-type enum-val">male|female</span></div>
+        <div class="col"><span class="col-name">date_of_birth</span><span class="col-type">date</span></div>
+        <div class="col"><span class="col-name">is_active</span><span class="col-type">boolean default:true</span></div>
+        <div class="col"><span class="col-name">email_verified_at</span><span class="col-type">timestamp</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-parent-children">
+      <div class="tbl-head"><i class="fa-solid fa-people-roof"></i> parent_children</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>parent_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>child_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name">created_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-schools">
+      <div class="tbl-head"><i class="fa-solid fa-school"></i> schools</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">logo</span><span class="col-type">string nullable</span></div>
+        <div class="col"><span class="col-name">city</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">contact_email</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">contact_phone</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">is_active</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-classrooms">
+      <div class="tbl-head"><i class="fa-solid fa-chalkboard-user"></i> classrooms</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>school_id</span><span class="col-type">→ schools.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>teacher_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">grade_level</span><span class="col-type enum-val">primary|middle|high</span></div>
+        <div class="col"><span class="col-name">academic_year</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-classroom-students">
+      <div class="tbl-head"><i class="fa-solid fa-users-between-lines"></i> classroom_students</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>classroom_id</span><span class="col-type">→ classrooms.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name">joined_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group-divider"></div>
+
+<!-- ══════════ GROUP 2: CONTENT ══════════ -->
+<div class="group g-content">
+  <div class="group-label">📚 المحتوى التعليمي — Content Structure</div>
+  <div class="group-row">
+
+    <div class="tbl" id="t-paths">
+      <div class="tbl-head"><i class="fa-solid fa-map"></i> paths</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>slug</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">description</span><span class="col-type">text</span></div>
+        <div class="col"><span class="col-name">icon</span><span class="col-type">string — fa class</span></div>
+        <div class="col"><span class="col-name">color</span><span class="col-type">string — hex</span></div>
+        <div class="col"><span class="col-name">cover_image</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">sort_order</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">is_active</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-lessons">
+      <div class="tbl-head"><i class="fa-solid fa-book-open"></i> lessons</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>path_id</span><span class="col-type">→ paths.id</span></div>
+        <div class="col"><span class="col-name">title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">description</span><span class="col-type">text</span></div>
+        <div class="col"><span class="col-name">grade_level</span><span class="col-type enum-val">primary|middle|high|all</span></div>
+        <div class="col"><span class="col-name">sort_order</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">is_active</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-videos">
+      <div class="tbl-head"><i class="fa-solid fa-video"></i> videos</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>lesson_id</span><span class="col-type">→ lessons.id</span></div>
+        <div class="col"><span class="col-name">title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">file_path</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">url</span><span class="col-type">string nullable</span></div>
+        <div class="col"><span class="col-name">duration_seconds</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">thumbnail</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">watch_threshold</span><span class="col-type">integer default:80</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-scorm">
+      <div class="tbl-head"><i class="fa-solid fa-puzzle-piece"></i> scorm_packages</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>lesson_id</span><span class="col-type">→ lessons.id</span></div>
+        <div class="col"><span class="col-name">title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">version</span><span class="col-type enum-val">1.2 | 2004</span></div>
+        <div class="col"><span class="col-name">package_path</span><span class="col-type">string — zip</span></div>
+        <div class="col"><span class="col-name">entry_point</span><span class="col-type">string — index.html</span></div>
+        <div class="col"><span class="col-name">file_size_kb</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">is_active</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-quizzes">
+      <div class="tbl-head"><i class="fa-solid fa-clipboard-question"></i> quizzes</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>lesson_id</span><span class="col-type">→ lessons.id</span></div>
+        <div class="col"><span class="col-name">title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">pass_mark</span><span class="col-type">integer default:70</span></div>
+        <div class="col"><span class="col-name">max_attempts</span><span class="col-type">integer default:3</span></div>
+        <div class="col"><span class="col-name">time_limit_minutes</span><span class="col-type">integer nullable</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-questions">
+      <div class="tbl-head"><i class="fa-solid fa-question"></i> quiz_questions</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>quiz_id</span><span class="col-type">→ quizzes.id</span></div>
+        <div class="col"><span class="col-name">text</span><span class="col-type">text</span></div>
+        <div class="col"><span class="col-name">sort_order</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-options">
+      <div class="tbl-head"><i class="fa-solid fa-list-check"></i> quiz_options</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>question_id</span><span class="col-type">→ quiz_questions.id</span></div>
+        <div class="col"><span class="col-name">text</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">is_correct</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">sort_order</span><span class="col-type">integer</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group-divider"></div>
+
+<!-- ══════════ GROUP 3: LEARNING ══════════ -->
+<div class="group g-learning">
+  <div class="group-label">🎓 التعلّم والتقدم — Student Learning</div>
+  <div class="group-row">
+
+    <div class="tbl" id="t-enrollments">
+      <div class="tbl-head"><i class="fa-solid fa-graduation-cap"></i> enrollments</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>path_id</span><span class="col-type">→ paths.id</span></div>
+        <div class="col"><span class="col-name">grade_level</span><span class="col-type enum-val">primary|middle|high</span></div>
+        <div class="col"><span class="col-name">status</span><span class="col-type enum-val">active|completed|paused</span></div>
+        <div class="col"><span class="col-name">started_at</span><span class="col-type">timestamp</span></div>
+        <div class="col"><span class="col-name">completed_at</span><span class="col-type">timestamp nullable</span></div>
+        <div class="col"><span class="col-name">created_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-lesson-progress">
+      <div class="tbl-head"><i class="fa-solid fa-chart-simple"></i> lesson_progress</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>lesson_id</span><span class="col-type">→ lessons.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>enrollment_id</span><span class="col-type">→ enrollments.id</span></div>
+        <div class="col"><span class="col-name">video_completed</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">scorm_completed</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">quiz_passed</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">status</span><span class="col-type enum-val">locked|in_progress|completed</span></div>
+        <div class="col"><span class="col-name">unlocked_at</span><span class="col-type">timestamp nullable</span></div>
+        <div class="col"><span class="col-name">completed_at</span><span class="col-type">timestamp nullable</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-video-progress">
+      <div class="tbl-head"><i class="fa-solid fa-play"></i> video_progress</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>video_id</span><span class="col-type">→ videos.id</span></div>
+        <div class="col"><span class="col-name">watch_percent</span><span class="col-type">integer 0-100</span></div>
+        <div class="col"><span class="col-name">last_position_sec</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">completed</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">completed_at</span><span class="col-type">timestamp nullable</span></div>
+        <div class="col"><span class="col-name">updated_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-scorm-tracking">
+      <div class="tbl-head"><i class="fa-solid fa-gamepad"></i> scorm_tracking</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>scorm_id</span><span class="col-type">→ scorm_packages.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>lesson_id</span><span class="col-type">→ lessons.id</span></div>
+        <div class="col"><span class="col-name">status</span><span class="col-type enum-val">not_started|incomplete|completed|passed|failed</span></div>
+        <div class="col"><span class="col-name">score</span><span class="col-type">decimal nullable</span></div>
+        <div class="col"><span class="col-name">raw_data</span><span class="col-type">JSON — cmi.*</span></div>
+        <div class="col"><span class="col-name">session_time</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">completed_at</span><span class="col-type">timestamp nullable</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-quiz-attempts">
+      <div class="tbl-head"><i class="fa-solid fa-pen-to-square"></i> quiz_attempts</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>quiz_id</span><span class="col-type">→ quizzes.id</span></div>
+        <div class="col"><span class="col-name">attempt_num</span><span class="col-type">integer</span></div>
+        <div class="col"><span class="col-name">score</span><span class="col-type">decimal</span></div>
+        <div class="col"><span class="col-name">passed</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">started_at</span><span class="col-type">timestamp</span></div>
+        <div class="col"><span class="col-name">finished_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-quiz-answers">
+      <div class="tbl-head"><i class="fa-solid fa-circle-check"></i> quiz_answers</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>attempt_id</span><span class="col-type">→ quiz_attempts.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>question_id</span><span class="col-type">→ quiz_questions.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>option_id</span><span class="col-type">→ quiz_options.id</span></div>
+        <div class="col"><span class="col-name">is_correct</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">created_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group-divider"></div>
+
+<!-- ══════════ GROUP 4: GAMIFICATION ══════════ -->
+<div class="group g-gamify">
+  <div class="group-label">⭐ التحفيز والجوائز — Gamification</div>
+  <div class="group-row">
+
+    <div class="tbl" id="t-badges">
+      <div class="tbl-head"><i class="fa-solid fa-medal"></i> badges</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>path_id</span><span class="col-type">→ paths.id nullable</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string — المبتكر الصغير</span></div>
+        <div class="col"><span class="col-name">description</span><span class="col-type">text</span></div>
+        <div class="col"><span class="col-name">image</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">type</span><span class="col-type enum-val">path|special|milestone</span></div>
+        <div class="col"><span class="col-name">created_at / updated_at</span><span class="col-type">timestamps</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-student-badges">
+      <div class="tbl-head"><i class="fa-solid fa-trophy"></i> student_badges</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>badge_id</span><span class="col-type">→ badges.id</span></div>
+        <div class="col"><span class="col-name">earned_at</span><span class="col-type">timestamp</span></div>
+        <div class="col"><span class="col-name">seen</span><span class="col-type">boolean — popup shown?</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-certificates">
+      <div class="tbl-head"><i class="fa-solid fa-certificate"></i> certificates</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>student_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>path_id</span><span class="col-type">→ paths.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>enrollment_id</span><span class="col-type">→ enrollments.id</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>cert_number</span><span class="col-type">BARE3-2026-00001</span></div>
+        <div class="col"><span class="col-name">pdf_path</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">qr_code</span><span class="col-type">string — verify URL</span></div>
+        <div class="col"><span class="col-name">issued_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group-divider"></div>
+
+<!-- ══════════ GROUP 5: PAYMENTS ══════════ -->
+<div class="group g-payment">
+  <div class="group-label">💳 المدفوعات والاشتراكات — Subscriptions & Payments</div>
+  <div class="group-row">
+
+    <div class="tbl" id="t-plans">
+      <div class="tbl-head"><i class="fa-solid fa-tags"></i> plans</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>slug</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">type</span><span class="col-type enum-val">individual|school</span></div>
+        <div class="col"><span class="col-name">price</span><span class="col-type">decimal</span></div>
+        <div class="col"><span class="col-name">currency</span><span class="col-type">default: SAR</span></div>
+        <div class="col"><span class="col-name">billing_cycle</span><span class="col-type enum-val">monthly|yearly</span></div>
+        <div class="col"><span class="col-name">features</span><span class="col-type">JSON</span></div>
+        <div class="col"><span class="col-name">is_active</span><span class="col-type">boolean</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-subscriptions">
+      <div class="tbl-head"><i class="fa-solid fa-rotate"></i> subscriptions</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>user_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>plan_id</span><span class="col-type">→ plans.id</span></div>
+        <div class="col"><span class="col-name">status</span><span class="col-type enum-val">active|expired|cancelled|trial</span></div>
+        <div class="col"><span class="col-name">starts_at</span><span class="col-type">timestamp</span></div>
+        <div class="col"><span class="col-name">ends_at</span><span class="col-type">timestamp</span></div>
+        <div class="col"><span class="col-name">trial_ends_at</span><span class="col-type">timestamp nullable</span></div>
+        <div class="col"><span class="col-name">auto_renew</span><span class="col-type">boolean</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-transactions">
+      <div class="tbl-head"><i class="fa-solid fa-credit-card"></i> payment_transactions</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>user_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>subscription_id</span><span class="col-type">→ subscriptions.id</span></div>
+        <div class="col"><span class="col-name">gateway</span><span class="col-type enum-val">mada|tabby|tamara</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>gateway_tx_id</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">amount</span><span class="col-type">decimal</span></div>
+        <div class="col"><span class="col-name">status</span><span class="col-type enum-val">pending|success|failed|refunded</span></div>
+        <div class="col"><span class="col-name">payload</span><span class="col-type">JSON — gateway response</span></div>
+        <div class="col"><span class="col-name">refunded_at</span><span class="col-type">timestamp nullable</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-invoices">
+      <div class="tbl-head"><i class="fa-solid fa-file-invoice"></i> invoices</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>invoice_number</span><span class="col-type">INV-2026-0001</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>user_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>transaction_id</span><span class="col-type">→ payment_transactions.id</span></div>
+        <div class="col"><span class="col-name">amount</span><span class="col-type">decimal</span></div>
+        <div class="col"><span class="col-name">tax_amount</span><span class="col-type">decimal</span></div>
+        <div class="col"><span class="col-name">pdf_path</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">issued_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="group-divider"></div>
+
+<!-- ══════════ GROUP 6: BLOG & NOTIFICATIONS ══════════ -->
+<div class="group g-blog">
+  <div class="group-label">📝 المدونة والإشعارات — Blog & Notifications</div>
+  <div class="group-row">
+
+    <div class="tbl" id="t-blog-cats">
+      <div class="tbl-head"><i class="fa-solid fa-folder"></i> blog_categories</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>slug</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">created_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-blog-posts">
+      <div class="tbl-head"><i class="fa-solid fa-newspaper"></i> blog_posts</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>category_id</span><span class="col-type">→ blog_categories.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>author_id</span><span class="col-type">→ users.id</span></div>
+        <div class="col"><span class="col-name">title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>slug</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">excerpt</span><span class="col-type">text</span></div>
+        <div class="col"><span class="col-name">content</span><span class="col-type">longText HTML</span></div>
+        <div class="col"><span class="col-name">featured_image</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">seo_title</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">seo_description</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">status</span><span class="col-type enum-val">draft|published</span></div>
+        <div class="col"><span class="col-name">views_count</span><span class="col-type">integer default:0</span></div>
+        <div class="col"><span class="col-name">published_at</span><span class="col-type">timestamp nullable</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-blog-tags">
+      <div class="tbl-head"><i class="fa-solid fa-tags"></i> blog_tags</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name"><span class="badge-uk">UK</span>slug</span><span class="col-type">string</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-post-tag">
+      <div class="tbl-head"><i class="fa-solid fa-link"></i> post_tag (pivot)</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>post_id</span><span class="col-type">→ blog_posts.id</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>tag_id</span><span class="col-type">→ blog_tags.id</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-notifications">
+      <div class="tbl-head"><i class="fa-solid fa-bell"></i> notifications</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">UUID</span></div>
+        <div class="col"><span class="col-name">type</span><span class="col-type">BadgeEarned | QuizPassed…</span></div>
+        <div class="col"><span class="col-name">notifiable_type</span><span class="col-type">App\Models\User</span></div>
+        <div class="col"><span class="col-name">notifiable_id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name">data</span><span class="col-type">JSON</span></div>
+        <div class="col"><span class="col-name">read_at</span><span class="col-type">timestamp nullable</span></div>
+        <div class="col"><span class="col-name">created_at</span><span class="col-type">timestamp</span></div>
+      </div>
+    </div>
+
+    <div class="tbl" id="t-reviews">
+      <div class="tbl-head"><i class="fa-solid fa-star"></i> reviews</div>
+      <div class="tbl-body">
+        <div class="col"><span class="col-name pk"><span class="badge-pk">PK</span>id</span><span class="col-type">bigint</span></div>
+        <div class="col"><span class="col-name fk"><span class="badge-fk">FK</span>user_id</span><span class="col-type">→ users.id nullable</span></div>
+        <div class="col"><span class="col-name">name</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">role</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">location</span><span class="col-type">string</span></div>
+        <div class="col"><span class="col-name">rating</span><span class="col-type">integer 1-5</span></div>
+        <div class="col"><span class="col-name">body</span><span class="col-type">text</span></div>
+        <div class="col"><span class="col-name">is_featured</span><span class="col-type">boolean</span></div>
+        <div class="col"><span class="col-name">is_approved</span><span class="col-type">boolean</span></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+</div><!-- /groups -->
+</div><!-- /canvas -->
+
+<div class="scroll-hint">← مرّر يميناً ويساراً لرؤية جميع الجداول →</div>
+
+</body>
+</html>

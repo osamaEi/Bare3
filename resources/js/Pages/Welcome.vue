@@ -1,0 +1,778 @@
+<template>
+<div>
+
+<!-- NAVBAR -->
+<nav>
+  <div class="nav-inner">
+    <div class="nav-logo" style="display:flex; align-items:center; gap:.4rem;">
+      <img src="/images/logo.png" style="width: 200px;" alt="">
+    </div>
+    <ul>
+      <li><a href="#features">المميزات</a></li>
+      <li><a href="#pricing">الباقات</a></li>
+      <li><a href="#reviews">الآراء</a></li>
+      <li><a href="#faq">الأسئلة</a></li>
+    </ul>
+    <button class="btn-nav">🧩 ابدأ رحلتك</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-blob1"></div>
+  <div class="hero-blob2"></div>
+  <div class="hero-blob3"></div>
+  <div class="hero-inner">
+    <div class="hero-text">
+      <div class="badge-top">
+        <span class="badge-dot"></span>
+        مبتكرون صغار.. بارعون كبار!
+      </div>
+      <h1>
+        <span class="text-5xl">
+            كل طفل<br>
+        </span>
+        <span class="hl-sky text-5xl">بارع</span>
+        <span class="hl-pink text-5xl">بطريقته</span><br>
+        <span style="margin-top:.6rem; display:block;" class="text-5xl">الخاصة <i class="fa-solid fa-crown crown"></i></span>
+      </h1>
+      <p class="hero-desc">منصة قصصية تفاعلية تجمع الخيال والعلم والابتكار لتحويل أطفالك إلى مبدعين حقيقيين</p>
+      <div class="hero-btns">
+        <button class="btn-primary">ابدأ المغامرة مجانًا</button>
+        <button class="btn-secondary">استكشف القصص</button>
+      </div>
+      <div class="hero-stats">
+        <span class="stat-pill sky"><i class="fa-solid fa-child-reaching"></i> +١٢,٠٠٠ طفل</span>
+        <span class="stat-pill pink"><i class="fa-solid fa-book-open"></i> +٢٠٠ قصة</span>
+        <span class="stat-pill lime"><i class="fa-solid fa-star"></i> تقييم ٤.٩</span>
+      </div>
+    </div>
+    <div class="hero-img">
+      <img src="/images/b60204504019ec9db2deff871a1e00c6.png" alt="شخصيات كرتونية" />
+    </div>
+  </div>
+  <div class="wave" style="margin-top: 2rem;">
+    <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+      <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#F8FAFC"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- FEATURES -->
+<section id="features" class="relative py-12 overflow-hidden bg-gradient-to-b from-violet-50 via-white to-sky-50">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-stars" style="color:var(--sky)"></i> لماذا بارع؟</div>
+    <h2 class="text-4xl font-bold text-center mb-4">عالم كامل من التعلّم والمتعة</h2>
+    <p class="section-sub text-center max-w-2xl mx-auto">مغامرة سحرية يتعلم فيها طفلك وهو يلعب ويبتكر</p>
+  </div>
+
+  <div class="max-w-6xl mx-auto px-4 relative" id="features-wrapper">
+
+    <!-- خلفية سحرية -->
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(167,139,250,0.08)_0%,transparent_50%)]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(103,232,249,0.08)_0%,transparent_50%)]"></div>
+
+    <!-- SVG الخيط السحري -->
+    <svg id="magic-thread" class="absolute inset-0 w-full h-full pointer-events-none" style="z-index:0;overflow:visible;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="threadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   stop-color="#8b5cf6"/>
+          <stop offset="33%"  stop-color="#06b6d4"/>
+          <stop offset="66%"  stop-color="#ec4899"/>
+          <stop offset="100%" stop-color="#f59e0b"/>
+        </linearGradient>
+        <filter id="threadGlow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <path id="thread-glow-path" fill="none" stroke="url(#threadGrad)" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 8" filter="url(#threadGlow)" opacity="0.35"/>
+      <path id="thread-main-path" fill="none" stroke="url(#threadGrad)" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="10 7"/>
+      <path id="thread-run-path" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
+    </svg>
+
+    <div class="space-y-10 relative" style="z-index:1">
+
+      <!-- 1. قصص تفاعلية -->
+      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16" data-aos="fade-up">
+        <div class="md:w-5/12 order-2 md:order-1">
+          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-violet-100 hover:border-violet-200 transition-all duration-300">
+            <div class="feat-icon text-5xl mb-4 text-violet-600">
+              <i class="fa-solid fa-book-open-reader"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">قصص تفاعلية</h3>
+            <p class="text-gray-600 leading-relaxed">مغامرات شيّقة يختار فيها طفلك مساره بنفسه ويتحكم في النهاية</p>
+          </div>
+        </div>
+        <div class="md:w-5/12 order-1 md:order-2 flex justify-center">
+          <div class="relative group" id="circle-1">
+            <div class="absolute -inset-6 bg-gradient-to-br from-violet-200 to-purple-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
+            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
+              <img src="/images/story.png" alt="قصص تفاعلية" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
+            </div>
+            <div class="absolute -top-3 -right-3 text-4xl text-violet-500 drop-shadow-md animate-float">
+              <i class="fa-solid fa-sparkles"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. تجارب علمية -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16" data-aos="fade-up">
+        <div class="md:w-5/12">
+          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-cyan-100 hover:border-cyan-200 transition-all duration-300">
+            <div class="feat-icon text-5xl mb-4 text-cyan-600">
+              <i class="fa-solid fa-flask"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">تجارب علمية</h3>
+            <p class="text-gray-600 leading-relaxed">تجارب ممتعة وآمنة تشعل فضول طفلك ويحب العلوم</p>
+          </div>
+        </div>
+        <div class="md:w-5/12 flex justify-center">
+          <div class="relative group" id="circle-2">
+            <div class="absolute -inset-6 bg-gradient-to-br from-cyan-200 to-teal-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
+            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
+              <img src="/images/sci.png" alt="تجارب علمية" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
+            </div>
+            <div class="absolute -bottom-2 -left-3 text-4xl text-cyan-500 drop-shadow-md animate-float" style="animation-delay: 0.8s;">
+              <i class="fa-solid fa-atom"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. إبداع بلا حدود -->
+      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16" data-aos="fade-up">
+        <div class="md:w-5/12 order-2 md:order-1">
+          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-pink-100 hover:border-pink-200 transition-all duration-300">
+            <div class="feat-icon text-5xl mb-4 text-pink-600">
+              <i class="fa-solid fa-palette"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">إبداع بلا حدود</h3>
+            <p class="text-gray-600 leading-relaxed">رسم وتلوين وتصميم في بيئة آمنة تحفّز الخيال</p>
+          </div>
+        </div>
+        <div class="md:w-5/12 order-1 md:order-2 flex justify-center">
+          <div class="relative group" id="circle-3">
+            <div class="absolute -inset-6 bg-gradient-to-br from-pink-200 to-rose-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
+            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
+              <img src="/images/paint.png" alt="إبداع بلا حدود" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
+            </div>
+            <div class="absolute -top-4 -left-4 text-4xl text-pink-500 drop-shadow-md animate-float" style="animation-delay: 1.3s;">
+              <i class="fa-solid fa-paintbrush"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. تحديات وجوائز -->
+      <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16" data-aos="fade-up">
+        <div class="md:w-5/12">
+          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-amber-100 hover:border-amber-200 transition-all duration-300">
+            <div class="feat-icon text-5xl mb-4 text-amber-600">
+              <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">تحديات وجوائز</h3>
+            <p class="text-gray-600 leading-relaxed">نقاط وشارات مبهجة تحفّز طفلك على الاستمرار والتميز</p>
+          </div>
+        </div>
+        <div class="md:w-5/12 flex justify-center">
+          <div class="relative group" id="circle-4">
+            <div class="absolute -inset-6 bg-gradient-to-br from-amber-200 to-orange-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
+            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
+              <img src="/images/prize.png" alt="تحديات وجوائز" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
+            </div>
+            <div class="absolute -bottom-3 -right-3 text-4xl text-amber-500 drop-shadow-md animate-float" style="animation-delay: 0.5s;">
+              <i class="fa-solid fa-gem"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- wave -->
+<div style="background:var(--light)">
+  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
+    <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#E0F4FF"/>
+  </svg>
+</div>
+
+<!-- PRICING -->
+<section id="pricing">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-rocket" style="color:var(--pink)"></i> خطط ممتعة</div>
+    <h2>اختر الباقة المناسبة لطفلك</h2>
+    <p class="section-sub">تعلم ممتع، تقدم سريع، وذكريات جميلة</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="price-card">
+      <div class="price-badge"><i class="fa-solid fa-star"></i> المبتدئين</div>
+      <div class="price-amount">٠ <span class="price-unit">جنيه</span></div>
+      <div class="price-name">الباقة المجانية</div>
+      <ul class="price-features">
+        <li><i class="fa-solid fa-circle-check"></i> ١٠ دروس تفاعلية</li>
+        <li><i class="fa-solid fa-circle-check"></i> ألعاب تعليمية</li>
+        <li><i class="fa-solid fa-circle-check"></i> شهادة إنجاز</li>
+      </ul>
+      <button class="btn-price">ابدأ مجاناً</button>
+    </div>
+    <div class="price-card featured">
+      <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--lime-mid);color:var(--lime-dark);font-size:.78rem;font-weight:800;padding:.3rem 1.2rem;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15)"><i class="fa-solid fa-fire"></i> الأكثر شعبية</div>
+      <div class="price-badge">🦄 المحترف</div>
+      <div class="price-amount">٧٩ <span class="price-unit">جنيه/شهر</span></div>
+      <div class="price-name">باقة الأبطال</div>
+      <ul class="price-features">
+        <li><i class="fa-solid fa-circle-check"></i> دروس غير محدودة</li>
+        <li><i class="fa-solid fa-circle-check"></i> ألعاب ومكافآت</li>
+        <li><i class="fa-solid fa-circle-check"></i> تتبع تقدم الطفل</li>
+        <li><i class="fa-solid fa-circle-check"></i> فيديوهات عالية الجودة</li>
+        <li><i class="fa-solid fa-circle-check"></i> دعم أولياء الأمور</li>
+      </ul>
+      <button class="btn-price">اشترك الآن ✨</button>
+    </div>
+    <div class="price-card">
+      <div class="price-badge"><i class="fa-solid fa-crown" style="color:var(--pink)"></i> النخبة</div>
+      <div class="price-amount">١٤٩ <span class="price-unit">جنيه</span></div>
+      <div class="price-name">باقة العباقرة</div>
+      <ul class="price-features">
+        <li><i class="fa-solid fa-circle-check"></i> كل مميزات المحترف</li>
+        <li><i class="fa-solid fa-circle-check"></i> جلسات مباشرة مع المعلمين</li>
+        <li><i class="fa-solid fa-circle-check"></i> تقارير شهرية مفصلة</li>
+        <li><i class="fa-solid fa-circle-check"></i> محتوى حصري للموهوبين</li>
+      </ul>
+      <button class="btn-price">اختر باقة العباقرة</button>
+    </div>
+  </div>
+  <div class="price-note">
+    <p>كل اشتراك يساعد في تطوير محتوى تعليمي أكثر مرحاً للأطفال</p>
+    <p style="font-size:.8rem;margin-top:.3rem">يمكنك الإلغاء في أي وقت • آمن للأطفال ١٠٠٪</p>
+  </div>
+</section>
+
+<!-- wave -->
+<div style="background:var(--grad-pricing)">
+  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
+    <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#F8FAFC"/>
+  </svg>
+</div>
+
+<!-- PARENTS -->
+<section id="parents">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-people-group" style="color:var(--sky-dark)"></i> للآباء والأمهات</div>
+    <h2>راحة بالك = أولويتنا</h2>
+    <p class="section-sub">تحكّم كامل في تجربة طفلك من لوحة تحكم واحدة</p>
+  </div>
+  <div class="parents-grid">
+    <div class="parent-card sky">
+      <div class="parent-icon"><i class="fa-solid fa-shield-halved"></i></div>
+      <h4>محتوى آمن ١٠٠٪</h4>
+      <p>جميع المحتوى مراجع ومصنف حسب العمر. لا إعلانات، لا روابط خارجية، بيئة مغلقة تمامًا.</p>
+    </div>
+    <div class="parent-card pink">
+      <div class="parent-icon"><i class="fa-solid fa-chart-line"></i></div>
+      <h4>تقارير تقدم أسبوعية</h4>
+      <p>تابع تطور طفلك يوم بيوم — القصص اللي أنهاها، الإنجازات، ومهارات القراءة والتفكير.</p>
+    </div>
+    <div class="parent-card lime">
+      <div class="parent-icon"><i class="fa-regular fa-clock"></i></div>
+      <h4>تحديد وقت الاستخدام</h4>
+      <p>ضبط حدود زمنية يومية لكل طفل. التطبيق يُنبّه ويوقف تلقائيًا بدون ضجة.</p>
+    </div>
+    <div class="parent-card sky">
+      <div class="parent-icon"><i class="fa-solid fa-users"></i></div>
+      <h4>ملفات لأكثر من طفل</h4>
+      <p>أنشئ ملف لكل طفل مع محتوى مناسب لسنّه — من ٤ سنوات حتى ١٢.</p>
+    </div>
+    <div class="parent-card pink">
+      <div class="parent-icon"><i class="fa-solid fa-moon"></i></div>
+      <h4>وضع وقت النوم</h4>
+      <p>قصص مهدِّئة وتنفس عميق وموسيقى هادئة تساعد طفلك على النوم براحة.</p>
+    </div>
+    <div class="parent-card lime">
+      <div class="parent-icon"><i class="fa-solid fa-headset"></i></div>
+      <h4>دعم متواصل للأهل</h4>
+      <p>فريق دعم متاح ٧ أيام في الأسبوع، مع دليل أنشطة للتعلم خارج الشاشة.</p>
+    </div>
+  </div>
+</section>
+
+<!-- wave -->
+<div style="background:var(--light)">
+  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
+    <path d="M0,20 C200,70 400,0 600,40 C800,80 1000,10 1200,50 L1200,60 L0,60 Z" fill="#E0F4FF"/>
+  </svg>
+</div>
+
+<!-- REVIEWS -->
+<section id="reviews">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-comment-dots" style="color:var(--pink)"></i> آراء الآباء</div>
+    <h2>قالوا عن بارع</h2>
+    <p class="section-sub">أكثر من ١٢,٠٠٠ عائلة سعيدة 🌟</p>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="review-chip">رأي والد</div>
+      <div class="review-stars">★★★★★</div>
+      <h4>رعاية رائعة وبيئة آمنة</h4>
+      <p>طفلي أصبح يطلب هو القصص كل يوم! التعلم خلّاه يحب الكتب بطريقة ما كنت أتوقعها.</p>
+      <div class="review-author">
+        <img src="https://i.pravatar.cc/60?u=11" class="review-avatar" alt="">
+        <div><div class="review-name">أحمد رضا</div><div class="review-loc">القاهرة، مصر</div></div>
+      </div>
+    </div>
+    <div class="review-card featured">
+      <div class="review-chip">رأي والدة</div>
+      <div class="review-stars">★★★★★</div>
+      <h4>أجواء دافئة وجذابة</h4>
+      <p>أحب إن المحتوى آمن ومناسب لعمره. والتقارير الأسبوعية بتوريني بالتحديد وين وصل.</p>
+      <div class="review-author">
+        <img src="https://i.pravatar.cc/60?u=22" class="review-avatar" alt="">
+        <div><div class="review-name" style="color:#fff">نور الهدى</div><div class="review-loc">الإسكندرية، مصر</div></div>
+      </div>
+    </div>
+    <div class="review-card">
+      <div class="review-chip">رأي والد</div>
+      <div class="review-stars">★★★★★</div>
+      <h4>تعليم ممتاز ودعم شامل</h4>
+      <p>المنصة دي فرقت معاي. ابني بقى يحل ألغاز بمفرده وعنده ثقة في نفسه أكتر بكتير.</p>
+      <div class="review-author">
+        <img src="https://i.pravatar.cc/60?u=33" class="review-avatar" alt="">
+        <div><div class="review-name">محمد فريد</div><div class="review-loc">القاهرة، مصر</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave -->
+<div style="background:linear-gradient(135deg,var(--sky-light) 0%,var(--pink-light) 100%)">
+  <svg viewBox="0 0 1200 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:60px;display:block;">
+    <path d="M0,60 C150,10 350,80 600,30 C850,-20 1050,60 1200,20 L1200,80 L0,80 Z" fill="#FCE7F3"/>
+  </svg>
+</div>
+
+<!-- FAQ -->
+<section id="faq">
+  <div class="section-center">
+    <div class="section-tag">أسئلة شائعة</div>
+    <h2>عندك سؤال؟ احتمال عندنا الإجابة</h2>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item s1">
+      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
+        <span>من أي عمر تناسب منصة بارع؟</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">بارع مصممة للأطفال من سن ٤ سنوات حتى ١٢ سنة. المحتوى مقسّم حسب الفئة العمرية تلقائيًا عند إنشاء ملف الطفل.</div>
+    </div>
+    <div class="faq-item s2">
+      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
+        <span>هل المحتوى آمن لطفلي؟</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">نعم تمامًا. كل المحتوى مراجَع يدويًا من متخصصين في التعليم. لا إعلانات، لا روابط خارجية، لا تواصل مع غرباء. بيئة مغلقة ١٠٠٪.</div>
+    </div>
+    <div class="faq-item s3">
+      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
+        <span>هل تحتاج إنترنت دايمًا؟</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">الجلسات الأساسية تحتاج إنترنت، لكن يمكن تحميل مجموعة قصص للقراءة بدون اتصال. ميزة التحميل متاحة في باقة الأبطال وما فوق.</div>
+    </div>
+    <div class="faq-item s4">
+      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
+        <span>هل يمكنني إلغاء الاشتراك في أي وقت؟</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">بالتأكيد! يمكنك إلغاء اشتراكك في أي وقت من إعدادات الحساب. لا رسوم إلغاء ولا التزامات. ستبقى مشتركًا حتى نهاية الفترة المدفوعة.</div>
+    </div>
+    <div class="faq-item s5">
+      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
+        <span>هل تدعم المنصة اللغة العربية فقط؟</span>
+        <span class="faq-icon">+</span>
+      </button>
+      <div class="faq-answer">حاليًا المحتوى باللغة العربية الفصحى المبسّطة. نعمل على إضافة محتوى بالإنجليزية قريبًا لمساعدة أطفالك في تعلم لغة ثانية.</div>
+    </div>
+  </div>
+</section>
+
+<!-- wave -->
+<div style="background:linear-gradient(135deg,var(--pink-light) 0%,var(--sky-light) 100%)">
+  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
+    <path d="M0,40 C300,0 500,80 750,30 C900,0 1050,60 1200,20 L1200,60 L0,60 Z" fill="url(#ctaGrad)"/>
+    <defs><linearGradient id="ctaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#38BDF8"/><stop offset="100%" style="stop-color:#EC4899"/>
+    </linearGradient></defs>
+  </svg>
+</div>
+
+<!-- CTA -->
+<section id="cta" class="py-16">
+  <div class="relative z-[1] max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-3 items-center gap-6">
+      <div class="flex justify-center" data-aos="fade-right">
+        <img src="/images/cta boy.png" alt="طفل يتعلم" class="w-52">
+      </div>
+      <div class="text-center px-6" data-aos="fade-up">
+        <h2 class="text-6xl font-bold mb-6 leading-tight">
+          جاهز تبدأ مغامرتك؟
+        </h2>
+        <p class="text-2xl mb-8 leading-relaxed">
+          انضم لأكثر من ١٢ ألف طفل بارع وابدأ رحلة التعلّم المجانية اليوم
+        </p>
+        <button class="btn-cta">
+          🚀 ابدأ مجانًا الآن
+        </button>
+      </div>
+      <div class="flex justify-center" data-aos="fade-left">
+        <img src="/images/cta girl.png" alt="طفلة تتعلم" class="w-52">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- wave cta → footer -->
+<div style="background:var(--pink)">
+  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
+    <path d="M0,0 C400,60 800,0 1200,40 L1200,60 L0,60 Z" fill="#ffff"/>
+  </svg>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo-text">
+          <div class="nav-logo" style="display:flex; align-items:center; gap:.4rem;">
+            <img src="/images/logo.png" style="width: 200px;" alt="">
+          </div>
+        </div>
+        <p>منصة تعليمية تفاعلية للأطفال<br>من سن ٤ إلى ١٢ سنة</p>
+        <div class="footer-socials">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+          <a href="#"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4>الصفحات</h4>
+        <ul>
+          <li><a href="#">الرئيسية</a></li>
+          <li><a href="#features">المميزات</a></li>
+          <li><a href="#pricing">الباقات</a></li>
+          <li><a href="#reviews">الآراء</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>المساعدة</h4>
+        <ul>
+          <li><a href="#faq">الأسئلة الشائعة</a></li>
+          <li><a href="#">الدعم الفني</a></li>
+          <li><a href="#">سياسة الخصوصية</a></li>
+          <li><a href="#">الشروط والأحكام</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>تواصل معنا</h4>
+        <address>
+          📍 القاهرة، مصر<br>
+          📞 ١٩٩٩٩<br>
+          📧 hello@bari3.com
+        </address>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© ٢٠٢٦ بارع — جميع الحقوق محفوظة</span>
+      <div class="footer-langs">
+        <span>🇪🇬 العربية</span>
+        <span>🇬🇧 English</span>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</div>
+</template>
+
+<script setup>
+import { onMounted } from 'vue'
+
+defineProps({ canLogin: Boolean, canRegister: Boolean })
+
+function toggleFaq(btn) {
+  const item = btn.closest('.faq-item')
+  const isOpen = item.classList.contains('open')
+  document.querySelectorAll('.faq-item.open').forEach(el => el.classList.remove('open'))
+  if (!isOpen) item.classList.add('open')
+}
+
+onMounted(() => {
+  // AOS
+  if (window.AOS) window.AOS.init()
+
+  // Magic Thread
+  setTimeout(() => {
+    function circleAnchor(circleEl, wrapperEl, side) {
+      const wRect = wrapperEl.getBoundingClientRect()
+      const inner = circleEl.querySelector('.rounded-full.bg-white')
+      const r = inner ? inner.getBoundingClientRect() : circleEl.getBoundingClientRect()
+      const cx = r.left - wRect.left + r.width / 2
+      const cy = r.top  - wRect.top  + r.height / 2
+      const radius = r.width / 2
+      return { x: cx, y: side === 'bottom' ? cy + radius : cy - radius }
+    }
+
+    function buildThread() {
+      const wrapper = document.getElementById('features-wrapper')
+      if (!wrapper) return
+      const c1 = document.getElementById('circle-1')
+      const c2 = document.getElementById('circle-2')
+      const c3 = document.getElementById('circle-3')
+      const c4 = document.getElementById('circle-4')
+      if (!c1 || !c2 || !c3 || !c4) return
+
+      const p1 = circleAnchor(c1, wrapper, 'bottom')
+      const p2 = circleAnchor(c2, wrapper, 'top')
+      const p3 = circleAnchor(c2, wrapper, 'bottom')
+      const p4 = circleAnchor(c3, wrapper, 'top')
+      const p5 = circleAnchor(c3, wrapper, 'bottom')
+      const p6 = circleAnchor(c4, wrapper, 'top')
+
+      const dFull = [
+        `M ${p1.x} ${p1.y}`,
+        `C ${p1.x} ${p1.y + 55} ${p2.x} ${p2.y - 55} ${p2.x} ${p2.y}`,
+        `C ${p2.x} ${p2.y + 35} ${p3.x} ${p3.y - 35} ${p3.x} ${p3.y}`,
+        `C ${p3.x} ${p3.y + 55} ${p4.x} ${p4.y - 55} ${p4.x} ${p4.y}`,
+        `C ${p4.x} ${p4.y + 35} ${p5.x} ${p5.y - 35} ${p5.x} ${p5.y}`,
+        `C ${p5.x} ${p5.y + 55} ${p6.x} ${p6.y - 55} ${p6.x} ${p6.y}`
+      ].join(' ')
+
+      const svg      = document.getElementById('magic-thread')
+      const mainPath = document.getElementById('thread-main-path')
+      const glowPath = document.getElementById('thread-glow-path')
+      const runPath  = document.getElementById('thread-run-path')
+      if (!mainPath || !glowPath || !runPath) return
+
+      svg.setAttribute('viewBox', `0 0 ${wrapper.offsetWidth} ${wrapper.offsetHeight}`)
+      mainPath.setAttribute('d', dFull)
+      glowPath.setAttribute('d', dFull)
+      runPath.setAttribute('d', dFull)
+
+      try {
+        const len = mainPath.getTotalLength()
+        runPath.style.strokeDasharray = `24 ${len}`
+        let start = null
+        function animate(ts) {
+          if (!start) start = ts
+          const progress = ((ts - start) / 3500) % 1
+          runPath.style.strokeDashoffset = -(progress * (len + 24))
+          requestAnimationFrame(animate)
+        }
+        requestAnimationFrame(animate)
+      } catch(e) {}
+    }
+
+    buildThread()
+    window.addEventListener('resize', () => setTimeout(buildThread, 150))
+  }, 200)
+})
+</script>
+
+<style>
+/* ── CSS مأخوذ 1:1 من الملف الأصلي ── */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;700;800&display=swap');
+
+:root {
+  --sky: #38BDF8; --sky-light: #E0F4FF; --sky-mid: #7DD3F8; --sky-dark: #0E7490;
+  --pink: #EC4899; --pink-light: #FCE7F3; --pink-mid: #F9A8D4; --pink-dark: #9D174D;
+  --lime: #84CC16; --lime-light: #F0FDF4; --lime-mid: #BEF264; --lime-dark: #3F6212;
+  --dark: #1C1C2E; --dark-mid: #2E2E42; --gray: #6B7280; --light: #F8FAFC; --white: #FFFFFF;
+  --grad-hero: linear-gradient(135deg, #E0F4FF 0%, #FCE7F3 50%, #F0FDF4 100%);
+  --grad-cta: linear-gradient(135deg, #38BDF8 0%, #EC4899 100%);
+  --grad-pricing: linear-gradient(135deg, #E0F4FF 0%, #FCE7F3 100%);
+  --grad-card-pro: linear-gradient(135deg,#FCE7F3 0%,#F9A8D4 35%,#EC4899 70%,#9D174D 100%);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Baloo Bhaijaan 2', cursive; color: var(--dark); overflow-x: hidden; background: var(--light); }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+nav { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bottom: 3px solid var(--sky-light); position: sticky; top: 0; z-index: 50; padding: 0 2rem; }
+.nav-inner { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 72px; gap: 1rem; }
+.nav-logo { font-size: 1.8rem; font-weight: 800; }
+.nav-logo span.s { color: var(--sky); }
+.nav-logo span.p { color: var(--pink); }
+.nav-logo span.l { color: var(--lime-dark); }
+nav ul { display: flex; gap: 2rem; }
+nav ul a { font-weight: 700; font-size: 1rem; color: var(--dark); transition: color .2s; }
+nav ul a:hover { color: var(--sky-dark); }
+.btn-nav { background: var(--pink); color: #fff; font-family: inherit; font-weight: 800; font-size: 1rem; padding: .7rem 1.6rem; border-radius: 50px; border: none; cursor: pointer; transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
+.btn-nav:hover { transform: translateY(-2px); }
+.btn-nav:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(0,0,0,.3); }
+
+.hero { background: var(--grad-hero); padding: 5rem 2rem 0; position: relative; overflow: hidden; }
+.hero-blob1 { position: absolute; width: 380px; height: 380px; border-radius: 50%; background: var(--sky); opacity: .12; top: -80px; right: -80px; pointer-events: none; }
+.hero-blob2 { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: var(--pink); opacity: .12; bottom: -60px; left: -60px; pointer-events: none; }
+.hero-blob3 { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: var(--lime); opacity: .1; top: 40%; left: 40%; pointer-events: none; }
+.hero-inner { max-width: 1100px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 3rem; position: relative; z-index: 1; }
+.hero-text { flex: 1; min-width: 280px; }
+.badge-top { display: inline-flex; align-items: center; gap: .5rem; background: var(--white); border: 3px solid var(--sky); border-radius: 50px; padding: .4rem 1.2rem; font-weight: 700; font-size: .9rem; margin-bottom: 1.5rem; box-shadow: 0 3px 0 var(--sky-light); }
+.badge-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); animation: blink 1.4s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
+h1 { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.3; margin-bottom: 1.2rem; }
+.hl-sky { display: inline-block; background: var(--sky); color: var(--white); padding: 4px .35em; border-radius: 12px; transform: rotate(-1.5deg); }
+.hl-pink { display: inline-block; background: var(--pink); color: var(--white); padding: 6px .35em; border-radius: 12px; transform: rotate(1.5deg); }
+.crown { color: var(--sky); font-size: 2rem; vertical-align: middle; }
+.hero-desc { font-size: 1.15rem; color: var(--gray); line-height: 1.8; max-width: 440px; margin-bottom: 2rem; }
+.hero-btns { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.btn-primary { background: var(--pink); color: #fff; font-family: inherit; font-weight: 800; font-size: 1.1rem; padding: .9rem 2.2rem; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 5px 0 var(--pink-dark); transition: transform .15s; }
+.btn-primary:hover { transform: translateY(-2px); }
+.btn-primary:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--pink-dark); }
+.btn-secondary { background: var(--white); color: var(--dark); font-family: inherit; font-weight: 700; font-size: 1rem; padding: .9rem 2rem; border-radius: 50px; border: 2px solid var(--dark); cursor: pointer; transition: background .2s; }
+.btn-secondary:hover { background: var(--sky-light); }
+.hero-stats { display: flex; flex-wrap: wrap; gap: .7rem; }
+.stat-pill { background: var(--white); border-radius: 50px; padding: .4rem 1rem; font-weight: 700; font-size: .85rem; display: flex; align-items: center; gap: .4rem; }
+.stat-pill.sky { border: 3px solid var(--sky); }
+.stat-pill.pink { border: 3px solid var(--pink); }
+.stat-pill.lime { border: 3px solid var(--lime); }
+.stat-pill.sky i { color: var(--sky); }
+.stat-pill.pink i { color: var(--pink); }
+.stat-pill.lime i { color: var(--lime-dark); }
+.hero-img { flex: 1; min-width: 260px; display: flex; justify-content: center; }
+.hero-img img { width: 460px; max-width: 100%; animation: float 4s ease-in-out infinite; }
+@keyframes float { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-20px) rotate(1deg)} }
+.wave { display: block; }
+.wave svg { display: block; width: 100%; height: 60px; }
+
+#features { padding: 5rem 2rem; background: var(--light); position: relative; }
+.section-tag { display: inline-flex; align-items: center; gap: .6rem; background: var(--white); padding: .5rem 1.6rem; border-radius: 2rem; font-weight: 800; font-size: 1.1rem; box-shadow: 0 2px 12px rgba(56,189,248,.15); margin-bottom: 1rem; color: var(--sky-dark); }
+.section-center { text-align: center; margin-bottom: 3rem; }
+h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5rem; }
+.section-sub { font-size: 1.15rem; color: var(--gray); max-width: 480px; margin: 0 auto; }
+.cards-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5rem; }
+.feat-card { background: var(--white); border-radius: 24px; padding: 2rem 1.5rem; text-align: center; box-shadow: 0 4px 24px rgba(0,0,0,.06); transition: transform .3s, box-shadow .3s; position: relative; overflow: hidden; }
+.feat-card:hover { transform: translateY(-6px) rotate(-.5deg); box-shadow: 0 12px 32px rgba(0,0,0,.1); }
+.feat-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 5px; }
+.feat-card.c1::before { background: linear-gradient(90deg, var(--sky), var(--sky-mid)); }
+.feat-card.c2::before { background: linear-gradient(90deg, var(--lime), var(--lime-mid)); }
+.feat-card.c3::before { background: linear-gradient(90deg, var(--pink), var(--pink-mid)); }
+.feat-card.c4::before { background: linear-gradient(90deg, var(--sky-dark), var(--sky)); }
+.feat-icon { width: 64px; height: 64px; border-radius: 16px; margin: 0 auto 1rem; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; }
+.feat-card.c1 .feat-icon { background: var(--sky-light); color: var(--sky-dark); }
+.feat-card.c2 .feat-icon { background: var(--lime-light); color: var(--lime-dark); }
+.feat-card.c3 .feat-icon { background: var(--pink-light); color: var(--pink-dark); }
+.feat-card.c4 .feat-icon { background: var(--sky-light); color: var(--sky-dark); }
+.feat-card h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: .5rem; }
+.feat-card p { color: var(--gray); line-height: 1.7; font-size: .95rem; }
+
+#pricing { padding: 5rem 2rem; background: var(--grad-pricing); }
+.pricing-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; align-items: center; }
+.price-card { background: var(--white); border-radius: 28px; padding: 2.2rem 2rem; box-shadow: 0 4px 24px rgba(0,0,0,.08); transition: transform .3s; border: 2px solid transparent; }
+.price-card:hover { transform: translateY(-5px); }
+.price-card.featured { background: var(--pink); color: #fff; transform: scale(1.04); border-color: var(--white); box-shadow: 0 12px 40px rgba(14,116,144,.25); }
+.price-card.featured:hover { transform: scale(1.06) translateY(-4px); }
+.price-badge { font-size: .8rem; font-weight: 800; padding: .3rem 1rem; border-radius: 50px; display: inline-block; margin-bottom: .8rem; }
+.price-card:not(.featured) .price-badge { background: var(--sky-light); color: var(--sky-dark); }
+.price-card.featured .price-badge { background: rgba(255,255,255,.2); color: #fff; }
+.price-amount { font-size: 3.5rem; font-weight: 800; line-height: 1; }
+.price-unit { font-size: 1.2rem; opacity: .7; }
+.price-name { font-size: 1.4rem; font-weight: 800; margin: .8rem 0 1.4rem; }
+.price-features { list-style: none; padding: 0; margin-bottom: 1.8rem; }
+.price-features li { display: flex; align-items: center; gap: .6rem; font-size: .95rem; padding: .4rem 0; border-bottom: 1px solid rgba(0,0,0,.05); }
+.price-card.featured .price-features li { border-bottom-color: rgba(255,255,255,.1); }
+.price-features li i { font-size: .7rem; flex-shrink: 0; }
+.price-card:not(.featured) .price-features li i { color: var(--lime-dark); }
+.price-card.featured .price-features li i { color: var(--lime-mid); }
+.btn-price { width: 100%; padding: 1rem; border-radius: 16px; border: none; cursor: pointer; font-family: inherit; font-weight: 800; font-size: 1rem; transition: transform .15s; }
+.btn-price:hover { transform: scale(1.02); }
+.price-card:not(.featured) .btn-price { background: var(--sky); color: #fff; }
+.price-card.featured .btn-price { background: #fff; color: var(--sky-dark); }
+.price-note { text-align: center; margin-top: 2rem; color: var(--gray); font-size: .9rem; }
+
+#parents { padding: 5rem 2rem; background: var(--light); }
+.parents-grid { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; }
+.parent-card { background: var(--white); border-radius: 20px; padding: 1.8rem; border: 2px solid transparent; box-shadow: 0 2px 16px rgba(0,0,0,.05); transition: transform .25s, border-color .25s; }
+.parent-card:hover { transform: translateY(-4px); }
+.parent-card.sky:hover { border-color: var(--sky); }
+.parent-card.pink:hover { border-color: var(--pink); }
+.parent-card.lime:hover { border-color: var(--lime); }
+.parent-icon { width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 1rem; }
+.parent-card.sky .parent-icon { background: var(--sky-light); color: var(--sky-dark); }
+.parent-card.pink .parent-icon { background: var(--pink-light); color: var(--pink-dark); }
+.parent-card.lime .parent-icon { background: var(--lime-light); color: var(--lime-dark); }
+.parent-card h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: .5rem; }
+.parent-card p { color: var(--gray); font-size: .9rem; line-height: 1.7; }
+
+#reviews { padding: 5rem 2rem; background: linear-gradient(135deg, var(--sky-light) 0%, var(--pink-light) 100%); }
+.reviews-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; align-items: start; }
+.review-card { background: var(--white); border-radius: 24px; padding: 2rem; position: relative; box-shadow: 0 4px 24px rgba(0,0,0,.07); transition: transform .3s; }
+.review-card:hover { transform: translateY(-5px); }
+.review-chip { position: absolute; top: -14px; right: 1.5rem; font-size: .75rem; font-weight: 800; padding: .3rem .9rem; border-radius: 50px; }
+.review-card:not(.featured) .review-chip { background: var(--sky); color: #fff; }
+.review-card.featured .review-chip { background: var(--pink); color: #fff; }
+.review-stars { color: #FFB800; font-size: 1.1rem; margin: .5rem 0 1rem; }
+.review-card h4 { font-weight: 800; margin-bottom: .6rem; }
+.review-card p { font-size: .92rem; line-height: 1.7; margin-bottom: 1.2rem; }
+.review-author { display: flex; align-items: center; gap: .8rem; }
+.review-avatar { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; border: 2px solid var(--sky); }
+.review-name { font-weight: 800; font-size: .95rem; }
+.review-loc { font-size: .8rem; opacity: .6; }
+
+#faq { padding: 5rem 2rem; background: linear-gradient(135deg, var(--pink-light) 0%, var(--sky-light) 100%); }
+.faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: .8rem; }
+.faq-item { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.05); }
+.faq-item.s1 { border: 2px solid var(--sky); }
+.faq-item.s2 { border: 2px solid var(--pink); }
+.faq-item.s3 { border: 2px solid var(--lime); }
+.faq-item.s4 { border: 2px solid var(--sky-dark); }
+.faq-item.s5 { border: 2px solid var(--pink-dark); }
+.faq-btn { width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 1.1rem 1.5rem; background: none; border: none; cursor: pointer; font-family: inherit; font-weight: 800; font-size: 1rem; text-align: right; color: var(--dark); }
+.faq-btn:hover { background: var(--sky-light); }
+.faq-icon { font-size: 1.5rem; transition: transform .3s; line-height: 1; color: var(--sky-dark); }
+.faq-item.open .faq-icon { transform: rotate(45deg); }
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .3s ease; padding: 0 1.5rem; color: var(--gray); font-size: .95rem; line-height: 1.8; }
+.faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.2rem; }
+
+#cta { padding: 5rem 2rem; text-align: center; background: var(--pink); position: relative; overflow: hidden; }
+#cta::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events: none; }
+#cta h2 { color: #fff; margin-bottom: .8rem; }
+#cta p { color: rgba(255,255,255,.85); font-size: 1.1rem; margin-bottom: 2rem; }
+.btn-cta { background: var(--white); color: var(--sky-dark); font-family: inherit; font-weight: 800; font-size: 1.2rem; padding: 1rem 3rem; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,.15); transition: transform .15s; }
+.btn-cta:hover { transform: translateY(-2px); }
+.btn-cta:active { transform: translateY(2px); }
+
+footer { padding: 3.5rem 2rem 2rem; }
+.footer-inner { max-width: 1100px; margin: 0 auto; }
+.footer-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 2rem; margin-bottom: 2.5rem; }
+.footer-brand .logo-text { font-size: 1.6rem; font-weight: 800; margin-bottom: .5rem; }
+.footer-brand p { font-size: .85rem; opacity: .7; line-height: 1.7; margin-bottom: 1rem; }
+.footer-socials { display: flex; gap: .7rem; }
+.footer-socials a { width: 38px; height: 38px; border-radius: 50%; border: 1px solid rgba(255,255,255,.15); display: flex; align-items: center; justify-content: center; font-size: .9rem; transition: background .2s, transform .2s; }
+.footer-socials a:hover { background: rgba(255,255,255,.1); transform: translateY(-2px); }
+footer h4 { font-weight: 800; font-size: 1rem; margin-bottom: 1rem; }
+footer ul li { margin-bottom: .6rem; }
+footer ul a { opacity: .7; font-size: .88rem; transition: opacity .2s; }
+footer ul a:hover { opacity: 1; }
+footer address { font-style: normal; opacity: .7; font-size: .88rem; line-height: 2; }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,.1); padding-top: 1.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; font-size: .83rem; opacity: .6; }
+.footer-langs { display: flex; gap: 1.2rem; }
+.footer-langs span { cursor: pointer; transition: opacity .2s; }
+.footer-langs span:hover { opacity: 1; }
+
+@media (max-width: 768px) {
+  nav ul { display: none; }
+  .hero-img img { width: 300px; }
+  .hero-inner { text-align: center; }
+  .hero-btns { justify-content: center; }
+  .hero-stats { justify-content: center; }
+}
+</style>
