@@ -10,7 +10,7 @@
         <div class="page-header">
           <div>
             <h1 class="page-title">مجتمع بارع — المدونة</h1>
-            <p class="page-sub">{{ posts.length }} مقالة منشورة</p>
+            <p class="page-sub">{{ posts.total ?? filteredPosts.length }} مقالة</p>
           </div>
           <button class="btn-new" @click="newPost">
             <i class="fa-solid fa-pen-nib"></i> مقالة جديدة
@@ -26,7 +26,7 @@
           <div class="filter-group">
             <select v-model="filterCat" class="filter-sel">
               <option value="">كل الأقسام</option>
-              <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+              <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
             </select>
             <select v-model="filterStatus" class="filter-sel">
               <option value="">كل الحالات</option>
@@ -164,8 +164,8 @@
               <div class="sc-body">
                 <div class="form-group">
                   <label>القسم</label>
-                  <select v-model="currentPost.category" class="form-input">
-                    <option v-for="c in categories" :key="c" :value="c">{{ c }}</option>
+                  <select v-model="currentPost.category_id" class="form-input">
+                    <option v-for="c in categories" :key="c.id" :value="c.id">{{ c.name }}</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -263,46 +263,77 @@
 
 <script setup>
 import { ref, computed, watch } from 'vue'
+import { router, useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
+const props = defineProps({
+  posts:      { type: Object, default: () => ({ data: [] }) },
+  categories: { type: Array,  default: () => [] },
+  tags:       { type: Array,  default: () => [] },
+  filters:    { type: Object, default: () => ({}) },
+})
+
 const view = ref('list')
-const search = ref('')
-const filterCat = ref('')
-const filterStatus = ref('')
+const search = ref(props.filters.search ?? '')
+const filterCat = ref(props.filters.category ?? '')
+const filterStatus = ref(props.filters.status ?? '')
 const autoSaved = ref(false)
 const tagInput = ref('')
 const editorRef = ref(null)
 const previewModal = ref(false)
 const previewData = ref(null)
 
-const categories = ['تطوير الذات', 'التعليم', 'المهارات الحياتية', 'الوعي المالي', 'التقنية والرقمنة', 'الذكاء العاطفي']
+const THUMBS = [
+  { bg: 'linear-gradient(135deg,#F0FDF4,#BEF264)', icon: 'fa-solid fa-sack-dollar' },
+  { bg: 'linear-gradient(135deg,#FCE7F3,#F9A8D4)', icon: 'fa-solid fa-microphone' },
+  { bg: 'linear-gradient(135deg,#F5F3FF,#DDD6FE)', icon: 'fa-solid fa-laptop-code' },
+  { bg: 'linear-gradient(135deg,#E0F4FF,#7DD3F8)', icon: 'fa-solid fa-newspaper' },
+]
+
+const defaultCategoryId = computed(() => props.categories[0]?.id ?? null)
 
 const emptyPost = () => ({
   id: null, title: '', content: '<p>ابدأ كتابة مقالتك هنا...</p>',
-  excerpt: '', category: 'التعليم', author: 'فريق بارع',
-  tags: [], featuredImg: '', seoTitle: '', seoDesc: '',
-  status: 'draft', date: '', views: 0,
-  thumbBg: 'linear-gradient(135deg,#E0F4FF,#FCE7F3)',
-  thumbIcon: 'fa-solid fa-newspaper'
+  excerpt: '', category_id: defaultCategoryId.value,
+  tags: [], featuredImg: '', featuredFile: null,
+  seoTitle: '', seoDesc: '', status: 'draft',
 })
 
 const currentPost = ref(emptyPost())
 
-const posts = ref([
-  { id: 1, title: 'لماذا تعليم الوعي المالي ضروري لأبنائنا؟',    category: 'الوعي المالي',       author: 'أ. سعد المالكي',  date: '٢٠٢٦/٠٥/٢٠', views: 1240, status: 'published', excerpt: 'نستعرض في هذا المقال أهمية تعليم الأطفال مفاهيم المال والادخار منذ الصغر...', tags: ['وعي مالي', 'تعليم', 'ادخار'], thumbBg: 'linear-gradient(135deg,#F0FDF4,#BEF264)', thumbIcon: 'fa-solid fa-sack-dollar', content: '<h2>أهمية الوعي المالي</h2><p>...</p>' },
-  { id: 2, title: 'كيف تنمّي مهارة الإلقاء عند طفلك؟',           category: 'المهارات الحياتية',  author: 'د. نورة الغامدي', date: '٢٠٢٦/٠٥/١٥', views: 890,  status: 'published', excerpt: 'الإلقاء الجيد مهارة تُكتسب لا موهبة تُولد بها — إليك ٧ خطوات عملية...', tags: ['إلقاء', 'تواصل', 'ثقة'],     thumbBg: 'linear-gradient(135deg,#FCE7F3,#F9A8D4)', thumbIcon: 'fa-solid fa-microphone', content: '<h2>مقدمة</h2><p>...</p>' },
-  { id: 3, title: '٥ تطبيقات تساعد طفلك على تعلم البرمجة',       category: 'التقنية والرقمنة',   author: 'فريق بارع',       date: '٢٠٢٦/٠٥/١٠', views: 2100, status: 'published', excerpt: 'اخترنا لك أفضل التطبيقات المجانية لتعليم البرمجة للأطفال من سن ٦ إلى ١٤...', tags: ['برمجة', 'تقنية', 'أطفال'],  thumbBg: 'linear-gradient(135deg,#F5F3FF,#DDD6FE)', thumbIcon: 'fa-solid fa-laptop-code', content: '<h2>مقدمة</h2><p>...</p>' },
-  { id: 4, title: 'كيف يؤثر الذكاء العاطفي على نجاح طفلك؟',     category: 'الذكاء العاطفي',     author: 'أ. سعد المالكي',  date: '٢٠٢٦/٠٥/٠٥', views: 650,  status: 'draft',     excerpt: 'الأطفال ذوو الذكاء العاطفي المرتفع يتمتعون بعلاقات أفضل ونتائج أكاديمية أعلى...', tags: ['ذكاء عاطفي', 'نجاح'],       thumbBg: 'linear-gradient(135deg,#FFF7ED,#FED7AA)', thumbIcon: 'fa-solid fa-heart', content: '<h2>مقدمة</h2><p>...</p>' },
-])
+// Map backend posts to the card shape used by the template
+const filteredPosts = computed(() => (props.posts?.data ?? []).map((p, i) => ({
+  id: p.id,
+  title: p.title,
+  category: p.category?.name ?? '—',
+  category_id: p.category_id,
+  author: p.author?.name ?? '—',
+  date: p.published_at ? new Date(p.published_at).toLocaleDateString('ar-EG')
+       : (p.created_at ? new Date(p.created_at).toLocaleDateString('ar-EG') : '—'),
+  views: p.views_count ?? 0,
+  status: p.status,
+  excerpt: p.excerpt ?? '',
+  content: p.content ?? '',
+  tags: (p.tags ?? []).map(t => t.name ?? t),
+  seoTitle: p.seo_title ?? '',
+  seoDesc: p.seo_description ?? '',
+  featuredImg: p.featured_image ? `/storage/${p.featured_image}` : '',
+  thumbBg: THUMBS[i % THUMBS.length].bg,
+  thumbIcon: THUMBS[i % THUMBS.length].icon,
+})))
 
-const filteredPosts = computed(() =>
-  posts.value.filter(p => {
-    const s = !search.value     || p.title.includes(search.value) || p.excerpt.includes(search.value)
-    const c = !filterCat.value  || p.category === filterCat.value
-    const st= !filterStatus.value || p.status === filterStatus.value
-    return s && c && st
-  })
-)
+// Server-side filtering (debounced)
+let filterTimer = null
+watch([search, filterCat, filterStatus], () => {
+  clearTimeout(filterTimer)
+  filterTimer = setTimeout(() => {
+    router.get(route('admin.blog.index'), {
+      search: search.value || undefined,
+      category: filterCat.value || undefined,
+      status: filterStatus.value || undefined,
+    }, { preserveState: true, replace: true, preserveScroll: true })
+  }, 350)
+})
 
 const wordCount = computed(() => {
   const text = currentPost.value.content.replace(/<[^>]+>/g, ' ').trim()
@@ -358,6 +389,7 @@ const insertLink = () => {
 const setFeaturedImg = (e) => {
   const file = e.target.files[0]
   if (!file) return
+  currentPost.value.featuredFile = file
   const reader = new FileReader()
   reader.onload = (ev) => { currentPost.value.featuredImg = ev.target.result }
   reader.readAsDataURL(file)
@@ -377,41 +409,61 @@ const newPost = () => {
 }
 
 const editPost = (post) => {
-  currentPost.value = { ...post }
+  currentPost.value = {
+    id: post.id, title: post.title, content: post.content,
+    excerpt: post.excerpt, category_id: post.category_id,
+    tags: [...post.tags], featuredImg: post.featuredImg, featuredFile: null,
+    seoTitle: post.seoTitle, seoDesc: post.seoDesc, status: post.status,
+  }
   view.value = 'editor'
 }
 
-const saveDraft = () => {
-  saveCurrentPost('draft')
-  alert('تم حفظ المسودة!')
-}
+const saving = ref(false)
 
-const publishPost = () => {
-  saveCurrentPost('published')
-  alert('تم نشر المقالة!')
-  view.value = 'list'
-}
-
-const saveCurrentPost = (status) => {
-  currentPost.value.status = status
-  currentPost.value.date = new Date().toLocaleDateString('ar-SA')
-  if (currentPost.value.id) {
-    const idx = posts.value.findIndex(p => p.id === currentPost.value.id)
-    if (idx !== -1) posts.value[idx] = { ...currentPost.value }
-  } else {
-    currentPost.value.id = Date.now()
-    posts.value.unshift({ ...currentPost.value })
+const buildPayload = (status) => {
+  const p = currentPost.value
+  return {
+    title: p.title,
+    category_id: p.category_id,
+    excerpt: p.excerpt,
+    content: p.content,
+    seo_title: p.seoTitle,
+    seo_description: p.seoDesc,
+    status,
+    tags: p.tags,
+    featured_image: p.featuredFile,
   }
 }
 
+const submitPost = (status) => {
+  const p = currentPost.value
+  saving.value = true
+  const form = useForm(buildPayload(status))
+  const opts = {
+    forceFormData: true,
+    preserveScroll: true,
+    onSuccess: () => { view.value = 'list' },
+    onFinish: () => { saving.value = false },
+  }
+  if (p.id) {
+    form.transform((d) => ({ ...d, _method: 'put' }))
+    form.post(route('admin.blog.update', p.id), opts)
+  } else {
+    form.post(route('admin.blog.store'), opts)
+  }
+}
+
+const saveDraft = () => submitPost('draft')
+const publishPost = () => submitPost('published')
+
 const togglePublish = (post) => {
-  post.status = post.status === 'published' ? 'draft' : 'published'
+  const action = post.status === 'published' ? 'unpublish' : 'publish'
+  router.patch(route(`admin.blog.${action}`, post.id), {}, { preserveScroll: true })
 }
 
 const deletePost = (post) => {
   if (confirm(`حذف "${post.title}"؟`)) {
-    const idx = posts.value.findIndex(p => p.id === post.id)
-    if (idx !== -1) posts.value.splice(idx, 1)
+    router.delete(route('admin.blog.destroy', post.id), { preserveScroll: true })
   }
 }
 

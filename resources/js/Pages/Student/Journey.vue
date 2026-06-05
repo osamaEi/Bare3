@@ -11,25 +11,26 @@
     </div>
 
     <div class="lessons">
-      <component
-        :is="l.status === 'locked' ? 'div' : 'a'"
+      <Link
         v-for="(l, i) in journey.lessons"
         :key="l.id"
-        :href="l.status === 'locked' ? null : route('student.lesson', l.id)"
+        :href="l.status === 'locked' ? '' : route('student.lesson', l.id)"
         class="lesson-row"
         :class="l.status"
+        :as="l.status === 'locked' ? 'div' : 'a'"
+        @click="l.status === 'locked' && notifyLocked()"
       >
         <div class="lesson-num">{{ i + 1 }}</div>
         <div class="lesson-info">
           <div class="lesson-title">{{ l.title }}</div>
           <div class="lesson-state">
             <template v-if="l.status === 'completed'"><span class="mi">check_circle</span> مكتمل</template>
-            <template v-else-if="l.status === 'locked'"><span class="mi">lock</span> مقفل</template>
+            <template v-else-if="l.status === 'locked'"><span class="mi">lock</span> مقفل — أكمل الدرس السابق</template>
             <template v-else><span class="mi">play_circle</span> متاح الآن</template>
           </div>
         </div>
         <span class="mi chevron">{{ l.status === 'locked' ? 'lock' : 'chevron_left' }}</span>
-      </component>
+      </Link>
     </div>
   </StudentLayout>
 </template>
@@ -39,6 +40,8 @@ import { Head, Link } from '@inertiajs/vue3'
 import StudentLayout from '@/Layouts/StudentLayout.vue'
 
 defineProps({ journey: { type: Object, required: true } })
+
+const notifyLocked = () => {}
 </script>
 
 <style scoped>

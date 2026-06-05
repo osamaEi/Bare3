@@ -20,7 +20,7 @@ class UpdatePostRequest extends FormRequest
             'seo_description' => ['nullable', 'string', 'max:160'],
             'status'          => ['required', 'in:draft,published'],
             'tags'            => ['nullable', 'array'],
-            'tags.*'          => ['integer', 'exists:blog_tags,id'],
+            'tags.*'          => ['string', 'max:50'],
         ];
     }
 

@@ -20,18 +20,18 @@ class AdminPaymentController extends Controller
         $filters = $request->only(['gateway', 'status', 'search', 'per_page']);
 
         return Inertia::render('Admin/Payments', [
-            'transactions'  => $this->payments->allTransactions($filters),
+            'transactions' => $this->payments->allTransactions($filters),
             'revenue_month' => $this->payments->totalRevenue('month'),
-            'revenue_year'  => $this->payments->totalRevenue('year'),
+            'revenue_year' => $this->payments->totalRevenue('year'),
             'revenue_total' => $this->payments->totalRevenue(),
             'gateway_split' => $this->payments->revenueByGateway(),
             'monthly_chart' => $this->payments->revenueByMonth(6),
-            'plan_split'    => $this->payments->revenueByPlan(),
-            'counts'        => [
-                'success'  => $this->payments->countByStatus('success'),
+            'plan_split' => $this->payments->revenueByPlan(),
+            'counts' => [
+                'success' => $this->payments->countByStatus('success'),
                 'refunded' => $this->payments->countByStatus('refunded'),
-                'failed'   => $this->payments->countByStatus('failed'),
-                'pending'  => $this->payments->countByStatus('pending'),
+                'failed' => $this->payments->countByStatus('failed'),
+                'pending' => $this->payments->countByStatus('pending'),
             ],
             'filters' => $filters,
         ]);

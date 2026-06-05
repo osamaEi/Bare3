@@ -5,8 +5,8 @@ namespace App\Repositories;
 use App\Models\Lesson;
 use App\Models\Path;
 use App\Models\Quiz;
-use App\Models\QuizQuestion;
 use App\Models\QuizOption;
+use App\Models\QuizQuestion;
 use App\Models\ScormPackage;
 use App\Models\Video;
 use App\Repositories\Contracts\ContentRepositoryInterface;
@@ -39,7 +39,7 @@ class ContentRepository implements ContentRepositoryInterface
     public function lessonsForPath(int $pathId): Collection
     {
         return Lesson::where('path_id', $pathId)
-            ->with('video', 'scormPackage', 'quiz')
+            ->with(['video', 'scormPackage', 'quiz.questions.options'])
             ->orderBy('sort_order')
             ->get();
     }
@@ -68,6 +68,11 @@ class ContentRepository implements ContentRepositoryInterface
     public function updateVideo(int $id, array $data): bool
     {
         return Video::findOrFail($id)->update($data);
+    }
+
+    public function deleteVideo(int $id): bool
+    {
+        return Video::findOrFail($id)->delete();
     }
 
     // ── SCORM ──────────────────────────────────────
@@ -107,6 +112,11 @@ class ContentRepository implements ContentRepositoryInterface
         return Quiz::findOrFail($id)->update($data);
     }
 
+    public function deleteQuiz(int $id): bool
+    {
+        return Quiz::findOrFail($id)->delete();
+    }
+
     public function addQuestion(int $quizId, array $data)
     {
         $options = $data['options'] ?? [];
@@ -118,9 +128,9 @@ class ContentRepository implements ContentRepositoryInterface
         foreach ($options as $i => $text) {
             QuizOption::create([
                 'question_id' => $question->id,
-                'text'        => $text,
-                'is_correct'  => $i === $correct,
-                'sort_order'  => $i,
+                'text' => $text,
+                'is_correct' => $i === $correct,
+                'sort_order' => $i,
             ]);
         }
 
@@ -130,5 +140,14 @@ class ContentRepository implements ContentRepositoryInterface
     public function removeQuestion(int $questionId): bool
     {
         return QuizQuestion::findOrFail($questionId)->delete();
+    }
+
+    public function replaceQuestions(int $quizId, array $questions): void
+    {
+        Quiz::findOrFail($quizId)->questions()->each(fn ($q) => $q->delete());
+
+        foreach ($questions as $q) {
+            $this->addQuestion($quizId, $q);
+        }
     }
 }

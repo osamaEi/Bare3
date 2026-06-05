@@ -103,11 +103,11 @@
 
       <!-- PAGINATION -->
       <div class="pagination">
-        <span class="page-info">عرض {{ filteredUsers.length }} من {{ currentTabUsers.length }}</span>
+        <span class="page-info">عرض {{ filteredUsers.length }} من {{ currentPaginator.total ?? filteredUsers.length }}</span>
         <div class="page-btns">
-          <button class="page-btn" :disabled="page <= 1" @click="page--">السابق</button>
-          <button class="page-btn active">{{ page }}</button>
-          <button class="page-btn" @click="page++">التالي</button>
+          <button class="page-btn" :disabled="!currentPaginator.prev_page_url" @click="goPage(currentPaginator.prev_page_url)">السابق</button>
+          <button class="page-btn active">{{ currentPaginator.current_page ?? 1 }}</button>
+          <button class="page-btn" :disabled="!currentPaginator.next_page_url" @click="goPage(currentPaginator.next_page_url)">التالي</button>
         </div>
       </div>
     </div>
@@ -144,11 +144,14 @@
             <div class="form-group" v-if="form.role === 'student'">
               <label>المرحلة الدراسية</label>
               <select v-model="form.level" class="form-input">
-                <option value="ابتدائي">ابتدائي</option>
-                <option value="متوسط">متوسط</option>
-                <option value="ثانوي">ثانوي</option>
+                <option value="primary">ابتدائي</option>
+                <option value="middle">متوسط</option>
+                <option value="high">ثانوي</option>
               </select>
             </div>
+          </div>
+          <div v-if="Object.keys(form.errors).length" class="form-errors">
+            <p v-for="(msg, key) in form.errors" :key="key">{{ msg }}</p>
           </div>
         </div>
         <div class="modal-footer">
@@ -164,57 +167,72 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { router, useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
+const props = defineProps({
+  students: { type: Object, default: () => ({ data: [] }) },
+  parents:  { type: Object, default: () => ({ data: [] }) },
+  teachers: { type: Object, default: () => ({ data: [] }) },
+  counts:   { type: Object, default: () => ({ students: 0, parents: 0, teachers: 0, active: 0 }) },
+  filters:  { type: Object, default: () => ({}) },
+})
+
 const activeTab = ref('students')
-const search = ref('')
-const filterStatus = ref('')
-const page = ref(1)
+const search = ref(props.filters.search ?? '')
+const filterStatus = ref(props.filters.status ?? '')
 const selected = ref([])
 
 const modal = ref({ open: false, type: 'add', title: '' })
-const form = ref({ name: '', email: '', role: 'student', password: '', level: 'ابتدائي' })
+const form = useForm({ id: null, name: '', email: '', role: 'student', password: '', level: 'primary' })
 
-const allUsers = ref([
-  { id: 1,  name: 'أحمد العمري',     email: 'ahmed@mail.com',  role: 'student', level: 'متوسط',   path: 'الوعي المالي',         joined: '٢٠٢٦/٠٣/١٠', status: 'active' },
-  { id: 2,  name: 'سارة الزهراني',   email: 'sara@mail.com',   role: 'student', level: 'ابتدائي', path: 'الذكاء العاطفي',       joined: '٢٠٢٦/٠٣/١٥', status: 'active' },
-  { id: 3,  name: 'محمد الشمري',     email: 'moh@mail.com',    role: 'student', level: 'ثانوي',   path: 'المواطنة الرقمية',     joined: '٢٠٢٦/٠٢/٢٠', status: 'suspended' },
-  { id: 4,  name: 'نورة القحطاني',   email: 'noura@mail.com',  role: 'student', level: 'متوسط',   path: 'الإبداع والابتكار',   joined: '٢٠٢٦/٠٤/٠١', status: 'active' },
-  { id: 5,  name: 'فهد الدوسري',     email: 'fahad@mail.com',  role: 'student', level: 'ثانوي',   path: 'التواصل والإلقاء',    joined: '٢٠٢٦/٠١/٠٥', status: 'active' },
-  { id: 6,  name: 'عبدالله السالم',  email: 'abdulla@mail.com',role: 'parent',  level: null,       path: null,                   joined: '٢٠٢٦/٠٣/٠٨', status: 'active' },
-  { id: 7,  name: 'منيرة الحربي',    email: 'munira@mail.com', role: 'parent',  level: null,       path: null,                   joined: '٢٠٢٦/٠٢/١٤', status: 'active' },
-  { id: 8,  name: 'خالد العتيبي',    email: 'khalid@mail.com', role: 'parent',  level: null,       path: null,                   joined: '٢٠٢٦/٠٤/٠٣', status: 'pending' },
-  { id: 9,  name: 'د. نورة الغامدي', email: 'dr.noura@mail.com',role: 'teacher',level: null,       path: null,                   joined: '٢٠٢٦/٠١/٢٠', status: 'active' },
-  { id: 10, name: 'أ. سعد المالكي',  email: 'saad@mail.com',   role: 'teacher', level: null,       path: null,                   joined: '٢٠٢٦/٠٢/٠٥', status: 'active' },
-])
+// Map a User model to the shape the table expects
+const mapUser = (u) => ({
+  id: u.id,
+  name: u.name,
+  email: u.email,
+  role: u.role,
+  level: u.level ?? null,
+  path: u.path ?? null,
+  joined: u.created_at ? new Date(u.created_at).toLocaleDateString('ar-EG') : '—',
+  status: u.is_active ? 'active' : 'suspended',
+})
+
+const paginatorFor = (key) => (key === 'students' ? props.students : key === 'parents' ? props.parents : props.teachers)
+const currentPaginator = computed(() => paginatorFor(activeTab.value))
+const currentTabUsers = computed(() => (currentPaginator.value?.data ?? []).map(mapUser))
 
 const tabs = computed(() => [
-  { key: 'students', label: 'الطلاب',       icon: 'fa-solid fa-graduation-cap', count: allUsers.value.filter(u => u.role === 'student').length },
-  { key: 'parents',  label: 'أولياء الأمور', icon: 'fa-solid fa-people-roof',    count: allUsers.value.filter(u => u.role === 'parent').length },
-  { key: 'teachers', label: 'المعلمون',      icon: 'fa-solid fa-chalkboard-user', count: allUsers.value.filter(u => u.role === 'teacher').length },
+  { key: 'students', label: 'الطلاب',        icon: 'fa-solid fa-graduation-cap',  count: props.counts.students },
+  { key: 'parents',  label: 'أولياء الأمور', icon: 'fa-solid fa-people-roof',     count: props.counts.parents },
+  { key: 'teachers', label: 'المعلمون',       icon: 'fa-solid fa-chalkboard-user', count: props.counts.teachers },
 ])
 
 const userStats = computed(() => [
-  { label: 'الطلاب',         value: allUsers.value.filter(u => u.role === 'student').length, icon: 'fa-solid fa-graduation-cap', color: '#38BDF8' },
-  { label: 'أولياء الأمور', value: allUsers.value.filter(u => u.role === 'parent').length,  icon: 'fa-solid fa-people-roof',    color: '#8B5CF6' },
-  { label: 'المعلمون',       value: allUsers.value.filter(u => u.role === 'teacher').length, icon: 'fa-solid fa-chalkboard-user',color: '#16A34A' },
-  { label: 'النشطون',        value: allUsers.value.filter(u => u.status === 'active').length,icon: 'fa-solid fa-circle-check',   color: '#EC4899' },
+  { label: 'الطلاب',         value: props.counts.students, icon: 'fa-solid fa-graduation-cap',  color: '#38BDF8' },
+  { label: 'أولياء الأمور', value: props.counts.parents,  icon: 'fa-solid fa-people-roof',     color: '#8B5CF6' },
+  { label: 'المعلمون',       value: props.counts.teachers, icon: 'fa-solid fa-chalkboard-user', color: '#16A34A' },
+  { label: 'النشطون',        value: props.counts.active,   icon: 'fa-solid fa-circle-check',    color: '#EC4899' },
 ])
 
-const totalUsers = computed(() => allUsers.value.length)
+const totalUsers = computed(() => props.counts.students + props.counts.parents + props.counts.teachers)
 
-const currentTabUsers = computed(() =>
-  allUsers.value.filter(u => u.role === (activeTab.value === 'students' ? 'student' : activeTab.value === 'parents' ? 'parent' : 'teacher'))
-)
+// Server already filters by search/status; show current page rows
+const filteredUsers = computed(() => currentTabUsers.value)
 
-const filteredUsers = computed(() =>
-  currentTabUsers.value.filter(u => {
-    const matchSearch = !search.value || u.name.includes(search.value) || u.email.includes(search.value)
-    const matchStatus = !filterStatus.value || u.status === filterStatus.value
-    return matchSearch && matchStatus
-  })
-)
+// Debounced server-side search/filter
+let searchTimer = null
+watch([search, filterStatus], () => {
+  clearTimeout(searchTimer)
+  searchTimer = setTimeout(() => {
+    router.get(route('admin.users.index'),
+      { search: search.value || undefined, status: filterStatus.value || undefined },
+      { preserveState: true, replace: true, preserveScroll: true })
+  }, 350)
+})
+
+const goPage = (url) => { if (url) router.get(url, {}, { preserveState: true, preserveScroll: true }) }
 
 const roleLabel  = (r) => ({ student: 'طالب', parent: 'ولي أمر', teacher: 'معلم' }[r] ?? r)
 const statusLabel = (s) => ({ active: 'نشط', suspended: 'موقوف', pending: 'معلّق' }[s] ?? s)
@@ -225,27 +243,36 @@ const avatarColor = (name) => {
 
 const openModal = (type, user = null) => {
   modal.value = { open: true, type, title: type === 'add' ? 'إضافة مستخدم' : type === 'edit' ? 'تعديل المستخدم' : 'تفاصيل المستخدم' }
-  form.value = user ? { ...user } : { name: '', email: '', role: 'student', password: '', level: 'ابتدائي' }
+  form.clearErrors()
+  if (user) {
+    form.id = user.id; form.name = user.name; form.email = user.email
+    form.role = user.role; form.password = ''; form.level = user.level ?? 'primary'
+  } else {
+    form.reset(); form.id = null
+  }
 }
 
 const saveUser = () => {
   if (modal.value.type === 'add') {
-    allUsers.value.push({ id: Date.now(), ...form.value, joined: new Date().toLocaleDateString('ar-SA'), status: 'active' })
+    form.post(route('admin.users.store'), {
+      preserveScroll: true,
+      onSuccess: () => { modal.value.open = false; form.reset() },
+    })
   } else {
-    const idx = allUsers.value.findIndex(u => u.id === form.value.id)
-    if (idx !== -1) allUsers.value[idx] = { ...form.value }
+    form.put(route('admin.users.update', form.id), {
+      preserveScroll: true,
+      onSuccess: () => { modal.value.open = false },
+    })
   }
-  modal.value.open = false
 }
 
 const toggleStatus = (user) => {
-  user.status = user.status === 'active' ? 'suspended' : 'active'
+  router.patch(route('admin.users.toggle-status', user.id), {}, { preserveScroll: true })
 }
 
 const confirmDelete = (user) => {
   if (confirm(`هل تريد حذف "${user.name}"؟`)) {
-    const idx = allUsers.value.findIndex(u => u.id === user.id)
-    if (idx !== -1) allUsers.value.splice(idx, 1)
+    router.delete(route('admin.users.destroy', user.id), { preserveScroll: true })
   }
 }
 
@@ -342,6 +369,8 @@ const toggleSelect = (id) => {
 .form-group label { font-size: .82rem; font-weight: 700; color: #475569; }
 .form-input { padding: .65rem .9rem; border: 1.5px solid #E2E8F0; border-radius: 10px; font-family: inherit; font-size: .9rem; color: #1E293B; transition: border-color .2s; }
 .form-input:focus { outline: none; border-color: #38BDF8; }
+.form-errors { margin-top: 1rem; background: #FEF2F2; border: 1.5px solid #FECACA; border-radius: 10px; padding: .7rem 1rem; }
+.form-errors p { color: #DC2626; font-size: .82rem; font-weight: 700; margin: .1rem 0; }
 .modal-footer { display: flex; gap: .7rem; justify-content: flex-end; padding: 1rem 1.5rem; border-top: 1px solid #F1F5F9; }
 .btn-cancel { background: #F1F5F9; border: none; color: #475569; font-family: inherit; font-weight: 700; font-size: .9rem; padding: .65rem 1.4rem; border-radius: 10px; cursor: pointer; }
 .btn-save { background: #38BDF8; border: none; color: white; font-family: inherit; font-weight: 700; font-size: .9rem; padding: .65rem 1.4rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: .5rem; }

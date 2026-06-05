@@ -12,9 +12,8 @@ class PaymentRepository implements PaymentRepositoryInterface
     {
         return PaymentTransaction::with('user:id,name', 'subscription.plan:id,name')
             ->when($filters['gateway'] ?? null, fn ($q, $g) => $q->where('gateway', $g))
-            ->when($filters['status']  ?? null, fn ($q, $s) => $q->where('status', $s))
-            ->when($filters['search']  ?? null, fn ($q, $s) =>
-                $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%$s%"))
+            ->when($filters['status'] ?? null, fn ($q, $s) => $q->where('status', $s))
+            ->when($filters['search'] ?? null, fn ($q, $s) => $q->whereHas('user', fn ($u) => $u->where('name', 'like', "%$s%"))
             )
             ->latest()
             ->paginate($filters['per_page'] ?? 20);
@@ -30,10 +29,10 @@ class PaymentRepository implements PaymentRepositoryInterface
         $q = PaymentTransaction::success();
 
         return match ($period) {
-            'month'   => (float) $q->whereMonth('created_at', now()->month)->sum('amount'),
-            'year'    => (float) $q->whereYear('created_at', now()->year)->sum('amount'),
-            'week'    => (float) $q->where('created_at', '>=', now()->startOfWeek())->sum('amount'),
-            default   => (float) $q->sum('amount'),
+            'month' => (float) $q->whereMonth('created_at', now()->month)->sum('amount'),
+            'year' => (float) $q->whereYear('created_at', now()->year)->sum('amount'),
+            'week' => (float) $q->where('created_at', '>=', now()->startOfWeek())->sum('amount'),
+            default => (float) $q->sum('amount'),
         };
     }
 
@@ -51,7 +50,7 @@ class PaymentRepository implements PaymentRepositoryInterface
     public function revenueByMonth(int $months = 6): array
     {
         return PaymentTransaction::success()
-            ->selectRaw("DATE_FORMAT(created_at,'%Y-%m') as month, SUM(amount) as total")
+            ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(amount) as total")
             ->where('created_at', '>=', now()->subMonths($months)->startOfMonth())
             ->groupBy('month')
             ->orderBy('month')
@@ -62,7 +61,7 @@ class PaymentRepository implements PaymentRepositoryInterface
 
     public function revenueByPlan(): array
     {
-        return PaymentTransaction::success()
+        return PaymentTransaction::where('payment_transactions.status', 'success')
             ->join('subscriptions', 'payment_transactions.subscription_id', '=', 'subscriptions.id')
             ->join('plans', 'subscriptions.plan_id', '=', 'plans.id')
             ->selectRaw('plans.name, SUM(payment_transactions.amount) as total')

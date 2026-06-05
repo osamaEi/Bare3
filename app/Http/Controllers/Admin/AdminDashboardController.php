@@ -16,11 +16,11 @@ class AdminDashboardController extends Controller
     public function index(): Response
     {
         return Inertia::render('Admin/Dashboard', [
-            'stats'           => $this->dashboard->getStats(),
-            'revenue_chart'   => $this->dashboard->getRevenueChart(),
+            'stats' => $this->dashboard->getStats(),
+            'revenue_chart' => $this->dashboard->getRevenueChart(),
             'recent_activity' => $this->dashboard->getRecentActivity(8),
-            'paths_dist'      => $this->dashboard->getPathsDistribution(),
-            'gateway_split'   => $this->dashboard->getGatewayBreakdown(),
+            'paths_dist' => $this->dashboard->getPathsDistribution(),
+            'gateway_split' => $this->dashboard->getGatewayBreakdown(),
         ]);
     }
 }

@@ -116,6 +116,29 @@ class StudentRepository implements StudentRepositoryInterface
             ->get()
             ->keyBy('lesson_id');
 
+        // Self-heal: make sure progress rows exist and the first available
+        // lesson (or any whose predecessor is completed) is unlocked.
+        $prevCompleted = true; // first lesson is always reachable
+        foreach ($lessons as $lesson) {
+            $p = $progress->get($lesson->id);
+
+            if (! $p) {
+                $p = LessonProgress::create([
+                    'student_id'    => $student->id,
+                    'lesson_id'     => $lesson->id,
+                    'enrollment_id' => $enrollment->id,
+                    'status'        => $prevCompleted ? 'in_progress' : 'locked',
+                    'unlocked_at'   => $prevCompleted ? now() : null,
+                    'updated_at'    => now(),
+                ]);
+                $progress->put($lesson->id, $p);
+            } elseif ($p->status === 'locked' && $prevCompleted) {
+                $p->update(['status' => 'in_progress', 'unlocked_at' => now(), 'updated_at' => now()]);
+            }
+
+            $prevCompleted = $p->status === 'completed';
+        }
+
         return [
             'enrollment' => [
                 'id' => $enrollment->id,

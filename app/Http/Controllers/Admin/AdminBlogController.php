@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Blog\StorePostRequest;
 use App\Http\Requests\Admin\Blog\UpdatePostRequest;
+use App\Models\BlogTag;
 use App\Repositories\Contracts\BlogRepositoryInterface;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -22,10 +24,10 @@ class AdminBlogController extends Controller
         $filters = $request->only(['status', 'category', 'search', 'per_page']);
 
         return Inertia::render('Admin/Blog', [
-            'posts'      => $this->blog->allPosts($filters),
+            'posts' => $this->blog->allPosts($filters),
             'categories' => $this->blog->allCategories(),
-            'tags'       => $this->blog->allTags(),
-            'filters'    => $filters,
+            'tags' => $this->blog->allTags(),
+            'filters' => $filters,
         ]);
     }
 
@@ -38,7 +40,7 @@ class AdminBlogController extends Controller
             $data['featured_image'] = $request->file('featured_image')->store('blog', 'public');
         }
 
-        $tagIds = $data['tags'] ?? [];
+        $tagIds = $this->resolveTags($data['tags'] ?? []);
         unset($data['tags']);
 
         $this->blog->createPost($data, $tagIds);
@@ -54,12 +56,24 @@ class AdminBlogController extends Controller
             $data['featured_image'] = $request->file('featured_image')->store('blog', 'public');
         }
 
-        $tagIds = $data['tags'] ?? [];
+        $tagIds = $this->resolveTags($data['tags'] ?? []);
         unset($data['tags']);
 
         $this->blog->updatePost($id, $data, $tagIds);
 
         return back()->with('success', 'تم تعديل المقالة');
+    }
+
+    /** Resolve a list of tag names to existing/new tag IDs. */
+    private function resolveTags(array $names): array
+    {
+        return collect($names)
+            ->filter(fn ($n) => filled(trim($n)))
+            ->map(fn ($n) => BlogTag::firstOrCreate(
+                ['slug' => Str::slug($n)],
+                ['name' => trim($n)],
+            )->id)
+            ->all();
     }
 
     public function destroy(int $id): RedirectResponse

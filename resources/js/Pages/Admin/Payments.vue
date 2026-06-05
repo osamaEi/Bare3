@@ -101,9 +101,9 @@
         <div class="header-filters">
           <select v-model="txGateway" class="filter-sel">
             <option value="">كل البوابات</option>
-            <option value="مدى">مدى</option>
-            <option value="تابي">تابي</option>
-            <option value="تمارا">تمارا</option>
+            <option value="mada">مدى</option>
+            <option value="tabby">تابي</option>
+            <option value="tamara">تمارا</option>
           </select>
           <select v-model="txStatus" class="filter-sel">
             <option value="">كل الحالات</option>
@@ -173,111 +173,109 @@
       </div>
     </div>
 
-    <!-- TX DETAIL MODAL -->
-    <div v-if="txModal" class="modal-overlay" @click.self="txModal = false">
-      <div class="modal">
-        <div class="modal-header">
-          <h3>تفاصيل العملية #{{ selectedTx?.id }}</h3>
-          <button class="modal-close" @click="txModal = false"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="modal-body">
-          <div class="tx-detail-grid">
-            <div class="tx-detail-row"><span>المستخدم</span><strong>{{ selectedTx?.user }}</strong></div>
-            <div class="tx-detail-row"><span>الباقة</span><strong>{{ selectedTx?.plan }}</strong></div>
-            <div class="tx-detail-row"><span>البوابة</span><strong>{{ selectedTx?.gateway }}</strong></div>
-            <div class="tx-detail-row"><span>المبلغ</span><strong>{{ selectedTx?.amount?.toLocaleString() }} ر.س</strong></div>
-            <div class="tx-detail-row"><span>التاريخ</span><strong>{{ selectedTx?.date }}</strong></div>
-            <div class="tx-detail-row"><span>الحالة</span>
-              <span class="status-badge" :class="selectedTx?.status">{{ statusLabel(selectedTx?.status) }}</span>
-            </div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button class="btn-cancel" @click="txModal = false">إغلاق</button>
-          <button class="btn-print"><i class="fa-solid fa-print"></i> طباعة</button>
-        </div>
-      </div>
-    </div>
-
   </AdminLayout>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
+import { router } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
+const props = defineProps({
+  transactions:  { type: Object, default: () => ({ data: [] }) },
+  revenue_month: { type: Number, default: 0 },
+  revenue_year:  { type: Number, default: 0 },
+  revenue_total: { type: Number, default: 0 },
+  gateway_split: { type: Array,  default: () => [] },
+  monthly_chart: { type: Array,  default: () => [] },
+  plan_split:    { type: Array,  default: () => [] },
+  counts:        { type: Object, default: () => ({ success: 0, refunded: 0, failed: 0, pending: 0 }) },
+  filters:       { type: Object, default: () => ({}) },
+})
+
 const period = ref('month')
-const txGateway = ref('')
-const txStatus = ref('')
-const txSearch = ref('')
-const txModal = ref(false)
-const selectedTx = ref(null)
+const txGateway = ref(props.filters.gateway ?? '')
+const txStatus = ref(props.filters.status ?? '')
+const txSearch = ref(props.filters.search ?? '')
 
-const kpiCards = [
-  { label: 'إجمالي الإيرادات',   value: '١٨,٤٥٠ ر.س', icon: 'fa-solid fa-sack-dollar',    bg: '#FFF7ED', color: '#EA580C', change: '+٣٢٪', up: true },
-  { label: 'عمليات ناجحة',       value: '٢٣٤',          icon: 'fa-solid fa-circle-check',   bg: '#F0FDF4', color: '#16A34A', change: '+١٨٪', up: true },
-  { label: 'متوسط قيمة الاشتراك',value: '٧٨.٨ ر.س',    icon: 'fa-solid fa-chart-line',     bg: '#EFF6FF', color: '#2563EB', change: '+٥٪',  up: true },
-  { label: 'عمليات مُستردّة',    value: '١١',            icon: 'fa-solid fa-rotate-left',    bg: '#FEF2F2', color: '#DC2626', change: '-٣٪',  up: false },
-]
+const GW = { mada: { label: 'مدى', icon: 'fa-solid fa-credit-card', bg: '#E0F4FF', color: '#0E7490' },
+             tabby: { label: 'تابي', icon: 'fa-solid fa-clock-rotate-left', bg: '#F5F3FF', color: '#5B21B6' },
+             tamara: { label: 'تمارا', icon: 'fa-solid fa-hand-holding-dollar', bg: '#F0FDF4', color: '#15803D' } }
+const PLAN_COLORS = ['#EC4899', '#8B5CF6', '#94A3B8', '#38BDF8', '#16A34A']
 
-const gateways = [
-  { name: 'مدى',   icon: 'fa-solid fa-credit-card', bg: '#E0F4FF', color: '#0E7490', amount: 9200,  pct: 50, txCount: 118 },
-  { name: 'تابي',  icon: 'fa-solid fa-clock-rotate-left', bg: '#F5F3FF', color: '#5B21B6', amount: 5510, pct: 30, txCount: 72 },
-  { name: 'تمارا', icon: 'fa-solid fa-hand-holding-dollar', bg: '#F0FDF4', color: '#15803D', amount: 3740, pct: 20, txCount: 44 },
-]
+const fmtNum = (n) => Number(n ?? 0).toLocaleString('ar-EG')
 
-const planSplit = [
-  { name: 'باقة الأبطال (٩٩ ر.س)', color: '#EC4899', pct: 60, amount: 11070 },
-  { name: 'باقة المدارس (١٩٩ ر.س)', color: '#8B5CF6', pct: 25, amount: 4612 },
-  { name: 'الباقة التجريبية',        color: '#94A3B8', pct: 15, amount: 2768 },
-]
+const kpiCards = computed(() => {
+  const successCount = props.counts.success || 1
+  const avg = props.revenue_total / successCount
+  return [
+    { label: 'إجمالي الإيرادات', value: fmtNum(props.revenue_total) + ' ر.س', icon: 'fa-solid fa-sack-dollar', bg: '#FFF7ED', color: '#EA580C', change: '', up: true },
+    { label: 'عمليات ناجحة', value: fmtNum(props.counts.success), icon: 'fa-solid fa-circle-check', bg: '#F0FDF4', color: '#16A34A', change: '', up: true },
+    { label: 'متوسط قيمة الاشتراك', value: avg.toFixed(1) + ' ر.س', icon: 'fa-solid fa-chart-line', bg: '#EFF6FF', color: '#2563EB', change: '', up: true },
+    { label: 'عمليات مُستردّة', value: fmtNum(props.counts.refunded), icon: 'fa-solid fa-rotate-left', bg: '#FEF2F2', color: '#DC2626', change: '', up: false },
+  ]
+})
 
-const monthlyRevenue = [
-  { month: 'يناير',  amount: 9200,  current: false },
-  { month: 'فبراير', amount: 11400, current: false },
-  { month: 'مارس',   amount: 13800, current: false },
-  { month: 'أبريل',  amount: 12600, current: false },
-  { month: 'مايو',   amount: 18450, current: true },
-]
-const maxMonthly = computed(() => Math.max(...monthlyRevenue.map(m => m.amount)))
+const gatewaysTotal = computed(() => props.gateway_split.reduce((s, g) => s + Number(g.total ?? 0), 0) || 1)
+const gateways = computed(() => props.gateway_split.map(g => {
+  const meta = GW[g.gateway] ?? { label: g.gateway, icon: 'fa-solid fa-money-bill', bg: '#F1F5F9', color: '#475569' }
+  return { name: meta.label, icon: meta.icon, bg: meta.bg, color: meta.color,
+    amount: Number(g.total ?? 0), pct: Math.round(Number(g.total ?? 0) / gatewaysTotal.value * 100), txCount: g.count ?? 0 }
+}))
 
-const transactions = ref([
-  { id: 'TXN-٢٠٢٦-٠٠١', user: 'أحمد العمري',    plan: 'باقة الأبطال',   gateway: 'مدى',   amount: 99,  date: '٢٠٢٦/٠٥/٢٨', status: 'success'  },
-  { id: 'TXN-٢٠٢٦-٠٠٢', user: 'سارة الزهراني',   plan: 'باقة الأبطال',   gateway: 'تابي',  amount: 99,  date: '٢٠٢٦/٠٥/٢٧', status: 'success'  },
-  { id: 'TXN-٢٠٢٦-٠٠٣', user: 'محمد الشمري',     plan: 'باقة المدارس',  gateway: 'تمارا', amount: 199, date: '٢٠٢٦/٠٥/٢٦', status: 'success'  },
-  { id: 'TXN-٢٠٢٦-٠٠٤', user: 'نورة القحطاني',   plan: 'الباقة التجريبية',gateway: 'مدى',  amount: 0,   date: '٢٠٢٦/٠٥/٢٦', status: 'success'  },
-  { id: 'TXN-٢٠٢٦-٠٠٥', user: 'فهد الدوسري',     plan: 'باقة الأبطال',   gateway: 'مدى',   amount: 99,  date: '٢٠٢٦/٠٥/٢٥', status: 'pending'  },
-  { id: 'TXN-٢٠٢٦-٠٠٦', user: 'عبدالله السالم',  plan: 'باقة المدارس',  gateway: 'تابي',  amount: 199, date: '٢٠٢٦/٠٥/٢٤', status: 'success'  },
-  { id: 'TXN-٢٠٢٦-٠٠٧', user: 'منيرة الحربي',    plan: 'باقة الأبطال',   gateway: 'تمارا', amount: 99,  date: '٢٠٢٦/٠٥/٢٣', status: 'failed'   },
-  { id: 'TXN-٢٠٢٦-٠٠٨', user: 'خالد العتيبي',    plan: 'باقة الأبطال',   gateway: 'مدى',   amount: 99,  date: '٢٠٢٦/٠٥/٢٢', status: 'refunded' },
-  { id: 'TXN-٢٠٢٦-٠٠٩', user: 'د. نورة الغامدي', plan: 'باقة المدارس',  gateway: 'تابي',  amount: 199, date: '٢٠٢٦/٠٥/٢٠', status: 'success'  },
-  { id: 'TXN-٢٠٢٦-٠١٠', user: 'أ. سعد المالكي',  plan: 'باقة المدارس',  gateway: 'تمارا', amount: 199, date: '٢٠٢٦/٠٥/١٨', status: 'success'  },
-])
+const plansTotal = computed(() => props.plan_split.reduce((s, p) => s + Number(p.total ?? 0), 0) || 1)
+const planSplit = computed(() => props.plan_split.map((p, i) => ({
+  name: p.name, color: PLAN_COLORS[i % PLAN_COLORS.length],
+  pct: Math.round(Number(p.total ?? 0) / plansTotal.value * 100), amount: Number(p.total ?? 0),
+})))
 
-const filteredTx = computed(() =>
-  transactions.value.filter(tx => {
-    const gw = !txGateway.value || tx.gateway === txGateway.value
-    const st = !txStatus.value  || tx.status === txStatus.value
-    const sr = !txSearch.value  || tx.user.includes(txSearch.value) || tx.id.includes(txSearch.value)
-    return gw && st && sr
-  })
-)
+const monthlyRevenue = computed(() => {
+  const arr = props.monthly_chart.map(m => ({ month: m.month, amount: Number(m.amount ?? 0), current: false }))
+  if (arr.length) arr[arr.length - 1].current = true
+  return arr
+})
+const maxMonthly = computed(() => Math.max(1, ...monthlyRevenue.value.map(m => m.amount)))
+
+// Server-filtered transactions, mapped to table shape
+const filteredTx = computed(() => (props.transactions?.data ?? []).map(tx => ({
+  id: tx.gateway_tx_id ?? ('#' + tx.id),
+  realId: tx.id,
+  user: tx.user?.name ?? '—',
+  plan: tx.subscription?.plan?.name ?? '—',
+  gateway: GW[tx.gateway]?.label ?? tx.gateway,
+  amount: Number(tx.amount ?? 0),
+  date: tx.created_at ? new Date(tx.created_at).toLocaleDateString('ar-EG') : '—',
+  status: tx.status,
+})))
 
 const filteredTotal = computed(() =>
   filteredTx.value.filter(tx => tx.status === 'success').reduce((s, tx) => s + tx.amount, 0)
 )
 
+// Debounced server-side filtering
+let timer = null
+watch([txGateway, txStatus, txSearch], () => {
+  clearTimeout(timer)
+  timer = setTimeout(() => {
+    router.get(route('admin.payments.index'), {
+      gateway: txGateway.value || undefined,
+      status: txStatus.value || undefined,
+      search: txSearch.value || undefined,
+    }, { preserveState: true, replace: true, preserveScroll: true })
+  }, 350)
+})
+
 const statusLabel = (s) => ({ success: 'ناجحة', pending: 'معلّقة', failed: 'فاشلة', refunded: 'مُستردّة' }[s] ?? s)
 const gwIcon = (gw) => ({ مدى: 'fa-solid fa-credit-card', تابي: 'fa-solid fa-clock-rotate-left', تمارا: 'fa-solid fa-hand-holding-dollar' }[gw] ?? 'fa-solid fa-money-bill')
 const avatarColor = (name) => {
   const colors = ['#38BDF8','#EC4899','#84CC16','#F59E0B','#8B5CF6']
-  return colors[name.charCodeAt(0) % colors.length]
+  return colors[(name?.charCodeAt(0) ?? 0) % colors.length]
 }
 
-const viewTx = (tx) => { selectedTx.value = tx; txModal.value = true }
+const viewTx = (tx) => { router.get(route('admin.payments.show', tx.realId)) }
 const refundTx = (tx) => {
   if (confirm(`استرداد ${tx.amount} ر.س للمستخدم "${tx.user}"؟`)) {
-    tx.status = 'refunded'
+    router.patch(route('admin.payments.refund', tx.realId), {}, { preserveScroll: true })
   }
 }
 </script>

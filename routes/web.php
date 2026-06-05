@@ -55,11 +55,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
         Route::delete('/lessons/{id}',                 [AdminContentController::class, 'destroyLesson'])->name('lessons.destroy');
 
         Route::post('/videos',                         [AdminContentController::class, 'storeVideo'])->name('videos.store');
+        Route::put('/videos/{id}',                     [AdminContentController::class, 'updateVideo'])->name('videos.update');
+        Route::delete('/videos/{id}',                  [AdminContentController::class, 'destroyVideo'])->name('videos.destroy');
 
         Route::post('/scorm',                          [AdminContentController::class, 'storeScorm'])->name('scorm.store');
         Route::delete('/scorm/{id}',                   [AdminContentController::class, 'destroyScorm'])->name('scorm.destroy');
 
         Route::post('/quizzes',                        [AdminContentController::class, 'storeQuiz'])->name('quizzes.store');
+        Route::put('/quizzes/{id}',                    [AdminContentController::class, 'updateQuiz'])->name('quizzes.update');
+        Route::delete('/quizzes/{id}',                 [AdminContentController::class, 'destroyQuiz'])->name('quizzes.destroy');
         Route::post('/quizzes/{quizId}/questions',     [AdminContentController::class, 'storeQuestion'])->name('questions.store');
         Route::delete('/questions/{id}',               [AdminContentController::class, 'destroyQuestion'])->name('questions.destroy');
     });
