@@ -17,7 +17,7 @@ class DashboardRepository implements DashboardRepositoryInterface
     {
         return [
             'total_students'  => User::students()->count(),
-            'total_parents'   => User::parents()->count(),
+            'total_parents'   => User::parentRole()->count(),
             'total_teachers'  => User::teachers()->count(),
             'active_paths'    => Path::where('is_active', true)->count(),
             'revenue_month'   => (float) PaymentTransaction::success()
@@ -33,7 +33,7 @@ class DashboardRepository implements DashboardRepositoryInterface
     public function getRevenueChart(): array
     {
         return PaymentTransaction::success()
-            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(amount) as total")
+            ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(amount) as total")
             ->where('created_at', '>=', now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->orderBy('month')

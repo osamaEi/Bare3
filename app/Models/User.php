@@ -29,7 +29,7 @@ class User extends Authenticatable
 
     // ── Scopes ──
     public function scopeStudents($q)  { return $q->where('role', 'student'); }
-    public function scopeParents($q)   { return $q->where('role', 'parent'); }
+    public function scopeParentRole($q) { return $q->where('role', 'parent'); }
     public function scopeTeachers($q)  { return $q->where('role', 'teacher'); }
     public function scopeAdmins($q)    { return $q->where('role', 'admin'); }
     public function scopeActive($q)    { return $q->where('is_active', true); }
