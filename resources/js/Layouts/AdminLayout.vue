@@ -71,17 +71,53 @@
           </div>
         </div>
         <div class="topbar-left">
-          <button class="topbar-icon-btn" title="الإشعارات">
-            <i class="fa-solid fa-bell"></i>
-            <span class="notif-badge">٣</span>
-          </button>
+
+          <!-- Notifications -->
+          <div class="dropdown-wrap" ref="notifRef">
+            <button class="topbar-icon-btn" title="الإشعارات" @click="notifOpen = !notifOpen">
+              <i class="fa-solid fa-bell"></i>
+              <span class="notif-badge">٣</span>
+            </button>
+            <div class="dropdown-panel notif-panel" v-if="notifOpen">
+              <div class="dropdown-header">الإشعارات</div>
+              <div class="notif-item">
+                <i class="fa-solid fa-user-plus notif-icon sky"></i>
+                <div><div class="notif-title">مستخدم جديد</div><div class="notif-time">منذ ٥ دقائق</div></div>
+              </div>
+              <div class="notif-item">
+                <i class="fa-solid fa-credit-card notif-icon pink"></i>
+                <div><div class="notif-title">دفعة جديدة</div><div class="notif-time">منذ ٢٠ دقيقة</div></div>
+              </div>
+              <div class="notif-item">
+                <i class="fa-solid fa-star notif-icon lime"></i>
+                <div><div class="notif-title">تقييم جديد</div><div class="notif-time">منذ ساعة</div></div>
+              </div>
+              <div class="dropdown-footer">عرض كل الإشعارات</div>
+            </div>
+          </div>
+
           <a href="/" class="topbar-icon-btn" title="عرض الموقع" target="_blank">
             <i class="fa-solid fa-eye"></i>
           </a>
-          <div class="topbar-admin">
-            <div class="admin-avatar-sm">م</div>
-            <span>المسؤول</span>
+
+          <!-- Profile -->
+          <div class="dropdown-wrap" ref="profileRef">
+            <div class="topbar-admin" @click="profileOpen = !profileOpen" style="cursor:pointer">
+              <div class="admin-avatar-sm">م</div>
+              <span>المسؤول</span>
+              <i class="fa-solid fa-chevron-down" style="font-size:.7rem;color:#94A3B8"></i>
+            </div>
+            <div class="dropdown-panel profile-panel" v-if="profileOpen">
+              <div class="dropdown-header">المسؤول</div>
+              <a href="/profile" class="profile-item"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+              <a href="/admin" class="profile-item"><i class="fa-solid fa-gauge-high"></i> لوحة التحكم</a>
+              <div class="dropdown-divider"></div>
+              <Link :href="route('logout')" method="post" as="button" class="profile-item logout-item">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل الخروج
+              </Link>
+            </div>
           </div>
+
         </div>
       </header>
 
@@ -98,7 +134,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
 
 const props = defineProps({ pageTitle: { type: String, default: 'لوحة التحكم' } })
@@ -107,6 +143,19 @@ const sidebarCollapsed = ref(false)
 const mobileSidebar = ref(false)
 const page = usePage()
 const currentRoute = computed(() => page.props.ziggy?.current ?? '')
+
+const notifOpen = ref(false)
+const profileOpen = ref(false)
+const notifRef = ref(null)
+const profileRef = ref(null)
+
+function handleClickOutside(e) {
+  if (notifRef.value && !notifRef.value.contains(e.target)) notifOpen.value = false
+  if (profileRef.value && !profileRef.value.contains(e.target)) profileOpen.value = false
+}
+
+onMounted(() => document.addEventListener('click', handleClickOutside))
+onBeforeUnmount(() => document.removeEventListener('click', handleClickOutside))
 </script>
 
 <style scoped>
@@ -259,6 +308,55 @@ const currentRoute = computed(() => page.props.ziggy?.current ?? '')
   display: flex; align-items: center; justify-content: center;
   color: white; font-weight: 800; font-size: .8rem;
 }
+
+/* ── DROPDOWNS ── */
+.dropdown-wrap { position: relative; }
+.dropdown-panel {
+  position: absolute; top: calc(100% + 10px); left: 0;
+  background: white; border-radius: 14px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.12);
+  border: 1px solid #E2E8F0;
+  z-index: 100; min-width: 220px;
+  overflow: hidden;
+}
+.notif-panel { min-width: 280px; }
+.profile-panel { min-width: 200px; }
+.dropdown-header {
+  padding: .8rem 1rem; font-weight: 800; font-size: .85rem;
+  color: #64748B; border-bottom: 1px solid #F1F5F9;
+  background: #F8FAFC;
+}
+.dropdown-footer {
+  padding: .7rem 1rem; font-size: .82rem; font-weight: 700;
+  color: #38BDF8; text-align: center; cursor: pointer;
+  border-top: 1px solid #F1F5F9;
+}
+.dropdown-footer:hover { background: #F1F5F9; }
+.dropdown-divider { border-top: 1px solid #F1F5F9; margin: .3rem 0; }
+
+.notif-item {
+  display: flex; align-items: center; gap: .8rem;
+  padding: .75rem 1rem; transition: background .2s; cursor: pointer;
+}
+.notif-item:hover { background: #F8FAFC; }
+.notif-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: .85rem; flex-shrink: 0; }
+.notif-icon.sky { background: #E0F4FF; color: #38BDF8; }
+.notif-icon.pink { background: #FCE7F3; color: #EC4899; }
+.notif-icon.lime { background: #F0FDF4; color: #84CC16; }
+.notif-title { font-weight: 700; font-size: .85rem; color: #1E293B; }
+.notif-time { font-size: .75rem; color: #94A3B8; margin-top: .1rem; }
+
+.profile-item {
+  display: flex; align-items: center; gap: .7rem;
+  padding: .7rem 1rem; font-size: .88rem; font-weight: 600;
+  color: #1E293B; text-decoration: none; transition: background .2s;
+  cursor: pointer; background: none; border: none; width: 100%; text-align: right;
+  font-family: inherit;
+}
+.profile-item:hover { background: #F8FAFC; }
+.profile-item i { color: #64748B; width: 16px; }
+.logout-item { color: #EC4899; }
+.logout-item i { color: #EC4899; }
 
 /* ── PAGE CONTENT ── */
 .page-content { flex: 1; padding: 1.5rem; overflow-y: auto; }

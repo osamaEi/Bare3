@@ -198,7 +198,7 @@
 <!-- wave -->
 <div style="background:var(--light)">
   <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#E0F4FF"/>
+    <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#F8FAFC"/>
   </svg>
 </div>
 
@@ -305,7 +305,7 @@
 <!-- wave -->
 <div style="background:var(--light)">
   <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,20 C200,70 400,0 600,40 C800,80 1000,10 1200,50 L1200,60 L0,60 Z" fill="#E0F4FF"/>
+    <path d="M0,20 C200,70 400,0 600,40 C800,80 1000,10 1200,50 L1200,60 L0,60 Z" fill="#FCE7F3"/>
   </svg>
 </div>
 
@@ -407,7 +407,7 @@
   <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
     <path d="M0,40 C300,0 500,80 750,30 C900,0 1050,60 1200,20 L1200,60 L0,60 Z" fill="url(#ctaGrad)"/>
     <defs><linearGradient id="ctaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#38BDF8"/><stop offset="100%" style="stop-color:#EC4899"/>
+      <stop offset="0%" style="stop-color:#38BDF8"/><stop offset="100%" style="stop-color:#38BDF8"/>
     </linearGradient></defs>
   </svg>
 </div>
@@ -415,30 +415,44 @@
 <!-- CTA -->
 <section id="cta" class="py-16">
   <div class="relative z-[1] max-w-6xl mx-auto px-6">
-    <div class="grid grid-cols-3 items-center gap-6">
-      <div class="flex justify-center" data-aos="fade-right">
-        <img src="/images/cta boy.png" alt="طفل يتعلم" class="w-52">
+    <div class="grid grid-cols-3 items-center gap-6 md:grid-cols-3 grid-cols-1">
+
+      <!-- الصورة اليسار - مخفية على الموبايل -->
+      <div class="justify-center hidden md:flex" data-aos="fade-right">
+        <img src="/images/cta boy.png" alt="طفل يتعلم" class="w-52 lg:w-52 md:w-36">
       </div>
-      <div class="text-center px-6" data-aos="fade-up">
-        <h2 class="text-6xl font-bold mb-6 leading-tight">
+
+      <!-- النص -->
+      <div class="text-center px-6 col-span-1 md:col-span-1 col-span-3" data-aos="fade-up">
+        <h2 class="text-6xl md:text-5xl sm:text-4xl text-3xl font-bold mb-6 leading-tight">
           جاهز تبدأ مغامرتك؟
         </h2>
-        <p class="text-2xl mb-8 leading-relaxed">
+
+        <!-- الصورتين جنب بعض على الموبايل فقط -->
+        <div class="flex justify-center gap-6 mb-6 md:hidden">
+          <img src="/images/cta boy.png" alt="طفل يتعلم" class="w-28">
+          <img src="/images/cta girl.png" alt="طفلة تتعلم" class="w-28">
+        </div>
+
+        <p class="text-2xl md:text-xl sm:text-lg text-base mb-8 leading-relaxed">
           انضم لأكثر من ١٢ ألف طفل بارع وابدأ رحلة التعلّم المجانية اليوم
         </p>
         <button class="btn-cta">
           🚀 ابدأ مجانًا الآن
         </button>
       </div>
-      <div class="flex justify-center" data-aos="fade-left">
-        <img src="/images/cta girl.png" alt="طفلة تتعلم" class="w-52">
+
+      <!-- الصورة اليمين - مخفية على الموبايل -->
+      <div class="justify-center hidden md:flex" data-aos="fade-left">
+        <img src="/images/cta girl.png" alt="طفلة تتعلم" class="w-52 lg:w-52 md:w-36">
       </div>
+
     </div>
   </div>
 </section>
 
 <!-- wave cta → footer -->
-<div style="background:var(--pink)">
+<div style="background:#38BDF8">
   <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
     <path d="M0,0 C400,60 800,0 1200,40 L1200,60 L0,60 Z" fill="#ffff"/>
   </svg>
@@ -591,14 +605,14 @@ onMounted(() => {
 @import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@400;600;700;800&display=swap');
 
 :root {
-  --sky: #38BDF8; --sky-light: #E0F4FF; --sky-mid: #7DD3F8; --sky-dark: #0E7490;
-  --pink: #EC4899; --pink-light: #FCE7F3; --pink-mid: #F9A8D4; --pink-dark: #9D174D;
+  --sky: #EC4899; --sky-light: #FCE7F3; --sky-mid: #F9A8D4; --sky-dark: #9D174D;
+  --pink: #38BDF8; --pink-light: #E0F4FF; --pink-mid: #7DD3F8; --pink-dark: #0E7490;
   --lime: #84CC16; --lime-light: #F0FDF4; --lime-mid: #BEF264; --lime-dark: #3F6212;
   --dark: #1C1C2E; --dark-mid: #2E2E42; --gray: #6B7280; --light: #F8FAFC; --white: #FFFFFF;
-  --grad-hero: linear-gradient(135deg, #E0F4FF 0%, #FCE7F3 50%, #F0FDF4 100%);
-  --grad-cta: linear-gradient(135deg, #38BDF8 0%, #EC4899 100%);
-  --grad-pricing: linear-gradient(135deg, #E0F4FF 0%, #FCE7F3 100%);
-  --grad-card-pro: linear-gradient(135deg,#FCE7F3 0%,#F9A8D4 35%,#EC4899 70%,#9D174D 100%);
+  --grad-hero: linear-gradient(135deg, #FCE7F3 0%, #E0F4FF 50%, #F0FDF4 100%);
+  --grad-cta: linear-gradient(135deg, #EC4899 0%, #38BDF8 100%);
+  --grad-pricing: linear-gradient(135deg, #FCE7F3 0%, #E0F4FF 100%);
+  --grad-card-pro: linear-gradient(135deg,#E0F4FF 0%,#7DD3F8 35%,#38BDF8 70%,#0E7490 100%);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -654,7 +668,7 @@ h1 { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.3; 
 .wave svg { display: block; width: 100%; height: 60px; }
 
 #features { padding: 5rem 2rem; background: var(--light); position: relative; }
-.section-tag { display: inline-flex; align-items: center; gap: .6rem; background: var(--white); padding: .5rem 1.6rem; border-radius: 2rem; font-weight: 800; font-size: 1.1rem; box-shadow: 0 2px 12px rgba(56,189,248,.15); margin-bottom: 1rem; color: var(--sky-dark); }
+.section-tag { display: inline-flex; align-items: center; gap: .6rem; background: var(--white); padding: .5rem 1.6rem; border-radius: 2rem; font-weight: 800; font-size: 1.1rem; box-shadow: 0 2px 12px rgba(236,72,153,.15); margin-bottom: 1rem; color: var(--sky-dark); }
 .section-center { text-align: center; margin-bottom: 3rem; }
 h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5rem; }
 .section-sub { font-size: 1.15rem; color: var(--gray); max-width: 480px; margin: 0 auto; }
@@ -694,8 +708,8 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5r
 .price-card.featured .price-features li i { color: var(--lime-mid); }
 .btn-price { width: 100%; padding: 1rem; border-radius: 16px; border: none; cursor: pointer; font-family: inherit; font-weight: 800; font-size: 1rem; transition: transform .15s; }
 .btn-price:hover { transform: scale(1.02); }
-.price-card:not(.featured) .btn-price { background: var(--sky); color: #fff; }
-.price-card.featured .btn-price { background: #fff; color: var(--sky-dark); }
+.price-card:not(.featured) .btn-price { background: var(--pink); color: #fff; }
+.price-card.featured .btn-price { background: #fff; color: var(--pink-dark); }
 .price-note { text-align: center; margin-top: 2rem; color: var(--gray); font-size: .9rem; }
 
 #parents { padding: 5rem 2rem; background: var(--light); }
@@ -746,7 +760,7 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5r
 #cta::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events: none; }
 #cta h2 { color: #fff; margin-bottom: .8rem; }
 #cta p { color: rgba(255,255,255,.85); font-size: 1.1rem; margin-bottom: 2rem; }
-.btn-cta { background: var(--white); color: var(--sky-dark); font-family: inherit; font-weight: 800; font-size: 1.2rem; padding: 1rem 3rem; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,.15); transition: transform .15s; }
+.btn-cta { background: var(--white); color: var(--pink-dark); font-family: inherit; font-weight: 800; font-size: 1.2rem; padding: 1rem 3rem; border-radius: 50px; border: none; cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,.15); transition: transform .15s; }
 .btn-cta:hover { transform: translateY(-2px); }
 .btn-cta:active { transform: translateY(2px); }
 

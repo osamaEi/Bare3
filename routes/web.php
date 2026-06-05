@@ -7,6 +7,13 @@ use App\Http\Controllers\Admin\AdminContentController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Student\StudentDashboardController;
+use App\Http\Controllers\Student\PathController as StudentPathController;
+use App\Http\Controllers\Student\LessonController as StudentLessonController;
+use App\Http\Controllers\Student\BadgeController as StudentBadgeController;
+use App\Http\Controllers\Student\CertificateController as StudentCertificateController;
+use App\Http\Controllers\Parent\ParentDashboardController;
+use App\Http\Controllers\Teacher\TeacherDashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -22,7 +29,7 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // ── Admin Routes ───────────────────────────────────────────────
-Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () {
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->group(function () {
 
     // Dashboard
     Route::get('/', [AdminDashboardController::class, 'index'])->name('dashboard');
@@ -84,6 +91,40 @@ Route::prefix('admin')->name('admin.')->middleware(['auth'])->group(function () 
     Route::get('/content',  [AdminContentController::class, 'index'])->name('content');
     Route::get('/payments', [AdminPaymentController::class, 'index'])->name('payments');
     Route::get('/blog',     [AdminBlogController::class,    'index'])->name('blog');
+});
+
+// ── Student Routes ─────────────────────────────────────────────
+Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])->group(function () {
+    Route::get('/', [StudentDashboardController::class, 'index'])->name('dashboard');
+
+    // Paths & enrollment
+    Route::get('/paths',                       [StudentPathController::class, 'index'])->name('paths');
+    Route::post('/paths/{path}/enroll',        [StudentPathController::class, 'enroll'])->name('paths.enroll');
+    Route::get('/journey/{enrollment}',        [StudentPathController::class, 'journey'])->name('journey');
+
+    // Lesson journey
+    Route::get('/lessons/{lesson}',            [StudentLessonController::class, 'show'])->name('lesson');
+    Route::post('/lessons/video-progress',     [StudentLessonController::class, 'videoProgress'])->name('lesson.video');
+    Route::post('/lessons/complete-scorm',     [StudentLessonController::class, 'completeScorm'])->name('lesson.scorm');
+    Route::post('/lessons/submit-quiz',        [StudentLessonController::class, 'submitQuiz'])->name('lesson.quiz');
+
+    // Achievements
+    Route::get('/badges',                      [StudentBadgeController::class, 'index'])->name('badges');
+    Route::get('/certificates',                [StudentCertificateController::class, 'index'])->name('certificates');
+    Route::get('/certificates/{certificate}/download', [StudentCertificateController::class, 'download'])->name('certificates.download');
+});
+
+// Public certificate verification (QR target)
+Route::get('/verify/{certNumber}', [StudentCertificateController::class, 'verify'])->name('certificates.verify');
+
+// ── Parent Routes ──────────────────────────────────────────────
+Route::prefix('parent')->name('parent.')->middleware(['auth', 'role:parent'])->group(function () {
+    Route::get('/', [ParentDashboardController::class, 'index'])->name('dashboard');
+});
+
+// ── Teacher Routes ─────────────────────────────────────────────
+Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:teacher'])->group(function () {
+    Route::get('/', [TeacherDashboardController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware('auth')->group(function () {
