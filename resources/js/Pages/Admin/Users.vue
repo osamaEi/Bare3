@@ -114,48 +114,146 @@
 
     <!-- MODAL -->
     <div v-if="modal.open" class="modal-overlay" @click.self="modal.open = false">
-      <div class="modal">
+      <div class="modal" :class="{ 'modal-wide': modal.type === 'view' }">
         <div class="modal-header">
-          <h3>{{ modal.title }}</h3>
+          <div class="modal-header-left">
+            <div v-if="modal.type === 'view'" class="modal-avatar" :style="{ background: avatarColor(modal.user?.name ?? '') }">
+              {{ (modal.user?.name ?? '?')[0] }}
+            </div>
+            <div>
+              <h3>{{ modal.title }}</h3>
+              <p v-if="modal.type === 'view'" class="modal-subtitle">{{ modal.user?.email }}</p>
+            </div>
+          </div>
           <button class="modal-close" @click="modal.open = false"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="modal-body">
-          <div class="form-grid">
-            <div class="form-group">
-              <label>الاسم الكامل</label>
-              <input type="text" v-model="form.name" class="form-input" placeholder="الاسم الرباعي" />
+
+          <!-- ══ VIEW MODE ══ -->
+          <template v-if="modal.type === 'view' && modal.user">
+
+            <!-- STATUS + ROLE BADGES -->
+            <div class="view-badges">
+              <span class="role-badge" :class="modal.user.role">{{ roleLabel(modal.user.role) }}</span>
+              <span class="status-pill" :class="modal.user.status">
+                <span class="status-dot" :class="modal.user.status"></span>
+                {{ statusLabel(modal.user.status) }}
+              </span>
+              <span class="join-pill"><i class="fa-regular fa-calendar"></i> انضم {{ modal.user.joined }}</span>
             </div>
-            <div class="form-group">
-              <label>البريد الإلكتروني</label>
-              <input type="email" v-model="form.email" class="form-input" placeholder="email@bare3.sa" />
+
+            <!-- ── STUDENT VIEW ── -->
+            <template v-if="modal.user.role === 'student'">
+              <div class="view-section">
+                <div class="view-section-title"><i class="fa-solid fa-circle-info"></i> معلومات الطالب</div>
+                <div class="info-grid">
+                  <div class="info-item"><span class="info-label">المرحلة</span><span class="info-val">{{ gradeLabel(modal.user.level) }}</span></div>
+                  <div class="info-item"><span class="info-label">البريد</span><span class="info-val">{{ modal.user.email }}</span></div>
+                </div>
+              </div>
+              <div class="view-section" v-if="modal.user.enrollments?.length">
+                <div class="view-section-title"><i class="fa-solid fa-road"></i> المسارات المسجّلة ({{ modal.user.enrollments.length }})</div>
+                <div class="enrollment-list">
+                  <div v-for="e in modal.user.enrollments" :key="e.id" class="enrollment-row">
+                    <div class="enroll-dot" :style="{ background: e.path?.color || '#38BDF8' }"></div>
+                    <span class="enroll-title">{{ e.path?.title ?? '—' }}</span>
+                    <div class="progress-wrap">
+                      <div class="progress-bar"><div class="progress-fill" :style="{ width: (e.progress_percent ?? 0) + '%', background: e.path?.color || '#38BDF8' }"></div></div>
+                      <span class="progress-pct">{{ e.progress_percent ?? 0 }}٪</span>
+                    </div>
+                    <span class="enroll-status" :class="e.status">{{ enrollStatusLabel(e.status) }}</span>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="view-empty"><i class="fa-solid fa-road"></i> لم يسجّل في أي مسار بعد</div>
+            </template>
+
+            <!-- ── PARENT VIEW ── -->
+            <template v-else-if="modal.user.role === 'parent'">
+              <div class="view-section">
+                <div class="view-section-title"><i class="fa-solid fa-circle-info"></i> معلومات ولي الأمر</div>
+                <div class="info-grid">
+                  <div class="info-item"><span class="info-label">البريد</span><span class="info-val">{{ modal.user.email }}</span></div>
+                  <div class="info-item"><span class="info-label">عدد الأبناء</span><span class="info-val">{{ modal.user.children?.length ?? 0 }}</span></div>
+                </div>
+              </div>
+              <div class="view-section" v-if="modal.user.children?.length">
+                <div class="view-section-title"><i class="fa-solid fa-children"></i> الأبناء ({{ modal.user.children.length }})</div>
+                <div class="children-list">
+                  <div v-for="c in modal.user.children" :key="c.id" class="child-row">
+                    <div class="child-avatar" :style="{ background: avatarColor(c.name) }">{{ c.name[0] }}</div>
+                    <div class="child-info">
+                      <span class="child-name">{{ c.name }}</span>
+                      <span class="child-level">{{ gradeLabel(c.level) }}</span>
+                    </div>
+                    <div class="child-stats">
+                      <span class="child-stat"><i class="fa-solid fa-road"></i> {{ c.enrollments?.length ?? 0 }} مسار</span>
+                      <span class="status-dot" :class="c.is_active ? 'active' : 'suspended'"></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-else class="view-empty"><i class="fa-solid fa-children"></i> لا يوجد أبناء مرتبطون</div>
+            </template>
+
+            <!-- ── TEACHER VIEW ── -->
+            <template v-else-if="modal.user.role === 'teacher'">
+              <div class="view-section">
+                <div class="view-section-title"><i class="fa-solid fa-circle-info"></i> معلومات المعلم</div>
+                <div class="info-grid">
+                  <div class="info-item"><span class="info-label">البريد</span><span class="info-val">{{ modal.user.email }}</span></div>
+                  <div class="info-item"><span class="info-label">تاريخ الانضمام</span><span class="info-val">{{ modal.user.joined }}</span></div>
+                  <div class="info-item"><span class="info-label">الحالة</span><span class="info-val">{{ statusLabel(modal.user.status) }}</span></div>
+                </div>
+              </div>
+              <div class="teacher-icon-box">
+                <i class="fa-solid fa-chalkboard-user"></i>
+                <p>حساب معلم — لا توجد بيانات إضافية حالياً</p>
+              </div>
+            </template>
+
+          </template>
+
+          <!-- ══ ADD / EDIT MODE ══ -->
+          <template v-else>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>الاسم الكامل</label>
+                <input type="text" v-model="form.name" class="form-input" placeholder="الاسم الرباعي" />
+              </div>
+              <div class="form-group">
+                <label>البريد الإلكتروني</label>
+                <input type="email" v-model="form.email" class="form-input" placeholder="email@bare3.sa" />
+              </div>
+              <div class="form-group">
+                <label>نوع الحساب</label>
+                <select v-model="form.role" class="form-input">
+                  <option value="student">طالب</option>
+                  <option value="parent">ولي أمر</option>
+                  <option value="teacher">معلم</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>كلمة المرور {{ modal.type === 'edit' ? '(اتركها فارغة للإبقاء)' : '' }}</label>
+                <input type="password" v-model="form.password" class="form-input" placeholder="••••••••" />
+              </div>
+              <div class="form-group" v-if="form.role === 'student'">
+                <label>المرحلة الدراسية</label>
+                <select v-model="form.level" class="form-input">
+                  <option value="primary">ابتدائي</option>
+                  <option value="middle">متوسط</option>
+                  <option value="high">ثانوي</option>
+                </select>
+              </div>
             </div>
-            <div class="form-group">
-              <label>نوع الحساب</label>
-              <select v-model="form.role" class="form-input">
-                <option value="student">طالب</option>
-                <option value="parent">ولي أمر</option>
-                <option value="teacher">معلم</option>
-              </select>
+            <div v-if="Object.keys(form.errors).length" class="form-errors">
+              <p v-for="(msg, key) in form.errors" :key="key">{{ msg }}</p>
             </div>
-            <div class="form-group" v-if="modal.type !== 'view'">
-              <label>كلمة المرور</label>
-              <input type="password" v-model="form.password" class="form-input" placeholder="••••••••" />
-            </div>
-            <div class="form-group" v-if="form.role === 'student'">
-              <label>المرحلة الدراسية</label>
-              <select v-model="form.level" class="form-input">
-                <option value="primary">ابتدائي</option>
-                <option value="middle">متوسط</option>
-                <option value="high">ثانوي</option>
-              </select>
-            </div>
-          </div>
-          <div v-if="Object.keys(form.errors).length" class="form-errors">
-            <p v-for="(msg, key) in form.errors" :key="key">{{ msg }}</p>
-          </div>
+          </template>
+
         </div>
         <div class="modal-footer">
-          <button class="btn-cancel" @click="modal.open = false">إلغاء</button>
+          <button class="btn-cancel" @click="modal.open = false">{{ modal.type === 'view' ? 'إغلاق' : 'إلغاء' }}</button>
           <button class="btn-save" v-if="modal.type !== 'view'" @click="saveUser">
             <i class="fa-solid fa-floppy-disk"></i> حفظ
           </button>
@@ -197,6 +295,8 @@ const mapUser = (u) => ({
   path: u.path ?? null,
   joined: u.created_at ? new Date(u.created_at).toLocaleDateString('ar-EG') : '—',
   status: u.is_active ? 'active' : 'suspended',
+  enrollments: u.enrollments ?? [],
+  children: (u.children ?? []).map(c => ({ ...c, enrollments: c.enrollments ?? [] })),
 })
 
 const paginatorFor = (key) => (key === 'students' ? props.students : key === 'parents' ? props.parents : props.teachers)
@@ -236,18 +336,22 @@ const goPage = (url) => { if (url) router.get(url, {}, { preserveState: true, pr
 
 const roleLabel  = (r) => ({ student: 'طالب', parent: 'ولي أمر', teacher: 'معلم' }[r] ?? r)
 const statusLabel = (s) => ({ active: 'نشط', suspended: 'موقوف', pending: 'معلّق' }[s] ?? s)
+const gradeLabel = (g) => ({ primary: 'ابتدائي', middle: 'متوسط', high: 'ثانوي', all: 'الكل' }[g] ?? '—')
+const enrollStatusLabel = (s) => ({ enrolled: 'مسجّل', in_progress: 'جاري', completed: 'مكتمل' }[s] ?? s)
 const avatarColor = (name) => {
   const colors = ['#38BDF8','#EC4899','#84CC16','#F59E0B','#8B5CF6']
   return colors[name.charCodeAt(0) % colors.length]
 }
 
 const openModal = (type, user = null) => {
-  modal.value = { open: true, type, title: type === 'add' ? 'إضافة مستخدم' : type === 'edit' ? 'تعديل المستخدم' : 'تفاصيل المستخدم' }
+  const titles = { add: 'إضافة مستخدم', edit: 'تعديل المستخدم', view: { student: 'ملف الطالب', parent: 'ملف ولي الأمر', teacher: 'ملف المعلم' } }
+  const title = type === 'view' ? (titles.view[user?.role] ?? 'تفاصيل المستخدم') : titles[type]
+  modal.value = { open: true, type, title, user: user ?? null }
   form.clearErrors()
-  if (user) {
+  if (user && type !== 'view') {
     form.id = user.id; form.name = user.name; form.email = user.email
     form.role = user.role; form.password = ''; form.level = user.level ?? 'primary'
-  } else {
+  } else if (!user) {
     form.reset(); form.id = null
   }
 }
@@ -358,11 +462,16 @@ const toggleSelect = (id) => {
 .page-btn:disabled { opacity: .4; cursor: not-allowed; }
 
 /* MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; display: flex; align-items: center; justify-content: center; }
-.modal { background: white; border-radius: 20px; width: 500px; max-width: 95vw; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
-.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid #F1F5F9; }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.modal { background: white; border-radius: 20px; width: 500px; max-width: 95vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,.15); }
+.modal-wide { width: 620px; }
+.modal-header { display: flex; align-items: center; justify-content: space-between; padding: 1.2rem 1.5rem; border-bottom: 1px solid #F1F5F9; position: sticky; top: 0; background: white; z-index: 1; }
+.modal-header-left { display: flex; align-items: center; gap: .8rem; }
+.modal-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 1.1rem; flex-shrink: 0; }
 .modal-header h3 { font-size: 1.1rem; font-weight: 800; color: #1E293B; }
-.modal-close { background: none; border: none; cursor: pointer; font-size: 1.1rem; color: #94A3B8; padding: .3rem; border-radius: 8px; }
+.modal-subtitle { font-size: .8rem; color: #94A3B8; margin-top: .1rem; }
+.modal-close { background: #F1F5F9; border: none; cursor: pointer; font-size: 1rem; color: #64748B; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background .2s; flex-shrink: 0; }
+.modal-close:hover { background: #FEE2E2; color: #DC2626; }
 .modal-body { padding: 1.5rem; }
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .form-group { display: flex; flex-direction: column; gap: .4rem; }
@@ -371,9 +480,53 @@ const toggleSelect = (id) => {
 .form-input:focus { outline: none; border-color: #38BDF8; }
 .form-errors { margin-top: 1rem; background: #FEF2F2; border: 1.5px solid #FECACA; border-radius: 10px; padding: .7rem 1rem; }
 .form-errors p { color: #DC2626; font-size: .82rem; font-weight: 700; margin: .1rem 0; }
-.modal-footer { display: flex; gap: .7rem; justify-content: flex-end; padding: 1rem 1.5rem; border-top: 1px solid #F1F5F9; }
+.modal-footer { display: flex; gap: .7rem; justify-content: flex-end; padding: 1rem 1.5rem; border-top: 1px solid #F1F5F9; position: sticky; bottom: 0; background: white; }
 .btn-cancel { background: #F1F5F9; border: none; color: #475569; font-family: inherit; font-weight: 700; font-size: .9rem; padding: .65rem 1.4rem; border-radius: 10px; cursor: pointer; }
 .btn-save { background: #38BDF8; border: none; color: white; font-family: inherit; font-weight: 700; font-size: .9rem; padding: .65rem 1.4rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: .5rem; }
+
+/* VIEW MODAL */
+.view-badges { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; margin-bottom: 1.2rem; }
+.status-pill { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 700; padding: .25rem .75rem; border-radius: 50px; background: #F1F5F9; color: #475569; }
+.status-pill.active { background: #F0FDF4; color: #15803D; }
+.status-pill.suspended { background: #FEF2F2; color: #DC2626; }
+.join-pill { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; font-weight: 600; color: #94A3B8; background: #F8FAFC; padding: .25rem .75rem; border-radius: 50px; }
+.view-section { margin-bottom: 1.4rem; }
+.view-section-title { font-size: .8rem; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: .05em; margin-bottom: .8rem; display: flex; align-items: center; gap: .4rem; }
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem; }
+.info-item { background: #F8FAFC; border-radius: 10px; padding: .7rem 1rem; }
+.info-label { display: block; font-size: .75rem; font-weight: 700; color: #94A3B8; margin-bottom: .2rem; }
+.info-val { font-size: .9rem; font-weight: 700; color: #1E293B; }
+.view-empty { background: #F8FAFC; border-radius: 12px; padding: 2rem; text-align: center; color: #CBD5E1; font-weight: 700; font-size: .88rem; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.view-empty i { font-size: 1.6rem; }
+
+/* Enrollments */
+.enrollment-list { display: flex; flex-direction: column; gap: .5rem; }
+.enrollment-row { display: flex; align-items: center; gap: .7rem; background: #F8FAFC; border-radius: 10px; padding: .65rem .9rem; }
+.enroll-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.enroll-title { font-size: .88rem; font-weight: 700; color: #1E293B; flex: 1; }
+.progress-wrap { display: flex; align-items: center; gap: .5rem; }
+.progress-bar { width: 70px; height: 6px; background: #E2E8F0; border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 99px; transition: width .3s; }
+.progress-pct { font-size: .75rem; font-weight: 700; color: #64748B; min-width: 28px; text-align: left; }
+.enroll-status { font-size: .72rem; font-weight: 700; padding: .15rem .55rem; border-radius: 50px; }
+.enroll-status.enrolled    { background: #E0F4FF; color: #0E7490; }
+.enroll-status.in_progress { background: #FFF7ED; color: #EA580C; }
+.enroll-status.completed   { background: #F0FDF4; color: #15803D; }
+
+/* Children */
+.children-list { display: flex; flex-direction: column; gap: .5rem; }
+.child-row { display: flex; align-items: center; gap: .8rem; background: #F8FAFC; border-radius: 10px; padding: .7rem 1rem; }
+.child-avatar { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: .85rem; flex-shrink: 0; }
+.child-info { flex: 1; }
+.child-name { display: block; font-size: .9rem; font-weight: 700; color: #1E293B; }
+.child-level { font-size: .75rem; color: #94A3B8; font-weight: 600; }
+.child-stats { display: flex; align-items: center; gap: .6rem; }
+.child-stat { font-size: .78rem; font-weight: 700; color: #64748B; display: flex; align-items: center; gap: .3rem; }
+
+/* Teacher */
+.teacher-icon-box { background: #F0FDF4; border-radius: 14px; padding: 2rem; text-align: center; color: #15803D; }
+.teacher-icon-box i { font-size: 2.5rem; margin-bottom: .7rem; display: block; }
+.teacher-icon-box p { font-size: .88rem; font-weight: 700; color: #64748B; }
 
 @media (max-width: 768px) {
   .user-stats { grid-template-columns: repeat(2, 1fr); }

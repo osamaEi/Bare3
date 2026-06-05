@@ -119,18 +119,21 @@ class ContentRepository implements ContentRepositoryInterface
 
     public function addQuestion(int $quizId, array $data)
     {
-        $options = $data['options'] ?? [];
-        $correct = $data['correct'] ?? 0;
+        $rawOptions = $data['options'] ?? [];
+        $correct    = $data['correct'] ?? 0;
         unset($data['options'], $data['correct']);
+
+        // Re-index after filtering empties, adjust correct pointer accordingly
+        $options = array_values(array_filter($rawOptions, fn ($t) => isset($t) && $t !== ''));
 
         $question = QuizQuestion::create(array_merge($data, ['quiz_id' => $quizId]));
 
         foreach ($options as $i => $text) {
             QuizOption::create([
                 'question_id' => $question->id,
-                'text' => $text,
-                'is_correct' => $i === $correct,
-                'sort_order' => $i,
+                'text'        => $text,
+                'is_correct'  => $i === (int) $correct,
+                'sort_order'  => $i,
             ]);
         }
 

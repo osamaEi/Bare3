@@ -18,6 +18,7 @@ class UserRepository implements UserRepositoryInterface
             ->when($filters['status'] ?? null, fn ($q, $s) =>
                 $q->where('is_active', $s === 'active')
             )
+            ->with($role === 'student' ? ['enrollments.path', 'children'] : ($role === 'parent' ? ['children.enrollments'] : []))
             ->latest()
             ->paginate($filters['per_page'] ?? 15);
     }
