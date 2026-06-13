@@ -124,12 +124,12 @@ class StudentRepository implements StudentRepositoryInterface
 
             if (! $p) {
                 $p = LessonProgress::create([
-                    'student_id'    => $student->id,
-                    'lesson_id'     => $lesson->id,
+                    'student_id' => $student->id,
+                    'lesson_id' => $lesson->id,
                     'enrollment_id' => $enrollment->id,
-                    'status'        => $prevCompleted ? 'in_progress' : 'locked',
-                    'unlocked_at'   => $prevCompleted ? now() : null,
-                    'updated_at'    => now(),
+                    'status' => $prevCompleted ? 'in_progress' : 'locked',
+                    'unlocked_at' => $prevCompleted ? now() : null,
+                    'updated_at' => now(),
                 ]);
                 $progress->put($lesson->id, $p);
             } elseif ($p->status === 'locked' && $prevCompleted) {
@@ -197,6 +197,11 @@ class StudentRepository implements StudentRepositoryInterface
             'scorm' => $lesson->scormPackage ? [
                 'id' => $lesson->scormPackage->id,
                 'title' => $lesson->scormPackage->title,
+                'version' => $lesson->scormPackage->version,
+                // رابط صفحة بداية الحزمة (بعد فكّ الضغط)
+                'launch_url' => $lesson->scormPackage->package_path
+                    ? asset('storage/'.trim($lesson->scormPackage->package_path, '/').'/'.ltrim($lesson->scormPackage->entry_point ?? 'index.html', '/'))
+                    : null,
             ] : null,
             'quiz' => $lesson->quiz ? [
                 'id' => $lesson->quiz->id,
@@ -235,20 +240,37 @@ class StudentRepository implements StudentRepositoryInterface
         return ['video_completed' => $completed, 'watch_percent' => $vp->watch_percent];
     }
 
-    public function completeScorm(User $student, int $scormId): array
+    /**
+     * Persist a SCORM "commit" coming from the running package.
+     * The package reports its lesson_status/score via the JS API bridge,
+     * which POSTs here. We store it and mark the lesson's SCORM part done
+     * once the status is completed/passed.
+     */
+    public function completeScorm(User $student, int $scormId, array $payload = []): array
     {
         $scorm = ScormPackage::findOrFail($scormId);
 
+        $status = $payload['status'] ?? 'completed';
+        $isDone = in_array($status, ['completed', 'passed'], true);
+
         $tracking = ScormTracking::firstOrNew(['student_id' => $student->id, 'scorm_id' => $scorm->id]);
         $tracking->lesson_id = $scorm->lesson_id;
-        $tracking->status = 'completed';
-        $tracking->completed_at = now();
+        $tracking->status = $status;
+        $tracking->score = $payload['score'] ?? $tracking->score;
+        $tracking->session_time = $payload['session_time'] ?? $tracking->session_time;
+        $tracking->raw_data = $payload['raw_data'] ?? $tracking->raw_data;
+        if ($isDone) {
+            $tracking->completed_at = now();
+        }
         $tracking->updated_at = now();
         $tracking->save();
 
-        $this->markLessonFlag($student, $scorm->lesson_id, 'scorm_completed');
+        $completion = null;
+        if ($isDone) {
+            $completion = $this->markLessonFlag($student, $scorm->lesson_id, 'scorm_completed');
+        }
 
-        return ['scorm_completed' => true];
+        return ['scorm_completed' => $isDone, 'status' => $status, 'completion' => $completion];
     }
 
     public function submitQuiz(User $student, int $quizId, array $answers): array
@@ -329,9 +351,13 @@ class StudentRepository implements StudentRepositoryInterface
         $progress->updated_at = now();
         $progress->save();
 
-        if (! ($progress->video_completed && $progress->scorm_completed && $progress->quiz_passed)) {
-            $progress->save();
+        // A lesson only requires the components it actually has.
+        $lesson = Lesson::with(['video', 'scormPackage', 'quiz'])->findOrFail($lessonId);
+        $videoOk = ! $lesson->video || $progress->video_completed;
+        $scormOk = ! $lesson->scormPackage || $progress->scorm_completed;
+        $quizOk = ! $lesson->quiz || $progress->quiz_passed;
 
+        if (! ($videoOk && $scormOk && $quizOk)) {
             return null;
         }
 
@@ -340,7 +366,6 @@ class StudentRepository implements StudentRepositoryInterface
         $progress->completed_at = now();
         $progress->save();
 
-        $lesson = Lesson::findOrFail($lessonId);
         $enrollment = $progress->enrollment_id
             ? Enrollment::find($progress->enrollment_id)
             : Enrollment::where('student_id', $student->id)->where('path_id', $lesson->path_id)->first();

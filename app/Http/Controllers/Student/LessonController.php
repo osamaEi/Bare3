@@ -48,10 +48,21 @@ class LessonController extends Controller
 
     public function completeScorm(Request $request): JsonResponse
     {
-        $data = $request->validate(['scorm_id' => 'required|exists:scorm_packages,id']);
+        $data = $request->validate([
+            'scorm_id' => 'required|exists:scorm_packages,id',
+            'status' => 'nullable|string',
+            'score' => 'nullable|numeric',
+            'session_time' => 'nullable|string',
+            'raw_data' => 'nullable|array',
+        ]);
 
         return response()->json(
-            $this->students->completeScorm($request->user(), $data['scorm_id'])
+            $this->students->completeScorm($request->user(), $data['scorm_id'], [
+                'status' => $data['status'] ?? 'completed',
+                'score' => $data['score'] ?? null,
+                'session_time' => $data['session_time'] ?? null,
+                'raw_data' => $data['raw_data'] ?? null,
+            ])
         );
     }
 

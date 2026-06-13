@@ -8,10 +8,12 @@ use App\Repositories\Contracts\BlogRepositoryInterface;
 use App\Repositories\Contracts\ContentRepositoryInterface;
 use App\Repositories\Contracts\DashboardRepositoryInterface;
 use App\Repositories\Contracts\PaymentRepositoryInterface;
+use App\Repositories\Contracts\ParentRepositoryInterface;
 use App\Repositories\Contracts\StudentRepositoryInterface;
 use App\Repositories\Contracts\UserRepositoryInterface;
 use App\Repositories\DashboardRepository;
 use App\Repositories\PaymentRepository;
+use App\Repositories\ParentRepository;
 use App\Repositories\StudentRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Support\ServiceProvider;
@@ -26,5 +28,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(ContentRepositoryInterface::class,   ContentRepository::class);
         $this->app->bind(BlogRepositoryInterface::class,      BlogRepository::class);
         $this->app->bind(StudentRepositoryInterface::class,   StudentRepository::class);
+        $this->app->bind(ParentRepositoryInterface::class,    ParentRepository::class);
     }
 }

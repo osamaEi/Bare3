@@ -13,6 +13,11 @@ use App\Http\Controllers\Student\LessonController as StudentLessonController;
 use App\Http\Controllers\Student\BadgeController as StudentBadgeController;
 use App\Http\Controllers\Student\CertificateController as StudentCertificateController;
 use App\Http\Controllers\Parent\ParentDashboardController;
+use App\Http\Controllers\Parent\ChildController as ParentChildController;
+use App\Http\Controllers\Parent\BillingController as ParentBillingController;
+use App\Http\Controllers\Parent\TicketController as ParentTicketController;
+use App\Http\Controllers\Admin\AdminTicketController;
+use App\Http\Controllers\Admin\AdminStudentProgressController;
 use App\Http\Controllers\Teacher\TeacherDashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -89,6 +94,15 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/settings',  [AdminSettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
 
+    // Student Progress
+    Route::get('/students/progress', [AdminStudentProgressController::class, 'index'])->name('students.progress');
+    Route::get('/students/{student}/progress', [AdminStudentProgressController::class, 'show'])->name('students.progress.show');
+
+    // Tickets
+    Route::get('/tickets', [AdminTicketController::class, 'index'])->name('tickets');
+    Route::post('/tickets/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('tickets.reply');
+    Route::patch('/tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close');
+
     // Legacy aliases (keep sidebar links working)
     Route::get('/users',    [AdminUserController::class,    'index'])->name('users');
     Route::get('/paths',    [AdminContentController::class, 'index'])->name('paths');
@@ -124,6 +138,15 @@ Route::get('/verify/{certNumber}', [StudentCertificateController::class, 'verify
 // ── Parent Routes ──────────────────────────────────────────────
 Route::prefix('parent')->name('parent.')->middleware(['auth', 'role:parent'])->group(function () {
     Route::get('/', [ParentDashboardController::class, 'index'])->name('dashboard');
+    Route::post('/children', [ParentChildController::class, 'store'])->name('children.store');
+    Route::get('/children/{child}/report', [ParentChildController::class, 'report'])->name('children.report');
+    Route::get('/billing', [ParentBillingController::class, 'index'])->name('billing');
+
+    // Tickets
+    Route::get('/tickets', [ParentTicketController::class, 'index'])->name('tickets');
+    Route::post('/tickets', [ParentTicketController::class, 'store'])->name('tickets.store');
+    Route::post('/tickets/{ticket}/reply', [ParentTicketController::class, 'reply'])->name('tickets.reply');
+    Route::post('/tickets/{ticket}/review', [ParentTicketController::class, 'review'])->name('tickets.review');
 });
 
 // ── Teacher Routes ─────────────────────────────────────────────

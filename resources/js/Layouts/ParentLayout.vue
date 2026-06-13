@@ -12,9 +12,9 @@
         <Link :href="route('parent.dashboard')" class="nav-item" :class="{ active: current === 'parent.dashboard' }">
           <i class="fa-solid fa-gauge-high"></i><span v-if="!collapsed">لوحة التحكم</span>
         </Link>
-        <a href="#" class="nav-item"><i class="fa-solid fa-children"></i><span v-if="!collapsed">أبنائي</span></a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-chart-line"></i><span v-if="!collapsed">التقارير</span></a>
-        <a href="#" class="nav-item"><i class="fa-solid fa-receipt"></i><span v-if="!collapsed">الفواتير والاشتراكات</span></a>
+        <Link :href="route('parent.dashboard')" class="nav-item" :class="{ active: current === 'parent.dashboard' }"><i class="fa-solid fa-children"></i><span v-if="!collapsed">أبنائي</span></Link>
+        <Link :href="route('parent.billing')" class="nav-item" :class="{ active: current === 'parent.billing' }"><i class="fa-solid fa-receipt"></i><span v-if="!collapsed">الفواتير والاشتراكات</span></Link>
+        <Link :href="route('parent.tickets')" class="nav-item" :class="{ active: current === 'parent.tickets' }"><i class="fa-solid fa-ticket"></i><span v-if="!collapsed">تذاكر الدعم</span></Link>
       </nav>
       <div class="sidebar-footer" v-if="!collapsed">
         <div class="pu-user">

@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class ParentDashboardController extends Controller
+class BillingController extends Controller
 {
     public function __construct(
         private readonly ParentRepositoryInterface $parents,
@@ -16,11 +16,8 @@ class ParentDashboardController extends Controller
 
     public function index(Request $request): Response
     {
-        $parent = $request->user();
-
-        return Inertia::render('Parent/Dashboard', [
-            'stats' => $this->parents->dashboard($parent),
-            'children' => $this->parents->children($parent),
+        return Inertia::render('Parent/Billing', [
+            'billing' => $this->parents->billing($request->user()),
         ]);
     }
 }

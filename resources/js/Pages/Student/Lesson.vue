@@ -7,18 +7,18 @@
 
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab" :class="{ active: tab === 'video', done: prog.video_completed }" @click="tab = 'video'">
+        <button v-if="data.video" class="tab" :class="{ active: tab === 'video', done: prog.video_completed }" @click="tab = 'video'">
           <span class="mi">play_circle</span> الفيديو
           <span v-if="prog.video_completed" class="mi check">check_circle</span>
         </button>
-        <button class="tab" :class="{ active: tab === 'scorm', done: prog.scorm_completed }"
-                :disabled="!prog.video_completed" @click="prog.video_completed && (tab = 'scorm')">
-          <span class="mi">{{ prog.video_completed ? 'extension' : 'lock' }}</span> التفاعل
+        <button v-if="data.scorm" class="tab" :class="{ active: tab === 'scorm', done: prog.scorm_completed }"
+                :disabled="!videoDone" @click="videoDone && (tab = 'scorm')">
+          <span class="mi">{{ videoDone ? 'extension' : 'lock' }}</span> التفاعل
           <span v-if="prog.scorm_completed" class="mi check">check_circle</span>
         </button>
-        <button class="tab" :class="{ active: tab === 'quiz', done: prog.quiz_passed }"
-                :disabled="!prog.scorm_completed" @click="prog.scorm_completed && (tab = 'quiz')">
-          <span class="mi">{{ prog.scorm_completed ? 'quiz' : 'lock' }}</span> الاختبار
+        <button v-if="data.quiz" class="tab" :class="{ active: tab === 'quiz', done: prog.quiz_passed }"
+                :disabled="!quizUnlocked" @click="quizUnlocked && (tab = 'quiz')">
+          <span class="mi">{{ quizUnlocked ? 'quiz' : 'lock' }}</span> الاختبار
           <span v-if="prog.quiz_passed" class="mi check">check_circle</span>
         </button>
       </div>
@@ -32,25 +32,38 @@
               <span class="mi">visibility</span>
               شاهدت {{ watchPercent }}٪ — مطلوب {{ data.video.watch_threshold }}٪ لإكمال الفيديو
             </div>
-            <button class="btn next" :disabled="!prog.video_completed" @click="tab = 'scorm'">
+            <button class="btn next" :disabled="!prog.video_completed" @click="goAfterVideo">
               التالي <span class="mi">arrow_back</span>
             </button>
           </div>
         </div>
-        <div v-else class="empty">لا يوجد فيديو لهذا الدرس <button class="btn next" @click="tab='scorm'">تخطّي</button></div>
+        <div v-else class="empty">لا يوجد فيديو لهذا الدرس <button class="btn next" @click="goAfterVideo">متابعة</button></div>
       </div>
 
-      <!-- SCORM (stub for Phase 1; real runtime in Phase 5) -->
+      <!-- SCORM (real runtime via window.API / API_1484_11) -->
       <div v-show="tab === 'scorm'" class="panel">
         <div class="scorm-box">
-          <span class="mi big">extension</span>
           <h3>{{ data.scorm ? data.scorm.title : 'النشاط التفاعلي' }}</h3>
-          <p>افتح النشاط التفاعلي وأكمله للمتابعة للاختبار</p>
-          <button v-if="!prog.scorm_completed" class="btn start" :disabled="scormBusy" @click="finishScorm">
-            <span class="mi">touch_app</span> {{ scormBusy ? '...' : 'بدء النشاط وإكماله' }}
-          </button>
-          <div v-else class="done-note"><span class="mi">check_circle</span> أكملت النشاط!</div>
-          <button v-if="prog.scorm_completed" class="btn next" @click="tab = 'quiz'">التالي <span class="mi">arrow_back</span></button>
+
+          <!-- المشغّل الحقيقي: يفتح الحزمة ويلتقط نتائجها تلقائياً -->
+          <ScormPlayer
+            v-if="data.scorm && data.scorm.launch_url"
+            :scorm-id="data.scorm.id"
+            :launch-url="data.scorm.launch_url"
+            :version="data.scorm.version"
+            @completed="onScormCompleted"
+          />
+
+          <!-- احتياطي: حزمة قديمة بدون رابط مفكوك -->
+          <template v-else>
+            <p>هذا النشاط غير متاح للتشغيل المباشر.</p>
+            <button v-if="!prog.scorm_completed" class="btn start" :disabled="scormBusy" @click="finishScorm">
+              <span class="mi">touch_app</span> {{ scormBusy ? '...' : 'تعليمه كمكتمل' }}
+            </button>
+          </template>
+
+          <div v-if="prog.scorm_completed" class="done-note"><span class="mi">check_circle</span> أكملت النشاط!</div>
+          <button v-if="prog.scorm_completed && data.quiz" class="btn next" @click="tab = 'quiz'">التالي <span class="mi">arrow_back</span></button>
         </div>
       </div>
 
@@ -94,12 +107,30 @@ import confetti from 'canvas-confetti'
 import videojs from 'video.js'
 import 'video.js/dist/video-js.css'
 import StudentLayout from '@/Layouts/StudentLayout.vue'
+import ScormPlayer from '@/Components/ScormPlayer.vue'
 
 const props = defineProps({ data: { type: Object, required: true } })
 
-const tab = ref('video')
 const prog = reactive({ ...props.data.progress })
 const watchPercent = ref(props.data.video?.watch_percent ?? 0)
+
+// A missing component counts as already satisfied
+const videoDone = computed(() => !props.data.video || prog.video_completed)
+const scormDone = computed(() => !props.data.scorm || prog.scorm_completed)
+const quizUnlocked = computed(() => videoDone.value && scormDone.value)
+
+// Start on the first incomplete, available tab
+const initialTab = () => {
+  if (props.data.video && !prog.video_completed) return 'video'
+  if (props.data.scorm && !prog.scorm_completed) return 'scorm'
+  if (props.data.quiz) return 'quiz'
+  if (props.data.scorm) return 'scorm'
+  return 'video'
+}
+const tab = ref(initialTab())
+
+// After the video, go to SCORM if it exists, else straight to the quiz
+const goAfterVideo = () => { tab.value = props.data.scorm ? 'scorm' : (props.data.quiz ? 'quiz' : 'video') }
 
 const videoEl = ref(null)
 let player = null
@@ -137,7 +168,12 @@ function onTimeUpdate() {
   }
 }
 
-// SCORM stub
+// SCORM — real player reports completion via this handler
+function onScormCompleted() {
+  prog.scorm_completed = true
+}
+
+// Fallback for legacy packages without an unpacked launch URL
 const scormBusy = ref(false)
 function finishScorm() {
   if (!props.data.scorm) { prog.scorm_completed = true; tab.value = 'quiz'; return }

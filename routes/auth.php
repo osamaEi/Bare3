@@ -20,6 +20,10 @@ Route::middleware('guest')->group(function () {
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
         ->name('login');
 
+    Route::get('login/student', fn () => \Inertia\Inertia::render('Auth/LoginStudent'))->name('login.student');
+    Route::get('login/teacher', fn () => \Inertia\Inertia::render('Auth/LoginTeacher'))->name('login.teacher');
+    Route::get('login/admin',   fn () => \Inertia\Inertia::render('Auth/LoginAdmin'))->name('login.admin');
+
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])

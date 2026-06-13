@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\ContentRepositoryInterface;
+use App\Services\ScormService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -142,24 +144,27 @@ class AdminContentController extends Controller
     }
 
     // ── SCORM ──────────────────────────────────────────────
-    public function storeScorm(Request $request): RedirectResponse
+    public function storeScorm(Request $request, ScormService $scorm): RedirectResponse
     {
         $data = $request->validate([
             'lesson_id' => 'required|exists:lessons,id',
             'title' => 'required|string|max:255',
             'version' => 'required|in:1.2,2004',
             'entry_point' => 'nullable|string',
+            'scorm_file' => 'required|file|mimes:zip|max:102400',
         ]);
 
-        if ($request->hasFile('scorm_file')) {
-            $file = $request->file('scorm_file');
-            $data['package_path'] = $file->store('scorm', 'public');
-            $data['file_size_kb'] = (int) ($file->getSize() / 1024);
-        }
+        // فكّ ضغط الحزمة وقراءة صفحة البداية تلقائياً
+        $unpacked = $scorm->unpack($request->file('scorm_file'));
+        $data['package_path'] = $unpacked['package_path'];
+        $data['file_size_kb'] = $unpacked['file_size_kb'];
+        // إن لم يحدّد الأدمن نقطة الدخول يدوياً، نستخدم ما قرأناه من الفهرس
+        $data['entry_point'] = $data['entry_point'] ?: $unpacked['entry_point'];
+        unset($data['scorm_file']);
 
         $this->content->createScorm($data);
 
-        return back()->with('success', 'تم رفع ملف SCORM');
+        return back()->with('success', 'تم رفع ملف SCORM وفكّ ضغطه');
     }
 
     public function destroyScorm(int $id): RedirectResponse
@@ -192,16 +197,16 @@ class AdminContentController extends Controller
     public function updateQuiz(Request $request, int $id): RedirectResponse
     {
         $data = $request->validate([
-            'title'                    => 'required|string|max:255',
-            'pass_mark'                => 'integer|min:50|max:100',
-            'max_attempts'             => 'integer|min:1|max:10',
-            'questions'                => 'nullable|array',
-            'questions.*.text'         => 'required_with:questions|string',
-            'questions.*.options'      => 'required_with:questions|array|min:2',
-            'questions.*.correct'      => 'required_with:questions|integer|min:0',
+            'title' => 'required|string|max:255',
+            'pass_mark' => 'integer|min:50|max:100',
+            'max_attempts' => 'integer|min:1|max:10',
+            'questions' => 'nullable|array',
+            'questions.*.text' => 'required_with:questions|string',
+            'questions.*.options' => 'required_with:questions|array|min:2',
+            'questions.*.correct' => 'required_with:questions|integer|min:0',
         ]);
 
-        $this->content->updateQuiz($id, \Illuminate\Support\Arr::only($data, ['title', 'pass_mark', 'max_attempts']));
+        $this->content->updateQuiz($id, Arr::only($data, ['title', 'pass_mark', 'max_attempts']));
 
         if ($request->has('questions')) {
             $this->content->replaceQuestions($id, $data['questions'] ?? []);

@@ -23,7 +23,7 @@ interface StudentRepositoryInterface
 
     public function recordVideoProgress(User $student, int $videoId, int $watchPercent, int $position): array;
 
-    public function completeScorm(User $student, int $scormId): array;
+    public function completeScorm(User $student, int $scormId, array $payload = []): array;
 
     public function submitQuiz(User $student, int $quizId, array $answers): array;
 }

@@ -13,7 +13,25 @@
       <li><a href="#reviews">الآراء</a></li>
       <li><a href="#faq">الأسئلة</a></li>
     </ul>
-    <button class="btn-nav">🧩 ابدأ رحلتك</button>
+    <div class="login-dd" ref="loginDd">
+      <button class="btn-nav" @click="loginOpen = !loginOpen">
+        🧩 تسجيل الدخول <i class="fa-solid fa-chevron-down" :class="{ open: loginOpen }"></i>
+      </button>
+      <div class="login-menu" v-if="loginOpen">
+        <a :href="route('login.student')" class="login-item student">
+          <span class="li-ic"><i class="fa-solid fa-child-reaching"></i></span>
+          <span><span class="li-title">طالب</span><span class="li-sub">ابدأ مغامرة التعلّم</span></span>
+        </a>
+        <a :href="route('login.teacher')" class="login-item teacher">
+          <span class="li-ic"><i class="fa-solid fa-chalkboard-user"></i></span>
+          <span><span class="li-title">معلم</span><span class="li-sub">أدِر فصولك وطلابك</span></span>
+        </a>
+        <a :href="route('login.admin')" class="login-item admin">
+          <span class="li-ic"><i class="fa-solid fa-shield-halved"></i></span>
+          <span><span class="li-title">الإدارة</span><span class="li-sub">لوحة التحكم</span></span>
+        </a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -517,9 +535,17 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 
 defineProps({ canLogin: Boolean, canRegister: Boolean })
+
+const loginOpen = ref(false)
+const loginDd = ref(null)
+function closeLogin(e) {
+  if (loginDd.value && !loginDd.value.contains(e.target)) loginOpen.value = false
+}
+onMounted(() => document.addEventListener('click', closeLogin))
+onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
 
 function toggleFaq(btn) {
   const item = btn.closest('.faq-item')
@@ -632,6 +658,24 @@ nav ul a:hover { color: var(--sky-dark); }
 .btn-nav { background: var(--pink); color: #fff; font-family: inherit; font-weight: 800; font-size: 1rem; padding: .7rem 1.6rem; border-radius: 50px; border: none; cursor: pointer; transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
 .btn-nav:hover { transform: translateY(-2px); }
 .btn-nav:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(0,0,0,.3); }
+.btn-nav i { font-size: .8rem; transition: transform .2s; }
+.btn-nav i.open { transform: rotate(180deg); }
+
+/* Login dropdown */
+.login-dd { position: relative; }
+.login-menu { position: absolute; top: calc(100% + .6rem); left: 0; background: #fff; border-radius: 18px;
+  box-shadow: 0 16px 48px rgba(15,23,42,.18); border: 1px solid #E2E8F0; padding: .5rem; min-width: 250px; z-index: 100;
+  animation: ddpop .16s ease; }
+@keyframes ddpop { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: translateY(0); } }
+.login-item { display: flex; align-items: center; gap: .8rem; padding: .7rem .8rem; border-radius: 12px; text-decoration: none;
+  transition: background .18s; }
+.login-item:hover { background: #F8FAFC; }
+.li-ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+.login-item.student .li-ic { background: #E0F4FF; color: #0E7490; }
+.login-item.teacher .li-ic { background: #F0FDF4; color: #15803D; }
+.login-item.admin .li-ic { background: #1E293B; color: #7DD3F8; }
+.li-title { display: block; font-weight: 800; font-size: .95rem; color: #1C1C2E; }
+.li-sub { display: block; font-size: .76rem; color: #94A3B8; font-weight: 600; }
 
 .hero { background: var(--grad-hero); padding: 5rem 2rem 0; position: relative; overflow: hidden; }
 .hero-blob1 { position: absolute; width: 380px; height: 380px; border-radius: 50%; background: var(--sky); opacity: .12; top: -80px; right: -80px; pointer-events: none; }

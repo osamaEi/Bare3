@@ -20,6 +20,10 @@
           <i class="fa-solid fa-users"></i>
           <span v-if="!sidebarCollapsed">المستخدمون</span>
         </Link>
+        <Link :href="route('admin.students.progress')" class="nav-item" :class="{ active: currentRoute === 'admin.students.progress' || currentRoute === 'admin.students.progress.show' }">
+          <i class="fa-solid fa-chart-line"></i>
+          <span v-if="!sidebarCollapsed">تقدم الطلبة</span>
+        </Link>
         <Link :href="route('admin.paths')" class="nav-item" :class="{ active: currentRoute === 'admin.paths' }">
           <i class="fa-solid fa-map"></i>
           <span v-if="!sidebarCollapsed">المسارات</span>
@@ -35,6 +39,10 @@
         <Link :href="route('admin.blog')" class="nav-item" :class="{ active: currentRoute === 'admin.blog' }">
           <i class="fa-solid fa-newspaper"></i>
           <span v-if="!sidebarCollapsed">المدونة</span>
+        </Link>
+        <Link :href="route('admin.tickets')" class="nav-item" :class="{ active: currentRoute === 'admin.tickets' }">
+          <i class="fa-solid fa-ticket"></i>
+          <span v-if="!sidebarCollapsed">تذاكر الدعم</span>
         </Link>
         <Link :href="route('admin.settings')" class="nav-item" :class="{ active: currentRoute === 'admin.settings' }">
           <i class="fa-solid fa-gear"></i>

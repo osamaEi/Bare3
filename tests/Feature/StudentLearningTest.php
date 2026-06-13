@@ -109,6 +109,61 @@ class StudentLearningTest extends TestCase
             ->assertInertia(fn ($p) => $p->where('valid', false));
     }
 
+    public function test_lesson_without_scorm_completes_after_video_and_quiz(): void
+    {
+        $student = $this->student();
+        $path = Path::with('lessons.video', 'lessons.scormPackage', 'lessons.quiz.questions.options')->first();
+        $lesson = $path->lessons()->orderBy('sort_order')->first();
+
+        // Remove the SCORM package so the lesson is video → quiz only
+        $lesson->scormPackage?->delete();
+        $lesson->refresh();
+
+        $this->actingAs($student)->post(route('student.paths.enroll', $path->id), ['grade_level' => 'primary']);
+
+        // Video
+        $this->actingAs($student)->postJson(route('student.lesson.video'), [
+            'video_id' => $lesson->video->id, 'watch_percent' => 100, 'position' => 300,
+        ])->assertOk()->assertJson(['video_completed' => true]);
+
+        // Quiz (no SCORM step) — should complete the lesson
+        $answers = [];
+        foreach ($lesson->quiz->questions as $q) {
+            $answers[$q->id] = $q->options->firstWhere('is_correct', true)->id;
+        }
+        $this->actingAs($student)->postJson(route('student.lesson.quiz'), [
+            'quiz_id' => $lesson->quiz->id, 'answers' => $answers,
+        ])->assertOk()->assertJson(['passed' => true]);
+
+        $this->assertDatabaseHas('lesson_progress', [
+            'student_id' => $student->id, 'lesson_id' => $lesson->id, 'status' => 'completed',
+        ]);
+    }
+
+    public function test_scorm_commit_saves_status_and_score(): void
+    {
+        $student = $this->student();
+        $path = Path::with('lessons.scormPackage')->first();
+        $lesson = $path->lessons()->whereHas('scormPackage')->first();
+        $scorm = $lesson->scormPackage;
+
+        $this->actingAs($student)->post(route('student.paths.enroll', $path->id), ['grade_level' => 'primary']);
+
+        $this->actingAs($student)->postJson(route('student.lesson.scorm'), [
+            'scorm_id' => $scorm->id,
+            'status' => 'completed',
+            'score' => 85,
+            'session_time' => '00:05:00',
+        ])->assertOk()->assertJson(['scorm_completed' => true]);
+
+        $this->assertDatabaseHas('scorm_tracking', [
+            'student_id' => $student->id,
+            'scorm_id' => $scorm->id,
+            'status' => 'completed',
+            'score' => 85,
+        ]);
+    }
+
     private function completeLesson(User $student, Lesson $lesson): void
     {
         // Video

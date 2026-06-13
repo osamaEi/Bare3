@@ -9,20 +9,8 @@
 
       <div class="sb-profile">
         <div class="sb-profile-dots"></div>
-        <div class="sb-avatar-wrap">
-          <div class="sb-avatar"><span class="mi">face</span></div>
-          <div class="sb-avatar-ring"></div>
-          <div class="sb-lvl-badge"><span class="mi">star</span></div>
-        </div>
+        <img src="/images/b60204504019ec9db2deff871a1e00c6.png" alt="بارع" class="sb-image" />
         <div class="sb-name">{{ user?.name ?? 'طالب' }}</div>
-        <div class="sb-rank">
-          <span class="mi">emoji_events</span>
-          المستوى {{ level }} — مستكشف
-        </div>
-        <div class="sb-xp">
-          <div class="sb-xp-row"><span>{{ xp }} XP</span><span>{{ xpMax }} <span class="mi" style="font-size:.75rem">bolt</span></span></div>
-          <div class="sb-xp-track"><div class="sb-xp-fill" :style="{ width: xpPct + '%' }"></div></div>
-        </div>
       </div>
 
       <nav class="sb-nav">
@@ -145,7 +133,8 @@ const isActive = (name) => (page.props.ziggy?.current ?? '') === name
 .sb-lvl-badge { position:absolute; bottom:-2px; left:-2px; width:24px; height:24px; border-radius:50%;
   background:var(--lime-mid); border:2px solid var(--white); display:flex; align-items:center; justify-content:center; z-index:2; }
 .sb-lvl-badge .mi { font-size:.85rem; color:var(--lime-dark); }
-.sb-name { font-weight:800; font-size:1.05rem; }
+.sb-image { width:100%; max-height:120px; object-fit:contain; position:relative; z-index:1; margin-bottom:.5rem; }
+.sb-name { font-weight:800; font-size:1.05rem; position:relative; z-index:1; }
 .sb-rank { display:inline-flex; align-items:center; gap:.3rem; background:rgba(255,255,255,.18); border-radius:50px;
   padding:.25rem .85rem; font-size:.76rem; font-weight:700; margin-top:.4rem; }
 .sb-rank .mi { font-size:.9rem; color:var(--lime-mid); }
