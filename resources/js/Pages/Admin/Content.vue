@@ -37,7 +37,7 @@
                 <i class="fa-solid fa-video"></i> فيديو
                 <i v-if="l.video" class="fa-solid fa-circle-check tick"></i>
               </span>
-              <span class="part" :class="{ on: l.scorm_package }" @click="l.scorm_package ? openDetail('scorm', l) : openScormModal(l)">
+              <span class="part" :class="{ on: l.scorm_package }" @click="openScormModal(l)" :title="l.scorm_package ? 'تعديل / استبدال الحزمة' : 'رفع حزمة SCORM'">
                 <i class="fa-solid fa-gamepad"></i> SCORM
                 <i v-if="l.scorm_package" class="fa-solid fa-circle-check tick"></i>
               </span>
@@ -189,11 +189,50 @@
         <div class="fg"><label>الإصدار</label>
           <select v-model="scormForm.version" class="inp"><option value="1.2">SCORM 1.2</option><option value="2004">SCORM 2004</option></select>
         </div>
-        <div class="fg"><label>نقطة الدخول</label><input v-model="scormForm.entry_point" class="inp" placeholder="index.html" /></div>
+        <div class="fg">
+          <label>نقطة الدخول <span style="color:#94A3B8;font-weight:500">(اتركها فارغة للكشف التلقائي)</span></label>
+          <input v-model="scormForm.entry_point" class="inp" placeholder="index.html — اختياري" />
+        </div>
       </div>
-      <div class="fg"><label>ملف الحزمة (.zip)</label><input type="file" accept=".zip" class="inp" @change="scormForm.scorm_file = $event.target.files[0]" /></div>
+
+      <!-- Upload drop zone -->
+      <div class="fg">
+        <label>ملف الحزمة (.zip)</label>
+        <div class="upload-drop" @click="$refs.scormfile.click()" @dragover.prevent @drop.prevent="e => scormForm.scorm_file = e.dataTransfer.files[0]">
+          <input ref="scormfile" type="file" accept=".zip" class="hidden" @change="scormForm.scorm_file = $event.target.files[0]" />
+          <template v-if="scormForm.scorm_file">
+            <i class="fa-solid fa-file-zipper up-ic" style="color:#8B5CF6"></i>
+            <span class="up-name">{{ scormForm.scorm_file.name }}</span>
+            <span class="up-size">{{ (scormForm.scorm_file.size / 1048576).toFixed(1) }} MB</span>
+          </template>
+          <template v-else-if="scormCurrentPkg">
+            <i class="fa-solid fa-circle-check up-ic" style="color:#16A34A;font-size:1.8rem"></i>
+            <span class="up-name" style="color:#15803D">حزمة محفوظة — اختر ملفاً جديداً لاستبدالها</span>
+            <span class="up-hint">{{ scormCurrentPkg }}</span>
+          </template>
+          <template v-else>
+            <i class="fa-solid fa-cloud-arrow-up up-ic"></i>
+            <span class="up-title">اسحب ملف ZIP هنا أو اضغط للاختيار</span>
+            <span class="up-hint">حزمة SCORM مضغوطة — حد أقصى ١٠٠ ميجابايت</span>
+          </template>
+        </div>
+      </div>
+
+      <!-- Upload progress -->
+      <div v-if="scormForm.processing" class="up-progress">
+        <div class="up-progress-info">
+          <span>جاري الرفع وفك الضغط...</span>
+          <span>{{ scormForm.progress?.percentage ?? 0 }}%</span>
+        </div>
+        <div class="up-bar"><div class="up-bar-fill" :style="{ width: (scormForm.progress?.percentage ?? 0) + '%' }"></div></div>
+      </div>
+
       <Errors :form="scormForm" />
-      <template #footer><button class="btn-save" :disabled="scormForm.processing" @click="saveScorm">رفع</button></template>
+      <template #footer>
+        <button class="btn-save" :disabled="scormForm.processing || (!scormForm.scorm_file && !scormCurrentPkg)" @click="saveScorm">
+          {{ scormForm.processing ? 'جاري الرفع...' : 'رفع الحزمة' }}
+        </button>
+      </template>
     </Modal>
 
     <!-- QUIZ MODAL -->
@@ -327,9 +366,29 @@ const saveVideo = () => {
 }
 
 // ── SCORM ──
-const scormForm = useForm({ lesson_id: null, title: '', version: '1.2', entry_point: 'index.html', scorm_file: null })
-const openScormModal = (l) => { scormForm.reset(); scormForm.lesson_id = l.id; if (l.scorm_package) { scormForm.title = l.scorm_package.title; scormForm.version = l.scorm_package.version } scormForm.clearErrors(); modal.value = 'scorm' }
-const saveScorm = () => scormForm.post(route('admin.content.scorm.store'), { forceFormData: true, preserveScroll: true, onSuccess: () => { modal.value = null } })
+const scormCurrentPkg = ref(null)
+const scormForm = useForm({ lesson_id: null, title: '', version: '1.2', entry_point: '', scorm_file: null })
+const openScormModal = (l) => {
+  scormForm.reset()
+  scormForm.clearErrors()
+  scormForm.lesson_id = l.id
+  scormCurrentPkg.value = null
+  if (l.scorm_package) {
+    scormForm.title = l.scorm_package.title
+    scormForm.version = l.scorm_package.version
+    scormForm.entry_point = l.scorm_package.entry_point ?? ''
+    scormCurrentPkg.value = l.scorm_package.package_path
+  }
+  modal.value = 'scorm'
+}
+const saveScorm = () => {
+  if (!scormForm.scorm_file && !scormCurrentPkg.value) return
+  scormForm.post(route('admin.content.scorm.store'), {
+    forceFormData: true,
+    preserveScroll: true,
+    onSuccess: () => { modal.value = null; scormCurrentPkg.value = null },
+  })
+}
 
 // ── Quiz ──
 const quizForm = useForm({ id: null, lesson_id: null, title: '', pass_mark: 70, max_attempts: 3, questions: [] })

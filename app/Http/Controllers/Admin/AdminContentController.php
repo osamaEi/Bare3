@@ -146,25 +146,43 @@ class AdminContentController extends Controller
     // ── SCORM ──────────────────────────────────────────────
     public function storeScorm(Request $request, ScormService $scorm): RedirectResponse
     {
+        $lessonId = $request->input('lesson_id');
+        $existing = \App\Models\ScormPackage::where('lesson_id', $lessonId)->first();
+
+        // ملف ZIP مطلوب فقط إن لم تكن هناك حزمة موجودة
+        $fileRule = $existing ? 'nullable|file|mimes:zip|max:102400' : 'required|file|mimes:zip|max:102400';
+
         $data = $request->validate([
-            'lesson_id' => 'required|exists:lessons,id',
-            'title' => 'required|string|max:255',
-            'version' => 'required|in:1.2,2004',
-            'entry_point' => 'nullable|string',
-            'scorm_file' => 'required|file|mimes:zip|max:102400',
+            'lesson_id'   => 'required|exists:lessons,id',
+            'title'       => 'required|string|max:255',
+            'version'     => 'required|in:1.2,2004',
+            'entry_point' => 'nullable|string|max:500',
+            'scorm_file'  => $fileRule,
         ]);
 
-        // فكّ ضغط الحزمة وقراءة صفحة البداية تلقائياً
-        $unpacked = $scorm->unpack($request->file('scorm_file'));
-        $data['package_path'] = $unpacked['package_path'];
-        $data['file_size_kb'] = $unpacked['file_size_kb'];
-        // إن لم يحدّد الأدمن نقطة الدخول يدوياً، نستخدم ما قرأناه من الفهرس
-        $data['entry_point'] = $data['entry_point'] ?: $unpacked['entry_point'];
+        if ($request->hasFile('scorm_file')) {
+            // فكّ ضغط الحزمة الجديدة
+            $unpacked = $scorm->unpack($request->file('scorm_file'));
+            $data['package_path'] = $unpacked['package_path'];
+            $data['file_size_kb'] = $unpacked['file_size_kb'];
+            // نقطة الدخول: يدوية إن أُدخلت، وإلا تلقائية من الفهرس
+            $data['entry_point'] = filled($data['entry_point']) ? $data['entry_point'] : $unpacked['entry_point'];
+        } else {
+            // لا ملف جديد — احتفظ بالبيانات القديمة
+            $data['package_path'] = $existing->package_path;
+            $data['file_size_kb'] = $existing->file_size_kb;
+            $data['entry_point']  = filled($data['entry_point']) ? $data['entry_point'] : $existing->entry_point;
+        }
+
         unset($data['scorm_file']);
 
-        $this->content->createScorm($data);
+        if ($existing) {
+            $existing->update($data);
+        } else {
+            $this->content->createScorm($data);
+        }
 
-        return back()->with('success', 'تم رفع ملف SCORM وفكّ ضغطه');
+        return back()->with('success', 'تم حفظ حزمة SCORM بنجاح');
     }
 
     public function destroyScorm(int $id): RedirectResponse
