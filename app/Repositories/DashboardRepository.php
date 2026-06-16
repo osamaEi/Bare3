@@ -33,7 +33,7 @@ class DashboardRepository implements DashboardRepositoryInterface
     public function getRevenueChart(): array
     {
         return PaymentTransaction::success()
-            ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(amount) as total")
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(amount) as total")
             ->where('created_at', '>=', now()->subMonths(6)->startOfMonth())
             ->groupBy('month')
             ->orderBy('month')

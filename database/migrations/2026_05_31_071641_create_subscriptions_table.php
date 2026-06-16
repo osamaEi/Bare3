@@ -13,8 +13,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
             $table->foreignId('plan_id')->constrained()->cascadeOnDelete();
             $table->enum('status', ['active', 'expired', 'cancelled', 'trial'])->default('trial');
-            $table->timestamp('starts_at');
-            $table->timestamp('ends_at');
+            $table->timestamp('starts_at')->useCurrent();
+            $table->timestamp('ends_at')->useCurrent();
             $table->timestamp('trial_ends_at')->nullable();
             $table->boolean('auto_renew')->default(true);
             $table->timestamps();

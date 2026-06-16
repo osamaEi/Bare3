@@ -50,7 +50,7 @@ class PaymentRepository implements PaymentRepositoryInterface
     public function revenueByMonth(int $months = 6): array
     {
         return PaymentTransaction::success()
-            ->selectRaw("strftime('%Y-%m', created_at) as month, SUM(amount) as total")
+            ->selectRaw("DATE_FORMAT(created_at, '%Y-%m') as month, SUM(amount) as total")
             ->where('created_at', '>=', now()->subMonths($months)->startOfMonth())
             ->groupBy('month')
             ->orderBy('month')
