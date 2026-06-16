@@ -5,13 +5,10 @@
 <nav>
   <div class="nav-inner">
     <div class="nav-logo" style="display:flex; align-items:center; gap:.4rem;">
-      <img src="/images/logo.png" style="width: 200px;" alt="">
+      <img :src="c.brand.logo" style="width: 200px;" alt="">
     </div>
     <ul>
-      <li><a href="#features">المميزات</a></li>
-      <li><a href="#pricing">الباقات</a></li>
-      <li><a href="#reviews">الآراء</a></li>
-      <li><a href="#faq">الأسئلة</a></li>
+      <li v-for="(item, i) in c.nav" :key="i"><a :href="item.href">{{ item.label }}</a></li>
     </ul>
     <div class="login-dd" ref="loginDd">
       <button class="btn-nav" @click="loginOpen = !loginOpen">
@@ -44,29 +41,27 @@
     <div class="hero-text">
       <div class="badge-top">
         <span class="badge-dot"></span>
-        مبتكرون صغار.. بارعون كبار!
+        {{ c.hero.badge }}
       </div>
       <h1>
         <span class="text-5xl">
-            كل طفل<br>
+            {{ c.hero.title_line1 }}<br>
         </span>
-        <span class="hl-sky text-5xl">بارع</span>
-        <span class="hl-pink text-5xl">بطريقته</span><br>
-        <span style="margin-top:.6rem; display:block;" class="text-5xl">الخاصة <i class="fa-solid fa-crown crown"></i></span>
+        <span class="hl-sky text-5xl">{{ c.hero.title_hl1 }}</span>
+        <span class="hl-pink text-5xl">{{ c.hero.title_hl2 }}</span><br>
+        <span style="margin-top:.6rem; display:block;" class="text-5xl">{{ c.hero.title_line2 }} <i class="fa-solid fa-crown crown"></i></span>
       </h1>
-      <p class="hero-desc">منصة قصصية تفاعلية تجمع الخيال والعلم والابتكار لتحويل أطفالك إلى مبدعين حقيقيين</p>
+      <p class="hero-desc">{{ c.hero.desc }}</p>
       <div class="hero-btns">
-        <button class="btn-primary">ابدأ المغامرة مجانًا</button>
-        <button class="btn-secondary">استكشف القصص</button>
+        <button class="btn-primary">{{ c.hero.btn_primary }}</button>
+        <button class="btn-secondary">{{ c.hero.btn_secondary }}</button>
       </div>
       <div class="hero-stats">
-        <span class="stat-pill sky"><i class="fa-solid fa-child-reaching"></i> +١٢,٠٠٠ طفل</span>
-        <span class="stat-pill pink"><i class="fa-solid fa-book-open"></i> +٢٠٠ قصة</span>
-        <span class="stat-pill lime"><i class="fa-solid fa-star"></i> تقييم ٤.٩</span>
+        <span v-for="(s, i) in c.stats" :key="i" class="stat-pill" :class="s.color"><i :class="s.icon"></i> {{ s.text }}</span>
       </div>
     </div>
     <div class="hero-img">
-      <img src="/images/b60204504019ec9db2deff871a1e00c6.png" alt="شخصيات كرتونية" />
+      <img :src="c.hero.image" alt="شخصيات كرتونية" />
     </div>
   </div>
   <div class="wave" style="margin-top: 2rem;">
@@ -80,9 +75,9 @@
 <!-- FEATURES -->
 <section id="features" class="relative py-12 overflow-hidden bg-gradient-to-b from-violet-50 via-white to-sky-50">
   <div class="section-center">
-    <div class="section-tag"><i class="fa-solid fa-stars" style="color:var(--sky)"></i> لماذا بارع؟</div>
-    <h2 class="text-4xl font-bold text-center mb-4">عالم كامل من التعلّم والمتعة</h2>
-    <p class="section-sub text-center max-w-2xl mx-auto">مغامرة سحرية يتعلم فيها طفلك وهو يلعب ويبتكر</p>
+    <div class="section-tag"><i class="fa-solid fa-stars" style="color:var(--sky)"></i> {{ c.features_header.tag }}</div>
+    <h2 class="text-4xl font-bold text-center mb-4">{{ c.features_header.title }}</h2>
+    <p class="section-sub text-center max-w-2xl mx-auto">{{ c.features_header.sub }}</p>
   </div>
 
   <div class="max-w-6xl mx-auto px-4 relative" id="features-wrapper">
@@ -112,97 +107,24 @@
 
     <div class="space-y-10 relative" style="z-index:1">
 
-      <!-- 1. قصص تفاعلية -->
-      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16" data-aos="fade-up">
-        <div class="md:w-5/12 order-2 md:order-1">
-          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-violet-100 hover:border-violet-200 transition-all duration-300">
-            <div class="feat-icon text-5xl mb-4 text-violet-600">
-              <i class="fa-solid fa-book-open-reader"></i>
+      <div v-for="(f, i) in c.features" :key="i"
+           class="flex flex-col items-center gap-8 md:gap-16"
+           :class="i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'" data-aos="fade-up">
+        <div class="md:w-5/12" :class="i % 2 === 0 ? 'order-2 md:order-1' : ''">
+          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-300"
+               :class="featBorder[i % 4]">
+            <div class="feat-icon text-5xl mb-4" :class="featIconColor[i % 4]">
+              <i :class="f.icon"></i>
             </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">قصص تفاعلية</h3>
-            <p class="text-gray-600 leading-relaxed">مغامرات شيّقة يختار فيها طفلك مساره بنفسه ويتحكم في النهاية</p>
+            <h3 class="text-2xl font-bold text-gray-800 mb-2">{{ f.title }}</h3>
+            <p class="text-gray-600 leading-relaxed">{{ f.desc }}</p>
           </div>
         </div>
-        <div class="md:w-5/12 order-1 md:order-2 flex justify-center">
-          <div class="relative group" id="circle-1">
-            <div class="absolute -inset-6 bg-gradient-to-br from-violet-200 to-purple-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
+        <div class="md:w-5/12 flex justify-center" :class="i % 2 === 0 ? 'order-1 md:order-2' : ''">
+          <div class="relative group" :id="'circle-' + (i + 1)">
+            <div class="absolute -inset-6 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition" :class="featBlob[i % 4]"></div>
             <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
-              <img src="/images/story.png" alt="قصص تفاعلية" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
-            </div>
-            <div class="absolute -top-3 -right-3 text-4xl text-violet-500 drop-shadow-md animate-float">
-              <i class="fa-solid fa-sparkles"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 2. تجارب علمية -->
-      <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16" data-aos="fade-up">
-        <div class="md:w-5/12">
-          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-cyan-100 hover:border-cyan-200 transition-all duration-300">
-            <div class="feat-icon text-5xl mb-4 text-cyan-600">
-              <i class="fa-solid fa-flask"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">تجارب علمية</h3>
-            <p class="text-gray-600 leading-relaxed">تجارب ممتعة وآمنة تشعل فضول طفلك ويحب العلوم</p>
-          </div>
-        </div>
-        <div class="md:w-5/12 flex justify-center">
-          <div class="relative group" id="circle-2">
-            <div class="absolute -inset-6 bg-gradient-to-br from-cyan-200 to-teal-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
-            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
-              <img src="/images/sci.png" alt="تجارب علمية" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
-            </div>
-            <div class="absolute -bottom-2 -left-3 text-4xl text-cyan-500 drop-shadow-md animate-float" style="animation-delay: 0.8s;">
-              <i class="fa-solid fa-atom"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 3. إبداع بلا حدود -->
-      <div class="flex flex-col md:flex-row items-center gap-8 md:gap-16" data-aos="fade-up">
-        <div class="md:w-5/12 order-2 md:order-1">
-          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-pink-100 hover:border-pink-200 transition-all duration-300">
-            <div class="feat-icon text-5xl mb-4 text-pink-600">
-              <i class="fa-solid fa-palette"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">إبداع بلا حدود</h3>
-            <p class="text-gray-600 leading-relaxed">رسم وتلوين وتصميم في بيئة آمنة تحفّز الخيال</p>
-          </div>
-        </div>
-        <div class="md:w-5/12 order-1 md:order-2 flex justify-center">
-          <div class="relative group" id="circle-3">
-            <div class="absolute -inset-6 bg-gradient-to-br from-pink-200 to-rose-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
-            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
-              <img src="/images/paint.png" alt="إبداع بلا حدود" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
-            </div>
-            <div class="absolute -top-4 -left-4 text-4xl text-pink-500 drop-shadow-md animate-float" style="animation-delay: 1.3s;">
-              <i class="fa-solid fa-paintbrush"></i>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- 4. تحديات وجوائز -->
-      <div class="flex flex-col md:flex-row-reverse items-center gap-8 md:gap-16" data-aos="fade-up">
-        <div class="md:w-5/12">
-          <div class="feat-card bg-white/80 backdrop-blur-xl p-6 rounded-3xl shadow-xl hover:shadow-2xl border border-amber-100 hover:border-amber-200 transition-all duration-300">
-            <div class="feat-icon text-5xl mb-4 text-amber-600">
-              <i class="fa-solid fa-trophy"></i>
-            </div>
-            <h3 class="text-2xl font-bold text-gray-800 mb-2">تحديات وجوائز</h3>
-            <p class="text-gray-600 leading-relaxed">نقاط وشارات مبهجة تحفّز طفلك على الاستمرار والتميز</p>
-          </div>
-        </div>
-        <div class="md:w-5/12 flex justify-center">
-          <div class="relative group" id="circle-4">
-            <div class="absolute -inset-6 bg-gradient-to-br from-amber-200 to-orange-200 rounded-full blur-3xl opacity-30 group-hover:opacity-50 transition"></div>
-            <div class="w-64 h-64 rounded-full bg-white shadow-2xl flex items-center justify-center p-5 relative">
-              <img src="/images/prize.png" alt="تحديات وجوائز" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
-            </div>
-            <div class="absolute -bottom-3 -right-3 text-4xl text-amber-500 drop-shadow-md animate-float" style="animation-delay: 0.5s;">
-              <i class="fa-solid fa-gem"></i>
+              <img :src="f.image" :alt="f.title" class="w-full h-full object-contain drop-shadow-2xl transition-transform duration-700 group-hover:scale-110">
             </div>
           </div>
         </div>
@@ -223,52 +145,25 @@
 <!-- PRICING -->
 <section id="pricing">
   <div class="section-center">
-    <div class="section-tag"><i class="fa-solid fa-rocket" style="color:var(--pink)"></i> خطط ممتعة</div>
-    <h2>اختر الباقة المناسبة لطفلك</h2>
-    <p class="section-sub">تعلم ممتع، تقدم سريع، وذكريات جميلة</p>
+    <div class="section-tag"><i class="fa-solid fa-rocket" style="color:var(--pink)"></i> {{ c.pricing_header.tag }}</div>
+    <h2>{{ c.pricing_header.title }}</h2>
+    <p class="section-sub">{{ c.pricing_header.sub }}</p>
   </div>
   <div class="pricing-grid">
-    <div class="price-card">
-      <div class="price-badge"><i class="fa-solid fa-star"></i> المبتدئين</div>
-      <div class="price-amount">٠ <span class="price-unit">جنيه</span></div>
-      <div class="price-name">الباقة المجانية</div>
+    <div v-for="(p, i) in c.pricing" :key="i" class="price-card" :class="{ featured: p.featured }">
+      <div v-if="p.featured" style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--lime-mid);color:var(--lime-dark);font-size:.78rem;font-weight:800;padding:.3rem 1.2rem;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15)"><i class="fa-solid fa-fire"></i> الأكثر شعبية</div>
+      <div class="price-badge">{{ p.badge }}</div>
+      <div class="price-amount">{{ p.amount }} <span class="price-unit">{{ p.unit }}</span></div>
+      <div class="price-name">{{ p.name }}</div>
       <ul class="price-features">
-        <li><i class="fa-solid fa-circle-check"></i> ١٠ دروس تفاعلية</li>
-        <li><i class="fa-solid fa-circle-check"></i> ألعاب تعليمية</li>
-        <li><i class="fa-solid fa-circle-check"></i> شهادة إنجاز</li>
+        <li v-for="(feat, fi) in p.features" :key="fi"><i class="fa-solid fa-circle-check"></i> {{ feat }}</li>
       </ul>
-      <button class="btn-price">ابدأ مجاناً</button>
-    </div>
-    <div class="price-card featured">
-      <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--lime-mid);color:var(--lime-dark);font-size:.78rem;font-weight:800;padding:.3rem 1.2rem;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15)"><i class="fa-solid fa-fire"></i> الأكثر شعبية</div>
-      <div class="price-badge">🦄 المحترف</div>
-      <div class="price-amount">٧٩ <span class="price-unit">جنيه/شهر</span></div>
-      <div class="price-name">باقة الأبطال</div>
-      <ul class="price-features">
-        <li><i class="fa-solid fa-circle-check"></i> دروس غير محدودة</li>
-        <li><i class="fa-solid fa-circle-check"></i> ألعاب ومكافآت</li>
-        <li><i class="fa-solid fa-circle-check"></i> تتبع تقدم الطفل</li>
-        <li><i class="fa-solid fa-circle-check"></i> فيديوهات عالية الجودة</li>
-        <li><i class="fa-solid fa-circle-check"></i> دعم أولياء الأمور</li>
-      </ul>
-      <button class="btn-price">اشترك الآن ✨</button>
-    </div>
-    <div class="price-card">
-      <div class="price-badge"><i class="fa-solid fa-crown" style="color:var(--pink)"></i> النخبة</div>
-      <div class="price-amount">١٤٩ <span class="price-unit">جنيه</span></div>
-      <div class="price-name">باقة العباقرة</div>
-      <ul class="price-features">
-        <li><i class="fa-solid fa-circle-check"></i> كل مميزات المحترف</li>
-        <li><i class="fa-solid fa-circle-check"></i> جلسات مباشرة مع المعلمين</li>
-        <li><i class="fa-solid fa-circle-check"></i> تقارير شهرية مفصلة</li>
-        <li><i class="fa-solid fa-circle-check"></i> محتوى حصري للموهوبين</li>
-      </ul>
-      <button class="btn-price">اختر باقة العباقرة</button>
+      <button class="btn-price">{{ p.btn }}</button>
     </div>
   </div>
   <div class="price-note">
-    <p>كل اشتراك يساعد في تطوير محتوى تعليمي أكثر مرحاً للأطفال</p>
-    <p style="font-size:.8rem;margin-top:.3rem">يمكنك الإلغاء في أي وقت • آمن للأطفال ١٠٠٪</p>
+    <p>{{ c.pricing_note.line1 }}</p>
+    <p style="font-size:.8rem;margin-top:.3rem">{{ c.pricing_note.line2 }}</p>
   </div>
 </section>
 
@@ -282,40 +177,15 @@
 <!-- PARENTS -->
 <section id="parents">
   <div class="section-center">
-    <div class="section-tag"><i class="fa-solid fa-people-group" style="color:var(--sky-dark)"></i> للآباء والأمهات</div>
-    <h2>راحة بالك = أولويتنا</h2>
-    <p class="section-sub">تحكّم كامل في تجربة طفلك من لوحة تحكم واحدة</p>
+    <div class="section-tag"><i class="fa-solid fa-people-group" style="color:var(--sky-dark)"></i> {{ c.parents_header.tag }}</div>
+    <h2>{{ c.parents_header.title }}</h2>
+    <p class="section-sub">{{ c.parents_header.sub }}</p>
   </div>
   <div class="parents-grid">
-    <div class="parent-card sky">
-      <div class="parent-icon"><i class="fa-solid fa-shield-halved"></i></div>
-      <h4>محتوى آمن ١٠٠٪</h4>
-      <p>جميع المحتوى مراجع ومصنف حسب العمر. لا إعلانات، لا روابط خارجية، بيئة مغلقة تمامًا.</p>
-    </div>
-    <div class="parent-card pink">
-      <div class="parent-icon"><i class="fa-solid fa-chart-line"></i></div>
-      <h4>تقارير تقدم أسبوعية</h4>
-      <p>تابع تطور طفلك يوم بيوم — القصص اللي أنهاها، الإنجازات، ومهارات القراءة والتفكير.</p>
-    </div>
-    <div class="parent-card lime">
-      <div class="parent-icon"><i class="fa-regular fa-clock"></i></div>
-      <h4>تحديد وقت الاستخدام</h4>
-      <p>ضبط حدود زمنية يومية لكل طفل. التطبيق يُنبّه ويوقف تلقائيًا بدون ضجة.</p>
-    </div>
-    <div class="parent-card sky">
-      <div class="parent-icon"><i class="fa-solid fa-users"></i></div>
-      <h4>ملفات لأكثر من طفل</h4>
-      <p>أنشئ ملف لكل طفل مع محتوى مناسب لسنّه — من ٤ سنوات حتى ١٢.</p>
-    </div>
-    <div class="parent-card pink">
-      <div class="parent-icon"><i class="fa-solid fa-moon"></i></div>
-      <h4>وضع وقت النوم</h4>
-      <p>قصص مهدِّئة وتنفس عميق وموسيقى هادئة تساعد طفلك على النوم براحة.</p>
-    </div>
-    <div class="parent-card lime">
-      <div class="parent-icon"><i class="fa-solid fa-headset"></i></div>
-      <h4>دعم متواصل للأهل</h4>
-      <p>فريق دعم متاح ٧ أيام في الأسبوع، مع دليل أنشطة للتعلم خارج الشاشة.</p>
+    <div v-for="(p, i) in c.parents" :key="i" class="parent-card" :class="p.color">
+      <div class="parent-icon"><i :class="p.icon"></i></div>
+      <h4>{{ p.title }}</h4>
+      <p>{{ p.desc }}</p>
     </div>
   </div>
 </section>
@@ -330,39 +200,19 @@
 <!-- REVIEWS -->
 <section id="reviews">
   <div class="section-center">
-    <div class="section-tag"><i class="fa-solid fa-comment-dots" style="color:var(--pink)"></i> آراء الآباء</div>
-    <h2>قالوا عن بارع</h2>
-    <p class="section-sub">أكثر من ١٢,٠٠٠ عائلة سعيدة 🌟</p>
+    <div class="section-tag"><i class="fa-solid fa-comment-dots" style="color:var(--pink)"></i> {{ c.reviews_header.tag }}</div>
+    <h2>{{ c.reviews_header.title }}</h2>
+    <p class="section-sub">{{ c.reviews_header.sub }}</p>
   </div>
   <div class="reviews-grid">
-    <div class="review-card">
-      <div class="review-chip">رأي والد</div>
+    <div v-for="(t, i) in c.testimonials" :key="i" class="review-card" :class="{ featured: t.featured }">
+      <div class="review-chip">{{ t.chip }}</div>
       <div class="review-stars">★★★★★</div>
-      <h4>رعاية رائعة وبيئة آمنة</h4>
-      <p>طفلي أصبح يطلب هو القصص كل يوم! التعلم خلّاه يحب الكتب بطريقة ما كنت أتوقعها.</p>
+      <h4>{{ t.title }}</h4>
+      <p>{{ t.comment }}</p>
       <div class="review-author">
-        <img src="https://i.pravatar.cc/60?u=11" class="review-avatar" alt="">
-        <div><div class="review-name">أحمد رضا</div><div class="review-loc">القاهرة، مصر</div></div>
-      </div>
-    </div>
-    <div class="review-card featured">
-      <div class="review-chip">رأي والدة</div>
-      <div class="review-stars">★★★★★</div>
-      <h4>أجواء دافئة وجذابة</h4>
-      <p>أحب إن المحتوى آمن ومناسب لعمره. والتقارير الأسبوعية بتوريني بالتحديد وين وصل.</p>
-      <div class="review-author">
-        <img src="https://i.pravatar.cc/60?u=22" class="review-avatar" alt="">
-        <div><div class="review-name" style="color:#fff">نور الهدى</div><div class="review-loc">الإسكندرية، مصر</div></div>
-      </div>
-    </div>
-    <div class="review-card">
-      <div class="review-chip">رأي والد</div>
-      <div class="review-stars">★★★★★</div>
-      <h4>تعليم ممتاز ودعم شامل</h4>
-      <p>المنصة دي فرقت معاي. ابني بقى يحل ألغاز بمفرده وعنده ثقة في نفسه أكتر بكتير.</p>
-      <div class="review-author">
-        <img src="https://i.pravatar.cc/60?u=33" class="review-avatar" alt="">
-        <div><div class="review-name">محمد فريد</div><div class="review-loc">القاهرة، مصر</div></div>
+        <img :src="t.avatar" class="review-avatar" alt="">
+        <div><div class="review-name" :style="t.featured ? 'color:#fff' : ''">{{ t.name }}</div><div class="review-loc">{{ t.loc }}</div></div>
       </div>
     </div>
   </div>
@@ -378,44 +228,16 @@
 <!-- FAQ -->
 <section id="faq">
   <div class="section-center">
-    <div class="section-tag">أسئلة شائعة</div>
-    <h2>عندك سؤال؟ احتمال عندنا الإجابة</h2>
+    <div class="section-tag">{{ c.faq_header.tag }}</div>
+    <h2>{{ c.faq_header.title }}</h2>
   </div>
   <div class="faq-list">
-    <div class="faq-item s1">
+    <div v-for="(item, i) in c.faq" :key="i" class="faq-item" :class="'s' + ((i % 5) + 1)">
       <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
-        <span>من أي عمر تناسب منصة بارع؟</span>
+        <span>{{ item.q }}</span>
         <span class="faq-icon">+</span>
       </button>
-      <div class="faq-answer">بارع مصممة للأطفال من سن ٤ سنوات حتى ١٢ سنة. المحتوى مقسّم حسب الفئة العمرية تلقائيًا عند إنشاء ملف الطفل.</div>
-    </div>
-    <div class="faq-item s2">
-      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
-        <span>هل المحتوى آمن لطفلي؟</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">نعم تمامًا. كل المحتوى مراجَع يدويًا من متخصصين في التعليم. لا إعلانات، لا روابط خارجية، لا تواصل مع غرباء. بيئة مغلقة ١٠٠٪.</div>
-    </div>
-    <div class="faq-item s3">
-      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
-        <span>هل تحتاج إنترنت دايمًا؟</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">الجلسات الأساسية تحتاج إنترنت، لكن يمكن تحميل مجموعة قصص للقراءة بدون اتصال. ميزة التحميل متاحة في باقة الأبطال وما فوق.</div>
-    </div>
-    <div class="faq-item s4">
-      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
-        <span>هل يمكنني إلغاء الاشتراك في أي وقت؟</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">بالتأكيد! يمكنك إلغاء اشتراكك في أي وقت من إعدادات الحساب. لا رسوم إلغاء ولا التزامات. ستبقى مشتركًا حتى نهاية الفترة المدفوعة.</div>
-    </div>
-    <div class="faq-item s5">
-      <button class="faq-btn" @click="toggleFaq($event.currentTarget)">
-        <span>هل تدعم المنصة اللغة العربية فقط؟</span>
-        <span class="faq-icon">+</span>
-      </button>
-      <div class="faq-answer">حاليًا المحتوى باللغة العربية الفصحى المبسّطة. نعمل على إضافة محتوى بالإنجليزية قريبًا لمساعدة أطفالك في تعلم لغة ثانية.</div>
+      <div class="faq-answer">{{ item.a }}</div>
     </div>
   </div>
 </section>
@@ -437,32 +259,32 @@
 
       <!-- الصورة اليسار - مخفية على الموبايل -->
       <div class="justify-center hidden md:flex" data-aos="fade-right">
-        <img src="/images/cta boy.png" alt="طفل يتعلم" class="w-52 lg:w-52 md:w-36">
+        <img :src="c.cta.image_left" alt="طفل يتعلم" class="w-52 lg:w-52 md:w-36">
       </div>
 
       <!-- النص -->
       <div class="text-center px-6 col-span-1 md:col-span-1 col-span-3" data-aos="fade-up">
         <h2 class="text-6xl md:text-5xl sm:text-4xl text-3xl font-bold mb-6 leading-tight">
-          جاهز تبدأ مغامرتك؟
+          {{ c.cta.title }}
         </h2>
 
         <!-- الصورتين جنب بعض على الموبايل فقط -->
         <div class="flex justify-center gap-6 mb-6 md:hidden">
-          <img src="/images/cta boy.png" alt="طفل يتعلم" class="w-28">
-          <img src="/images/cta girl.png" alt="طفلة تتعلم" class="w-28">
+          <img :src="c.cta.image_left" alt="طفل يتعلم" class="w-28">
+          <img :src="c.cta.image_right" alt="طفلة تتعلم" class="w-28">
         </div>
 
         <p class="text-2xl md:text-xl sm:text-lg text-base mb-8 leading-relaxed">
-          انضم لأكثر من ١٢ ألف طفل بارع وابدأ رحلة التعلّم المجانية اليوم
+          {{ c.cta.desc }}
         </p>
         <button class="btn-cta">
-          🚀 ابدأ مجانًا الآن
+          {{ c.cta.btn }}
         </button>
       </div>
 
       <!-- الصورة اليمين - مخفية على الموبايل -->
       <div class="justify-center hidden md:flex" data-aos="fade-left">
-        <img src="/images/cta girl.png" alt="طفلة تتعلم" class="w-52 lg:w-52 md:w-36">
+        <img :src="c.cta.image_right" alt="طفلة تتعلم" class="w-52 lg:w-52 md:w-36">
       </div>
 
     </div>
@@ -483,46 +305,37 @@
       <div class="footer-brand">
         <div class="logo-text">
           <div class="nav-logo" style="display:flex; align-items:center; gap:.4rem;">
-            <img src="/images/logo.png" style="width: 200px;" alt="">
+            <img :src="c.footer.logo" style="width: 200px;" alt="">
           </div>
         </div>
-        <p>منصة تعليمية تفاعلية للأطفال<br>من سن ٤ إلى ١٢ سنة</p>
+        <p v-html="c.footer.desc"></p>
         <div class="footer-socials">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-          <a href="#"><i class="fab fa-youtube"></i></a>
-          <a href="#"><i class="fab fa-x-twitter"></i></a>
+          <a v-for="(s, i) in c.footer.socials" :key="i" :href="s.href"><i :class="s.icon"></i></a>
         </div>
       </div>
       <div>
-        <h4>الصفحات</h4>
+        <h4>{{ c.footer.col_pages_title }}</h4>
         <ul>
-          <li><a href="#">الرئيسية</a></li>
-          <li><a href="#features">المميزات</a></li>
-          <li><a href="#pricing">الباقات</a></li>
-          <li><a href="#reviews">الآراء</a></li>
+          <li v-for="(l, i) in c.footer.col_pages" :key="i"><a :href="l.href">{{ l.label }}</a></li>
         </ul>
       </div>
       <div>
-        <h4>المساعدة</h4>
+        <h4>{{ c.footer.col_help_title }}</h4>
         <ul>
-          <li><a href="#faq">الأسئلة الشائعة</a></li>
-          <li><a href="#">الدعم الفني</a></li>
-          <li><a href="#">سياسة الخصوصية</a></li>
-          <li><a href="#">الشروط والأحكام</a></li>
+          <li v-for="(l, i) in c.footer.col_help" :key="i"><a :href="l.href">{{ l.label }}</a></li>
         </ul>
       </div>
       <div>
-        <h4>تواصل معنا</h4>
+        <h4>{{ c.footer.col_contact_title }}</h4>
         <address>
-          📍 القاهرة، مصر<br>
-          📞 ١٩٩٩٩<br>
-          📧 hello@bari3.com
+          {{ c.footer.contact_location }}<br>
+          {{ c.footer.contact_phone }}<br>
+          {{ c.footer.contact_email }}
         </address>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© ٢٠٢٦ بارع — جميع الحقوق محفوظة</span>
+      <span>{{ c.footer.copyright }}</span>
       <div class="footer-langs">
         <span>🇪🇬 العربية</span>
         <span>🇬🇧 English</span>
@@ -535,9 +348,21 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
 
-defineProps({ canLogin: Boolean, canRegister: Boolean })
+const props = defineProps({
+  canLogin: Boolean,
+  canRegister: Boolean,
+  content: { type: Object, default: () => ({}) },
+})
+
+// محتوى الصفحة (يصل من الباك-إند مدموجًا مع الافتراضيات)
+const c = computed(() => props.content)
+
+// ألوان بطاقات المميزات حسب الترتيب (محافظة على التصميم الأصلي)
+const featBorder = ['border border-violet-100 hover:border-violet-200', 'border border-cyan-100 hover:border-cyan-200', 'border border-pink-100 hover:border-pink-200', 'border border-amber-100 hover:border-amber-200']
+const featIconColor = ['text-violet-600', 'text-cyan-600', 'text-pink-600', 'text-amber-600']
+const featBlob = ['bg-gradient-to-br from-violet-200 to-purple-200', 'bg-gradient-to-br from-cyan-200 to-teal-200', 'bg-gradient-to-br from-pink-200 to-rose-200', 'bg-gradient-to-br from-amber-200 to-orange-200']
 
 const loginOpen = ref(false)
 const loginDd = ref(null)

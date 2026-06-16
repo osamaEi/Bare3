@@ -44,6 +44,10 @@
           <i class="fa-solid fa-ticket"></i>
           <span v-if="!sidebarCollapsed">تذاكر الدعم</span>
         </Link>
+        <Link :href="route('admin.homepage')" class="nav-item" :class="{ active: currentRoute === 'admin.homepage' }">
+          <i class="fa-solid fa-house"></i>
+          <span v-if="!sidebarCollapsed">الصفحة الرئيسية</span>
+        </Link>
         <Link :href="route('admin.settings')" class="nav-item" :class="{ active: currentRoute === 'admin.settings' }">
           <i class="fa-solid fa-gear"></i>
           <span v-if="!sidebarCollapsed">الإعدادات</span>

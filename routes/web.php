@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminContentController;
 use App\Http\Controllers\Admin\AdminPaymentController;
 use App\Http\Controllers\Admin\AdminBlogController;
 use App\Http\Controllers\Admin\AdminSettingsController;
+use App\Http\Controllers\Admin\AdminHomepageController;
 use App\Http\Controllers\Student\StudentDashboardController;
 use App\Http\Controllers\Student\PathController as StudentPathController;
 use App\Http\Controllers\Student\LessonController as StudentLessonController;
@@ -22,9 +23,29 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', function () {
+    $defaults = config('homepage');
+    $saved = \App\Models\Setting::get('homepage_content');
+    $saved = is_string($saved) ? json_decode($saved, true) : $saved;
+    $content = is_array($saved) ? array_replace_recursive($defaults, $saved) : $defaults;
+
+    // Convert stored image paths to public URLs.
+    $url = fn ($p) => \App\Http\Controllers\Admin\AdminHomepageController::imageUrl($p);
+    $content['brand']['logo']   = $url($content['brand']['logo'] ?? null);
+    $content['hero']['image']   = $url($content['hero']['image'] ?? null);
+    $content['cta']['image_left']  = $url($content['cta']['image_left'] ?? null);
+    $content['cta']['image_right'] = $url($content['cta']['image_right'] ?? null);
+    $content['footer']['logo']  = $url($content['footer']['logo'] ?? null);
+    foreach ($content['features'] as $i => $f) {
+        $content['features'][$i]['image'] = $url($f['image'] ?? null);
+    }
+    foreach ($content['testimonials'] as $i => $t) {
+        $content['testimonials'][$i]['avatar'] = $url($t['avatar'] ?? null);
+    }
+
     return Inertia::render('Welcome', [
         'canLogin'    => Route::has('login'),
         'canRegister' => Route::has('register'),
+        'content'     => $content,
     ]);
 });
 
@@ -92,6 +113,10 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Settings
     Route::get('/settings',  [AdminSettingsController::class, 'index'])->name('settings');
     Route::post('/settings', [AdminSettingsController::class, 'update'])->name('settings.update');
+
+    // Homepage content editor
+    Route::get('/homepage',  [AdminHomepageController::class, 'index'])->name('homepage');
+    Route::post('/homepage', [AdminHomepageController::class, 'update'])->name('homepage.update');
 
     // Student Progress
     Route::get('/students/progress', [AdminStudentProgressController::class, 'index'])->name('students.progress');
