@@ -18,7 +18,6 @@ use App\Http\Controllers\Parent\BillingController as ParentBillingController;
 use App\Http\Controllers\Parent\TicketController as ParentTicketController;
 use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\AdminStudentProgressController;
-use App\Http\Controllers\Teacher\TeacherDashboardController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -30,7 +29,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return Inertia::render('Dashboard');
+    return redirect()->route(auth()->user()->homeRoute());
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 // ── Admin Routes ───────────────────────────────────────────────
@@ -147,11 +146,6 @@ Route::prefix('parent')->name('parent.')->middleware(['auth', 'role:parent'])->g
     Route::post('/tickets', [ParentTicketController::class, 'store'])->name('tickets.store');
     Route::post('/tickets/{ticket}/reply', [ParentTicketController::class, 'reply'])->name('tickets.reply');
     Route::post('/tickets/{ticket}/review', [ParentTicketController::class, 'review'])->name('tickets.review');
-});
-
-// ── Teacher Routes ─────────────────────────────────────────────
-Route::prefix('teacher')->name('teacher.')->middleware(['auth', 'role:teacher'])->group(function () {
-    Route::get('/', [TeacherDashboardController::class, 'index'])->name('dashboard');
 });
 
 Route::middleware('auth')->group(function () {

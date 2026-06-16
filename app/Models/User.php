@@ -80,7 +80,6 @@ class User extends Authenticatable
     {
         return match ($this->role) {
             'admin' => 'admin.dashboard',
-            'teacher' => 'teacher.dashboard',
             'parent' => 'parent.dashboard',
             default => 'student.dashboard',
         };

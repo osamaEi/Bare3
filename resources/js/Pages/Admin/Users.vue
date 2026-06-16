@@ -196,22 +196,6 @@
               <div v-else class="view-empty"><i class="fa-solid fa-children"></i> لا يوجد أبناء مرتبطون</div>
             </template>
 
-            <!-- ── TEACHER VIEW ── -->
-            <template v-else-if="modal.user.role === 'teacher'">
-              <div class="view-section">
-                <div class="view-section-title"><i class="fa-solid fa-circle-info"></i> معلومات المعلم</div>
-                <div class="info-grid">
-                  <div class="info-item"><span class="info-label">البريد</span><span class="info-val">{{ modal.user.email }}</span></div>
-                  <div class="info-item"><span class="info-label">تاريخ الانضمام</span><span class="info-val">{{ modal.user.joined }}</span></div>
-                  <div class="info-item"><span class="info-label">الحالة</span><span class="info-val">{{ statusLabel(modal.user.status) }}</span></div>
-                </div>
-              </div>
-              <div class="teacher-icon-box">
-                <i class="fa-solid fa-chalkboard-user"></i>
-                <p>حساب معلم — لا توجد بيانات إضافية حالياً</p>
-              </div>
-            </template>
-
           </template>
 
           <!-- ══ ADD / EDIT MODE ══ -->
@@ -230,7 +214,6 @@
                 <select v-model="form.role" class="form-input">
                   <option value="student">طالب</option>
                   <option value="parent">ولي أمر</option>
-                  <option value="teacher">معلم</option>
                 </select>
               </div>
               <div class="form-group">
@@ -272,8 +255,7 @@ import AdminLayout from '@/Layouts/AdminLayout.vue'
 const props = defineProps({
   students: { type: Object, default: () => ({ data: [] }) },
   parents:  { type: Object, default: () => ({ data: [] }) },
-  teachers: { type: Object, default: () => ({ data: [] }) },
-  counts:   { type: Object, default: () => ({ students: 0, parents: 0, teachers: 0, active: 0 }) },
+  counts:   { type: Object, default: () => ({ students: 0, parents: 0, active: 0 }) },
   filters:  { type: Object, default: () => ({}) },
 })
 
@@ -299,24 +281,22 @@ const mapUser = (u) => ({
   children: (u.children ?? []).map(c => ({ ...c, enrollments: c.enrollments ?? [] })),
 })
 
-const paginatorFor = (key) => (key === 'students' ? props.students : key === 'parents' ? props.parents : props.teachers)
+const paginatorFor = (key) => (key === 'students' ? props.students : props.parents)
 const currentPaginator = computed(() => paginatorFor(activeTab.value))
 const currentTabUsers = computed(() => (currentPaginator.value?.data ?? []).map(mapUser))
 
 const tabs = computed(() => [
   { key: 'students', label: 'الطلاب',        icon: 'fa-solid fa-graduation-cap',  count: props.counts.students },
   { key: 'parents',  label: 'أولياء الأمور', icon: 'fa-solid fa-people-roof',     count: props.counts.parents },
-  { key: 'teachers', label: 'المعلمون',       icon: 'fa-solid fa-chalkboard-user', count: props.counts.teachers },
 ])
 
 const userStats = computed(() => [
   { label: 'الطلاب',         value: props.counts.students, icon: 'fa-solid fa-graduation-cap',  color: '#38BDF8' },
   { label: 'أولياء الأمور', value: props.counts.parents,  icon: 'fa-solid fa-people-roof',     color: '#8B5CF6' },
-  { label: 'المعلمون',       value: props.counts.teachers, icon: 'fa-solid fa-chalkboard-user', color: '#16A34A' },
   { label: 'النشطون',        value: props.counts.active,   icon: 'fa-solid fa-circle-check',    color: '#EC4899' },
 ])
 
-const totalUsers = computed(() => props.counts.students + props.counts.parents + props.counts.teachers)
+const totalUsers = computed(() => props.counts.students + props.counts.parents)
 
 // Server already filters by search/status; show current page rows
 const filteredUsers = computed(() => currentTabUsers.value)

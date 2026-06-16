@@ -24,11 +24,9 @@ class AdminUserController extends Controller
         return Inertia::render('Admin/Users', [
             'students' => $this->users->allByRole('student', $filters),
             'parents' => $this->users->allByRole('parent', $filters),
-            'teachers' => $this->users->allByRole('teacher', $filters),
             'counts' => [
                 'students' => $this->users->countByRole('student'),
                 'parents' => $this->users->countByRole('parent'),
-                'teachers' => $this->users->countByRole('teacher'),
                 'active' => $this->users->countActive(),
             ],
             'filters' => $filters,
