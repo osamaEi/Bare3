@@ -177,7 +177,10 @@
       <div class="two-col">
         <!-- Badges -->
         <div class="info-card">
-          <div class="section-title"><i class="fa-solid fa-medal"></i> الشارات المكتسبة</div>
+          <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-medal"></i> الشارات المكتسبة</div>
+            <button class="btn-grant" @click="badgeModal = true"><i class="fa-solid fa-plus"></i> منح شارة</button>
+          </div>
           <div v-if="badges.length === 0" class="empty-sm">لا توجد شارات بعد</div>
           <div v-else class="badges-grid">
             <div v-for="b in badges" :key="b.id" class="badge-item">
@@ -190,7 +193,10 @@
 
         <!-- Certificates -->
         <div class="info-card">
-          <div class="section-title"><i class="fa-solid fa-certificate"></i> الشهادات</div>
+          <div class="section-head">
+            <div class="section-title"><i class="fa-solid fa-certificate"></i> الشهادات</div>
+            <button class="btn-grant" @click="certModal = true" :disabled="enrollments.length === 0"><i class="fa-solid fa-plus"></i> إصدار شهادة</button>
+          </div>
           <div v-if="certificates.length === 0" class="empty-sm">لا توجد شهادات بعد</div>
           <div v-else class="certs-list">
             <div v-for="c in certificates" :key="c.id" class="cert-item">
@@ -206,23 +212,75 @@
       </div>
 
     </div>
+
+    <!-- Grant Badge Modal -->
+    <div v-if="badgeModal" class="modal-bg" @click.self="badgeModal = false">
+      <div class="modal">
+        <h3 class="modal-title">منح شارة للطالب</h3>
+        <div class="field">
+          <label>اختر الشارة</label>
+          <select v-model="badgeForm.badge_id" class="inp">
+            <option :value="null" disabled>— اختر شارة —</option>
+            <option v-for="b in available_badges" :key="b.id" :value="b.id">{{ b.name }}<span v-if="b.path"> — {{ b.path }}</span></option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="badgeModal = false">إلغاء</button>
+          <button class="btn-confirm" :disabled="!badgeForm.badge_id || badgeForm.processing" @click="grantBadge">منح الشارة</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grant Certificate Modal -->
+    <div v-if="certModal" class="modal-bg" @click.self="certModal = false">
+      <div class="modal">
+        <h3 class="modal-title">إصدار شهادة للطالب</h3>
+        <div class="field">
+          <label>اختر المسار</label>
+          <select v-model="certForm.enrollment_id" class="inp">
+            <option :value="null" disabled>— اختر مسار —</option>
+            <option v-for="e in enrollments" :key="e.id" :value="e.id">{{ e.path_title }} ({{ e.progress }}%)</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="certModal = false">إلغاء</button>
+          <button class="btn-confirm" :disabled="!certForm.enrollment_id || certForm.processing" @click="grantCertificate">إصدار الشهادة</button>
+        </div>
+      </div>
+    </div>
   </AdminLayout>
 </template>
 
 <script setup>
-import { reactive } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { ref, reactive } from 'vue'
+import { Link, useForm } from '@inertiajs/vue3'
 import AdminLayout from '@/Layouts/AdminLayout.vue'
 
-defineProps({
-  student:      Object,
-  enrollments:  Array,
-  badges:       Array,
-  certificates: Array,
-  summary:      Object,
+const props = defineProps({
+  student:          Object,
+  enrollments:      Array,
+  badges:           Array,
+  certificates:     Array,
+  summary:          Object,
+  available_badges: { type: Array, default: () => [] },
 })
 
 const expanded = reactive(new Set())
+
+// Grant badge / certificate
+const badgeModal = ref(false)
+const certModal = ref(false)
+const badgeForm = useForm({ badge_id: null })
+const certForm = useForm({ enrollment_id: null })
+
+const grantBadge = () => badgeForm.post(route('admin.students.grant-badge', props.student.id), {
+  preserveScroll: true,
+  onSuccess: () => { badgeModal.value = false; badgeForm.reset() },
+})
+const grantCertificate = () => certForm.post(route('admin.students.grant-certificate', props.student.id), {
+  preserveScroll: true,
+  onSuccess: () => { certModal.value = false; certForm.reset() },
+})
 function toggle(id) {
   expanded.has(id) ? expanded.delete(id) : expanded.add(id)
 }
@@ -336,6 +394,23 @@ function formatDt(d) {
 .empty-sm { color: #94A3B8; font-size: .85rem; font-weight: 600; padding: .5rem 0; }
 
 /* Badges */
+.section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .3rem; }
+.btn-grant { background: #EFF6FF; color: #0E7490; border: 1.5px solid #7DD3F8; font-family: inherit; font-weight: 700; font-size: .78rem; padding: .4rem .9rem; border-radius: 9px; cursor: pointer; display: inline-flex; align-items: center; gap: .35rem; white-space: nowrap; }
+.btn-grant:hover:not(:disabled) { background: #DBEAFE; }
+.btn-grant:disabled { opacity: .5; cursor: not-allowed; }
+
+.modal-bg { position: fixed; inset: 0; background: rgba(15,23,42,.5); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 1rem; }
+.modal { background: #fff; border-radius: 16px; padding: 1.6rem; width: 100%; max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,.2); }
+.modal-title { font-size: 1.15rem; font-weight: 900; color: #1E293B; margin-bottom: 1.2rem; }
+.modal .field { display: flex; flex-direction: column; gap: .4rem; margin-bottom: 1.2rem; }
+.modal .field label { font-size: .82rem; font-weight: 700; color: #475569; }
+.modal .inp { padding: .65rem .9rem; border: 1.5px solid #E2E8F0; border-radius: 10px; font-family: inherit; font-size: .9rem; color: #1E293B; }
+.modal .inp:focus { outline: none; border-color: #38BDF8; }
+.modal-actions { display: flex; justify-content: flex-end; gap: .6rem; }
+.btn-cancel { background: #F1F5F9; color: #475569; border: none; font-family: inherit; font-weight: 700; font-size: .85rem; padding: .6rem 1.3rem; border-radius: 10px; cursor: pointer; }
+.btn-confirm { background: #16A34A; color: #fff; border: none; font-family: inherit; font-weight: 700; font-size: .85rem; padding: .6rem 1.3rem; border-radius: 10px; cursor: pointer; }
+.btn-confirm:disabled { opacity: .5; cursor: not-allowed; }
+
 .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: .75rem; margin-top: .5rem; }
 .badge-item { text-align: center; background: #F8FAFC; border-radius: 10px; padding: .8rem .5rem; }
 .badge-icon { font-size: 1.6rem; margin-bottom: .3rem; }

@@ -3,10 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Badge;
 use App\Models\Enrollment;
 use App\Models\LessonProgress;
+use App\Models\Notification;
 use App\Models\QuizAttempt;
+use App\Models\StudentBadge;
 use App\Models\User;
+use App\Services\AchievementService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -128,6 +133,11 @@ class AdminStudentProgressController extends Controller
             'enrollments'  => $enrollments,
             'badges'       => $badges,
             'certificates' => $certificates,
+            'available_badges' => Badge::with('path')->get()->map(fn ($b) => [
+                'id'   => $b->id,
+                'name' => $b->name,
+                'path' => $b->path?->title,
+            ]),
             'summary'      => [
                 'total_enrollments'    => $enrollments->count(),
                 'completed_enrollments' => $enrollments->where('status', 'completed')->count(),
@@ -138,6 +148,64 @@ class AdminStudentProgressController extends Controller
                 'quiz_attempts'        => QuizAttempt::where('student_id', $student->id)->count(),
                 'quiz_passed'          => QuizAttempt::where('student_id', $student->id)->where('passed', true)->count(),
             ],
+        ]);
+    }
+
+    /** Manually grant a badge to a student. */
+    public function grantBadge(Request $request, User $student): RedirectResponse
+    {
+        abort_unless($student->role === 'student', 404);
+
+        $data = $request->validate(['badge_id' => 'required|exists:badges,id']);
+
+        $already = StudentBadge::where('student_id', $student->id)
+            ->where('badge_id', $data['badge_id'])->exists();
+
+        if ($already) {
+            return back()->with('success', 'الطالب حاصل على هذه الشارة بالفعل');
+        }
+
+        StudentBadge::create([
+            'student_id' => $student->id,
+            'badge_id'   => $data['badge_id'],
+            'earned_at'  => now(),
+            'seen'       => false,
+        ]);
+
+        $badge = Badge::find($data['badge_id']);
+        $this->notify($student, $request->user()->id, 'success', 'حصلت على شارة جديدة! 🏅', "تهانينا! منحك المشرف شارة \"{$badge->name}\".");
+
+        return back()->with('success', 'تم منح الشارة بنجاح');
+    }
+
+    /** Manually issue a certificate for one of the student's enrollments. */
+    public function grantCertificate(Request $request, User $student, AchievementService $achievements): RedirectResponse
+    {
+        abort_unless($student->role === 'student', 404);
+
+        $data = $request->validate(['enrollment_id' => 'required|exists:enrollments,id']);
+
+        $enrollment = Enrollment::with('path')
+            ->where('id', $data['enrollment_id'])
+            ->where('student_id', $student->id)
+            ->firstOrFail();
+
+        $achievements->issueCertificate($student, $enrollment);
+
+        $this->notify($student, $request->user()->id, 'success', 'حصلت على شهادة جديدة! 🎓', "تهانينا! تم إصدار شهادة إتمام مسار \"{$enrollment->path->title}\".");
+
+        return back()->with('success', 'تم إصدار الشهادة بنجاح');
+    }
+
+    private function notify(User $student, int $adminId, string $type, string $title, string $body): void
+    {
+        Notification::create([
+            'user_id'  => $student->id,
+            'sent_by'  => $adminId,
+            'title'    => $title,
+            'body'     => $body,
+            'type'     => $type,
+            'audience' => 'user',
         ]);
     }
 }

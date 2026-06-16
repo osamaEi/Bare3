@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\DatabaseNotification;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
@@ -138,7 +137,6 @@ class User extends Authenticatable
 
     public function notifications()
     {
-        return $this->morphMany(DatabaseNotification::class, 'notifiable')
-            ->orderBy('created_at', 'desc');
+        return $this->hasMany(Notification::class)->latest();
     }
 }

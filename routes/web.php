@@ -19,6 +19,8 @@ use App\Http\Controllers\Parent\BillingController as ParentBillingController;
 use App\Http\Controllers\Parent\TicketController as ParentTicketController;
 use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\AdminStudentProgressController;
+use App\Http\Controllers\Admin\AdminNotificationController;
+use App\Http\Controllers\Student\NotificationController as StudentNotificationController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -121,11 +123,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     // Student Progress
     Route::get('/students/progress', [AdminStudentProgressController::class, 'index'])->name('students.progress');
     Route::get('/students/{student}/progress', [AdminStudentProgressController::class, 'show'])->name('students.progress.show');
+    Route::post('/students/{student}/grant-badge', [AdminStudentProgressController::class, 'grantBadge'])->name('students.grant-badge');
+    Route::post('/students/{student}/grant-certificate', [AdminStudentProgressController::class, 'grantCertificate'])->name('students.grant-certificate');
 
     // Tickets
     Route::get('/tickets', [AdminTicketController::class, 'index'])->name('tickets');
     Route::post('/tickets/{ticket}/reply', [AdminTicketController::class, 'reply'])->name('tickets.reply');
     Route::patch('/tickets/{ticket}/close', [AdminTicketController::class, 'close'])->name('tickets.close');
+
+    // Notifications
+    Route::get('/notifications',  [AdminNotificationController::class, 'index'])->name('notifications');
+    Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
+    Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
 
     // Legacy aliases (keep sidebar links working)
     Route::get('/users',    [AdminUserController::class,    'index'])->name('users');
@@ -154,6 +163,11 @@ Route::prefix('student')->name('student.')->middleware(['auth', 'role:student'])
     Route::get('/badges',                      [StudentBadgeController::class, 'index'])->name('badges');
     Route::get('/certificates',                [StudentCertificateController::class, 'index'])->name('certificates');
     Route::get('/certificates/{certificate}/download', [StudentCertificateController::class, 'download'])->name('certificates.download');
+
+    // Notifications
+    Route::get('/notifications',                [StudentNotificationController::class, 'index'])->name('notifications');
+    Route::patch('/notifications/{id}/read',    [StudentNotificationController::class, 'markRead'])->name('notifications.read');
+    Route::patch('/notifications/read-all',     [StudentNotificationController::class, 'markAllRead'])->name('notifications.readAll');
 });
 
 // Public certificate verification (QR target)

@@ -32,6 +32,10 @@
           <div class="nav-icon" style="background:var(--lime-light);color:var(--lime-dark)"><span class="mi">verified</span></div>
           شهاداتي
         </Link>
+        <Link :href="route('student.notifications')" class="nav-item" :class="{ active: isActive('student.notifications') }">
+          <div class="nav-icon" style="background:var(--sky-light);color:var(--sky-dark)"><span class="mi">notifications</span></div>
+          الإشعارات
+        </Link>
 
         <div class="sb-nav-label">أخرى</div>
         <Link :href="route('profile.edit')" class="nav-item">
