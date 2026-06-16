@@ -6,21 +6,21 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
 </script>
 
 <template>
-    <Head title="دخول المعلم" />
-    <div class="auth-page teacher" dir="rtl">
+    <Head title="دخول ولي الأمر" />
+    <div class="auth-page parent" dir="rtl">
         <div class="blob blob1"></div>
         <div class="blob blob2"></div>
 
         <div class="auth-card">
             <Link href="/" class="auth-logo"><img src="/images/logo.png" alt="بارع" /></Link>
-            <div class="role-chip"><span class="mi">chalkboard_teacher</span> بوابة المعلم</div>
-            <h1 class="auth-title">مرحباً أستاذنا 👨‍🏫</h1>
-            <p class="auth-sub">سجّل دخولك لإدارة فصولك ومتابعة طلابك</p>
+            <div class="role-chip"><span class="mi">family_restroom</span> بوابة ولي الأمر</div>
+            <h1 class="auth-title">أهلاً بك 👨‍👩‍👧</h1>
+            <p class="auth-sub">سجّل دخولك لمتابعة تقدّم أبنائك</p>
 
             <form @submit.prevent="submit">
                 <div class="field">
                     <label>البريد الإلكتروني</label>
-                    <input type="email" v-model="form.email" required autofocus placeholder="teacher@bare3.sa" />
+                    <input type="email" v-model="form.email" required autofocus placeholder="parent@bare3.sa" />
                     <span v-if="form.errors.email" class="field-error">{{ form.errors.email }}</span>
                 </div>
                 <div class="field">
@@ -48,15 +48,15 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 .mi { font-family:'Material Icons Round'; font-style:normal; vertical-align:middle; font-size:1.1rem; }
 
-.auth-page { --c:#16A34A; --c-dark:#15803D; --c-light:#F0FDF4;
+.auth-page { --c:#6D28D9; --c-dark:#4C1D95; --c-light:#F5F3FF;
     min-height:100vh; display:flex; align-items:center; justify-content:center; padding:1.5rem;
     font-family:'Baloo Bhaijaan 2', cursive; position:relative; overflow:hidden;
-    background:linear-gradient(135deg,#F0FDF4 0%,#E0F4FF 100%); }
+    background:linear-gradient(135deg,#F5F3FF 0%,#EEF2FF 100%); }
 .blob { position:absolute; border-radius:50%; pointer-events:none; }
 .blob1 { width:380px; height:380px; background:var(--c); opacity:.12; top:-90px; right:-90px; }
-.blob2 { width:300px; height:300px; background:#38BDF8; opacity:.12; bottom:-80px; left:-80px; }
+.blob2 { width:300px; height:300px; background:#8B5CF6; opacity:.12; bottom:-80px; left:-80px; }
 
-.auth-card { position:relative; z-index:1; background:#fff; width:100%; max-width:430px; border-radius:28px; padding:2.5rem 2.2rem; box-shadow:0 20px 60px rgba(21,128,61,.18); border:3px solid #fff; }
+.auth-card { position:relative; z-index:1; background:#fff; width:100%; max-width:430px; border-radius:28px; padding:2.5rem 2.2rem; box-shadow:0 20px 60px rgba(76,29,149,.18); border:3px solid #fff; }
 .auth-logo { display:block; text-align:center; margin-bottom:1rem; }
 .auth-logo img { width:110px; }
 .role-chip { display:inline-flex; align-items:center; gap:.4rem; background:var(--c-light); color:var(--c-dark); font-weight:800; font-size:.82rem; padding:.35rem 1rem; border-radius:50px; margin:0 auto 1rem; }

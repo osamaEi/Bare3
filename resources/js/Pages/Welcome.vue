@@ -22,9 +22,9 @@
           <span class="li-ic"><i class="fa-solid fa-child-reaching"></i></span>
           <span><span class="li-title">طالب</span><span class="li-sub">ابدأ مغامرة التعلّم</span></span>
         </a>
-        <a :href="route('login.teacher')" class="login-item teacher">
-          <span class="li-ic"><i class="fa-solid fa-chalkboard-user"></i></span>
-          <span><span class="li-title">معلم</span><span class="li-sub">أدِر فصولك وطلابك</span></span>
+        <a :href="route('login.parent')" class="login-item parent">
+          <span class="li-ic"><i class="fa-solid fa-user-group"></i></span>
+          <span><span class="li-title">ولي أمر</span><span class="li-sub">تابع تقدّم أبنائك</span></span>
         </a>
         <a :href="route('login.admin')" class="login-item admin">
           <span class="li-ic"><i class="fa-solid fa-shield-halved"></i></span>
@@ -672,7 +672,7 @@ nav ul a:hover { color: var(--sky-dark); }
 .login-item:hover { background: #F8FAFC; }
 .li-ic { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
 .login-item.student .li-ic { background: #E0F4FF; color: #0E7490; }
-.login-item.teacher .li-ic { background: #F0FDF4; color: #15803D; }
+.login-item.parent .li-ic { background: #F5F3FF; color: #6D28D9; }
 .login-item.admin .li-ic { background: #1E293B; color: #7DD3F8; }
 .li-title { display: block; font-weight: 800; font-size: .95rem; color: #1C1C2E; }
 .li-sub { display: block; font-size: .76rem; color: #94A3B8; font-weight: 600; }

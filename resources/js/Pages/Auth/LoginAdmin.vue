@@ -75,7 +75,7 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
                     <span>بوابات أخرى:</span>
                     <Link :href="route('login.student')">الطالب</Link>
                     <span class="dot">·</span>
-                    <Link :href="route('login.teacher')">المعلم</Link>
+                    <Link :href="route('login.parent')">ولي الأمر</Link>
                 </div>
             </div>
         </div>

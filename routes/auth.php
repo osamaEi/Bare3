@@ -21,7 +21,7 @@ Route::middleware('guest')->group(function () {
         ->name('login');
 
     Route::get('login/student', fn () => \Inertia\Inertia::render('Auth/LoginStudent'))->name('login.student');
-    Route::get('login/teacher', fn () => \Inertia\Inertia::render('Auth/LoginTeacher'))->name('login.teacher');
+    Route::get('login/parent',  fn () => \Inertia\Inertia::render('Auth/LoginParent'))->name('login.parent');
     Route::get('login/admin',   fn () => \Inertia\Inertia::render('Auth/LoginAdmin'))->name('login.admin');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);

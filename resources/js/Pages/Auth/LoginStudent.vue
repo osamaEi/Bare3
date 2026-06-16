@@ -36,7 +36,7 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
             </form>
 
             <div class="other-portals">
-                <Link :href="route('login.teacher')">دخول المعلم</Link>
+                <Link :href="route('login.parent')">دخول ولي الأمر</Link>
                 <span>·</span>
                 <Link :href="route('login.admin')">دخول الإدارة</Link>
             </div>
