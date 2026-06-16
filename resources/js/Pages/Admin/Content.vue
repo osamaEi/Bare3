@@ -184,9 +184,18 @@
 
     <!-- SCORM MODAL -->
     <Modal :open="modal === 'scorm'" title="ملف SCORM" @close="modal = null">
+      <div class="scorm-info">
+        <i class="fa-solid fa-circle-info"></i>
+        <div>
+          <p class="si-title">النشاط التفاعلي (SCORM) خيار اختياري</p>
+          <p class="si-text">لو معندكش حزمة جاهزة، يكفي تضيف <b>اختبار</b> للدرس. حزمة SCORM هي ملف ZIP بيتصدّر من أدوات زي Articulate Storyline / Rise أو iSpring أو H5P، أو بتيجي جاهزة من مزوّد المحتوى.</p>
+          <p class="si-text">عندك حزمة تجريبية جاهزة للتجربة في مجلد <code>scorm_demo</code> بالمشروع.</p>
+        </div>
+      </div>
+
       <div class="fg"><label>العنوان</label><input v-model="scormForm.title" class="inp" /></div>
       <div class="grid2">
-        <div class="fg"><label>الإصدار</label>
+        <div class="fg"><label>الإصدار <span style="color:#94A3B8;font-weight:500">(غالبًا 1.2 — لو مش متأكد سيبها 1.2)</span></label>
           <select v-model="scormForm.version" class="inp"><option value="1.2">SCORM 1.2</option><option value="2004">SCORM 2004</option></select>
         </div>
         <div class="fg">
@@ -213,7 +222,7 @@
           <template v-else>
             <i class="fa-solid fa-cloud-arrow-up up-ic"></i>
             <span class="up-title">اسحب ملف ZIP هنا أو اضغط للاختيار</span>
-            <span class="up-hint">حزمة SCORM مضغوطة — حد أقصى ١٠٠ ميجابايت</span>
+            <span class="up-hint">حزمة SCORM 1.2 أو 2004 (تحتوي على imsmanifest.xml) — حد أقصى ١٠٠ ميجابايت</span>
           </template>
         </div>
       </div>
@@ -608,6 +617,12 @@ Errors.props = ['form']
 .modal-overlay .up-ic { font-size: 2.2rem; color: #8B5CF6; }
 .modal-overlay .up-title { font-weight: 700; color: #475569; font-size: .9rem; }
 .modal-overlay .up-hint { font-size: .76rem; color: #94A3B8; }
+.modal-overlay .scorm-info { display: flex; gap: .7rem; background: #FAF5FF; border: 1px solid #E9D5FF; border-radius: 12px; padding: .85rem 1rem; margin-bottom: 1.1rem; }
+.modal-overlay .scorm-info > i { color: #8B5CF6; font-size: 1.05rem; margin-top: .15rem; flex-shrink: 0; }
+.modal-overlay .si-title { font-weight: 800; color: #6D28D9; font-size: .86rem; margin: 0 0 .35rem; }
+.modal-overlay .si-text { font-size: .78rem; color: #64748B; line-height: 1.6; margin: 0 0 .3rem; }
+.modal-overlay .si-text:last-child { margin-bottom: 0; }
+.modal-overlay .si-text code { background: #EDE9FE; color: #6D28D9; padding: .05rem .35rem; border-radius: 5px; font-size: .74rem; }
 .modal-overlay .up-name { font-weight: 700; color: #1E293B; font-size: .9rem; word-break: break-all; }
 .modal-overlay .up-size { font-size: .76rem; color: #94A3B8; }
 .modal-overlay .up-existing { font-size: .8rem; color: #15803D; font-weight: 700; margin-top: .5rem; display: flex; align-items: center; gap: .4rem; }
