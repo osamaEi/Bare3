@@ -1,21 +1,26 @@
 <template>
 <div>
 
+<!-- Support Chat Widget -->
+<SupportChat />
+
+
 <!-- NAVBAR -->
+
 <nav>
   <div class="nav-inner">
     <div class="nav-logo" style="display:flex; align-items:center; gap:.4rem;">
       <img :src="c.brand.logo" style="width: 200px;" alt="">
     </div>
     <ul>
-      <li v-for="(item, i) in c.nav" :key="i"><a :href="item.href">{{ item.label }}</a></li>
+      <li><a href="/">الرئيسية</a></li>
       <li><a :href="route('subscribe')">الاشتراك</a></li>
       <li><a :href="route('about')">عن المعهد</a></li>
       <li><a :href="route('contact')">تواصل معنا</a></li>
     </ul>
     <div class="login-dd" ref="loginDd">
       <button class="btn-nav" @click="loginOpen = !loginOpen">
-        🧩 تسجيل الدخول <i class="fa-solid fa-chevron-down" :class="{ open: loginOpen }"></i>
+         تسجيل الدخول <i class="fa-solid fa-chevron-down" :class="{ open: loginOpen }"></i>
       </button>
       <div class="login-menu" v-if="loginOpen">
         <a :href="route('login.student')" class="login-item student">
@@ -36,7 +41,7 @@
 </nav>
 
 <!-- HERO -->
-<section class="hero">
+<section class="hero pb-8">
   <div class="hero-blob1"></div>
   <div class="hero-blob2"></div>
   <div class="hero-blob3"></div>
@@ -67,11 +72,7 @@
       <img :src="c.hero.image" alt="شخصيات كرتونية" />
     </div>
   </div>
-  <div class="wave" style="margin-top: 2rem;">
-    <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
-      <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#F8FAFC"/>
-    </svg>
-  </div>
+ 
 </section>
 
 
@@ -138,12 +139,6 @@
 </section>
 
 
-<!-- wave -->
-<div style="background:var(--light)">
-  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#F8FAFC"/>
-  </svg>
-</div>
 
 <!-- PRICING -->
 <section id="pricing">
@@ -170,12 +165,7 @@
   </div>
 </section>
 
-<!-- wave -->
-<div style="background:var(--grad-pricing)">
-  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,30 C200,70 400,-10 600,30 C800,70 1000,-10 1200,30 L1200,60 L0,60 Z" fill="#F8FAFC"/>
-  </svg>
-</div>
+
 
 <!-- PARENTS -->
 <section id="parents">
@@ -188,17 +178,12 @@
     <div v-for="(p, i) in c.parents" :key="i" class="parent-card" :class="p.color">
       <div class="parent-icon"><i :class="p.icon"></i></div>
       <h4>{{ p.title }}</h4>
-      <p>{{ p.desc }}</p>
+      <p >{{ p.desc }}</p>
     </div>
   </div>
 </section>
 
-<!-- wave -->
-<div style="background:var(--light)">
-  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,20 C200,70 400,0 600,40 C800,80 1000,10 1200,50 L1200,60 L0,60 Z" fill="#FCE7F3"/>
-  </svg>
-</div>
+
 
 <!-- REVIEWS -->
 <section id="reviews">
@@ -215,18 +200,13 @@
       <p>{{ t.comment }}</p>
       <div class="review-author">
         <img :src="t.avatar" class="review-avatar" alt="">
-        <div><div class="review-name" :style="t.featured ? 'color:#fff' : ''">{{ t.name }}</div><div class="review-loc">{{ t.loc }}</div></div>
+        <div><div class="review-name" >{{ t.name }}</div><div class="review-loc">{{ t.loc }}</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- wave -->
-<div style="background:linear-gradient(135deg,var(--sky-light) 0%,var(--pink-light) 100%)">
-  <svg viewBox="0 0 1200 80" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:60px;display:block;">
-    <path d="M0,60 C150,10 350,80 600,30 C850,-20 1050,60 1200,20 L1200,80 L0,80 Z" fill="#FCE7F3"/>
-  </svg>
-</div>
+
 
 <!-- FAQ -->
 <section id="faq">
@@ -245,39 +225,30 @@
   </div>
 </section>
 
-<!-- wave -->
-<div style="background:linear-gradient(135deg,var(--pink-light) 0%,var(--sky-light) 100%)">
-  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,40 C300,0 500,80 750,30 C900,0 1050,60 1200,20 L1200,60 L0,60 Z" fill="url(#ctaGrad)"/>
-    <defs><linearGradient id="ctaGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#38BDF8"/><stop offset="100%" style="stop-color:#38BDF8"/>
-    </linearGradient></defs>
-  </svg>
-</div>
 
 <!-- CTA -->
-<section id="cta" class="py-16">
+<section id="cta" class="py-2">
   <div class="relative z-[1] max-w-6xl mx-auto px-6">
-    <div class="grid grid-cols-3 items-center gap-6 md:grid-cols-3 grid-cols-1">
+    <div class="grid grid-cols-1 md:grid-cols-5 items-center gap-6">
 
       <!-- الصورة اليسار - مخفية على الموبايل -->
       <div class="justify-center hidden md:flex" data-aos="fade-right">
-        <img :src="c.cta.image_left" alt="طفل يتعلم" class="w-52 lg:w-52 md:w-36">
+        <img :src="c.cta.image_left" alt="طفل يتعلم" class="w-36 lg:w-52">
       </div>
 
       <!-- النص -->
-      <div class="text-center px-6 col-span-1 md:col-span-1 col-span-3" data-aos="fade-up">
-        <h2 class="text-6xl md:text-5xl sm:text-4xl text-3xl font-bold mb-6 leading-tight">
+      <div class="text-center px-2 sm:px-6 md:col-span-3" data-aos="fade-up">
+        <h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
           {{ c.cta.title }}
         </h2>
 
         <!-- الصورتين جنب بعض على الموبايل فقط -->
-        <div class="flex justify-center gap-6 mb-6 md:hidden">
-          <img :src="c.cta.image_left" alt="طفل يتعلم" class="w-28">
-          <img :src="c.cta.image_right" alt="طفلة تتعلم" class="w-28">
+        <div class="flex justify-center gap-4 sm:gap-6 mb-6 md:hidden">
+          <img :src="c.cta.image_left" alt="طفل يتعلم" class="w-24 sm:w-28">
+          <img :src="c.cta.image_right" alt="طفلة تتعلم" class="w-24 sm:w-28">
         </div>
 
-        <p class="text-2xl md:text-xl sm:text-lg text-base mb-8 leading-relaxed">
+        <p class="text-base sm:text-lg md:text-xl lg:text-2xl mb-8 leading-relaxed">
           {{ c.cta.desc }}
         </p>
         <button class="btn-cta">
@@ -287,19 +258,14 @@
 
       <!-- الصورة اليمين - مخفية على الموبايل -->
       <div class="justify-center hidden md:flex" data-aos="fade-left">
-        <img :src="c.cta.image_right" alt="طفلة تتعلم" class="w-52 lg:w-52 md:w-36">
+        <img :src="c.cta.image_right" alt="طفلة تتعلم" class="w-36 lg:w-52">
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- wave cta → footer -->
-<div style="background:#38BDF8">
-  <svg viewBox="0 0 1200 60" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none" style="width:100%;height:50px;display:block;">
-    <path d="M0,0 C400,60 800,0 1200,40 L1200,60 L0,60 Z" fill="#ffff"/>
-  </svg>
-</div>
+
 
 <!-- FOOTER -->
 <footer>
@@ -352,6 +318,7 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import SupportChat from '../Components/SupportChat.vue'
 
 const props = defineProps({
   canLogin: Boolean,
@@ -485,7 +452,10 @@ nav { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border-bo
 nav ul { display: flex; gap: 2rem; }
 nav ul a { font-weight: 700; font-size: 1rem; color: var(--dark); transition: color .2s; }
 nav ul a:hover { color: var(--sky-dark); }
-.btn-nav { background: var(--pink); color: #fff; font-family: inherit; font-weight: 800; font-size: 1rem; padding: .7rem 1.6rem; border-radius: 50px; border: none; cursor: pointer; transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
+.btn-nav { background: var(--pink); color: #fff; 
+font-family: inherit; font-weight: 800; font-size: 1rem;
+ padding: .6rem 1.6rem; border-radius: 50px;
+  border: none; cursor: pointer; transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 0 rgba(0,0,0,.3); }
 .btn-nav:hover { transform: translateY(-2px); }
 .btn-nav:active { transform: translateY(1px); box-shadow: 0 2px 0 rgba(0,0,0,.3); }
 .btn-nav i { font-size: .8rem; transition: transform .2s; }
@@ -507,7 +477,7 @@ nav ul a:hover { color: var(--sky-dark); }
 .li-title { display: block; font-weight: 800; font-size: .95rem; color: #1C1C2E; }
 .li-sub { display: block; font-size: .76rem; color: #94A3B8; font-weight: 600; }
 
-.hero { background: var(--grad-hero); padding: 5rem 2rem 0; position: relative; overflow: hidden; }
+.hero { background: var(--grad-hero); padding: 5rem 2rem 2rem; position: relative; overflow: hidden; }
 .hero-blob1 { position: absolute; width: 380px; height: 380px; border-radius: 50%; background: var(--sky); opacity: .12; top: -80px; right: -80px; pointer-events: none; }
 .hero-blob2 { position: absolute; width: 280px; height: 280px; border-radius: 50%; background: var(--pink); opacity: .12; bottom: -60px; left: -60px; pointer-events: none; }
 .hero-blob3 { position: absolute; width: 200px; height: 200px; border-radius: 50%; background: var(--lime); opacity: .1; top: 40%; left: 40%; pointer-events: none; }
@@ -517,8 +487,8 @@ nav ul a:hover { color: var(--sky-dark); }
 .badge-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--pink); animation: blink 1.4s ease-in-out infinite; }
 @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.2} }
 h1 { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.3; margin-bottom: 1.2rem; }
-.hl-sky { display: inline-block; background: var(--sky); color: var(--white); padding: 4px .35em; border-radius: 12px; transform: rotate(-1.5deg); }
-.hl-pink { display: inline-block; background: var(--pink); color: var(--white); padding: 6px .35em; border-radius: 12px; transform: rotate(1.5deg); }
+.hl-sky { display: inline-block; background: var(--sky); color: var(--white); padding: 4px .35em 9px; border-radius: 12px; transform: rotate(-1.5deg); margin-left: .2rem; }
+.hl-pink { display: inline-block; background: var(--pink); color: var(--white); padding: 6px .35em 11px; border-radius: 12px; transform: rotate(1.5deg); margin-right: .2rem; }
 .crown { color: var(--sky); font-size: 2rem; vertical-align: middle; }
 .hero-desc { font-size: 1.15rem; color: var(--gray); line-height: 1.8; max-width: 440px; margin-bottom: 2rem; }
 .hero-btns { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
@@ -538,8 +508,6 @@ h1 { font-size: clamp(2.6rem, 5vw, 3.6rem); font-weight: 800; line-height: 1.3; 
 .hero-img { flex: 1; min-width: 260px; display: flex; justify-content: center; }
 .hero-img img { width: 460px; max-width: 100%; animation: float 4s ease-in-out infinite; }
 @keyframes float { 0%,100%{transform:translateY(0) rotate(-1deg)} 50%{transform:translateY(-20px) rotate(1deg)} }
-.wave { display: block; }
-.wave svg { display: block; width: 100%; height: 60px; }
 
 #features { padding: 5rem 2rem; background: var(--light); position: relative; }
 .section-tag { display: inline-flex; align-items: center; gap: .6rem; background: var(--white); padding: .5rem 1.6rem; border-radius: 2rem; font-weight: 800; font-size: 1.1rem; box-shadow: 0 2px 12px rgba(236,72,153,.15); margin-bottom: 1rem; color: var(--sky-dark); }
@@ -560,7 +528,7 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5r
 .feat-card.c3 .feat-icon { background: var(--pink-light); color: var(--pink-dark); }
 .feat-card.c4 .feat-icon { background: var(--sky-light); color: var(--sky-dark); }
 .feat-card h3 { font-size: 1.2rem; font-weight: 800; margin-bottom: .5rem; }
-.feat-card p { color: var(--gray); line-height: 1.7; font-size: .95rem; }
+.feat-card p { color: var(--gray); line-height: 1.7; font-size: 1.2rem; }
 
 #pricing { padding: 5rem 2rem; background: var(--grad-pricing); }
 .pricing-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; align-items: center; }
@@ -598,7 +566,7 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5r
 .parent-card.pink .parent-icon { background: var(--pink-light); color: var(--pink-dark); }
 .parent-card.lime .parent-icon { background: var(--lime-light); color: var(--lime-dark); }
 .parent-card h4 { font-size: 1.1rem; font-weight: 800; margin-bottom: .5rem; }
-.parent-card p { color: var(--gray); font-size: .9rem; line-height: 1.7; }
+.parent-card p { color: var(--gray); font-size: 1.2rem; line-height: 1.7; }
 
 #reviews { padding: 5rem 2rem; background: linear-gradient(135deg, var(--sky-light) 0%, var(--pink-light) 100%); }
 .reviews-grid { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1.5rem; align-items: start; }
@@ -615,7 +583,7 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5r
 .review-name { font-weight: 800; font-size: .95rem; }
 .review-loc { font-size: .8rem; opacity: .6; }
 
-#faq { padding: 5rem 2rem; background: linear-gradient(135deg, var(--pink-light) 0%, var(--sky-light) 100%); }
+#faq { padding: 5rem 2rem; background: var(--gray-light); }
 .faq-list { max-width: 700px; margin: 0 auto; display: flex; flex-direction: column; gap: .8rem; }
 .faq-item { background: var(--white); border-radius: 16px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,.05); }
 .faq-item.s1 { border: 2px solid var(--sky); }
@@ -627,10 +595,12 @@ h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 800; margin-bottom: .5r
 .faq-btn:hover { background: var(--sky-light); }
 .faq-icon { font-size: 1.5rem; transition: transform .3s; line-height: 1; color: var(--sky-dark); }
 .faq-item.open .faq-icon { transform: rotate(45deg); }
-.faq-answer { max-height: 0; overflow: hidden; transition: max-height .35s ease, padding .3s ease; padding: 0 1.5rem; color: var(--gray); font-size: .95rem; line-height: 1.8; }
+.faq-answer { max-height: 0; overflow: hidden;
+ transition: max-height .35s ease, padding .3s ease; padding: 0 1.5rem;
+  color: var(--gray); font-size: 1.1rem; line-height: 1.8; }
 .faq-item.open .faq-answer { max-height: 200px; padding-bottom: 1.2rem; }
 
-#cta { padding: 5rem 2rem; text-align: center; background: var(--pink); position: relative; overflow: hidden; }
+#cta { padding: 2rem; text-align: center; background: var(--pink); position: relative; overflow: hidden; }
 #cta::before { content: ''; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.06'%3E%3Ccircle cx='30' cy='30' r='4'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E"); pointer-events: none; }
 #cta h2 { color: #fff; margin-bottom: .8rem; }
 #cta p { color: rgba(255,255,255,.85); font-size: 1.1rem; margin-bottom: 2rem; }
