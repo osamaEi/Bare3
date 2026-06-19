@@ -48,6 +48,10 @@
           <i class="fa-solid fa-bell"></i>
           <span v-if="!sidebarCollapsed">الإشعارات</span>
         </Link>
+        <Link :href="route('admin.contact-messages')" class="nav-item" :class="{ active: currentRoute === 'admin.contact-messages' }">
+          <i class="fa-solid fa-envelope"></i>
+          <span v-if="!sidebarCollapsed">رسائل التواصل</span>
+        </Link>
         <Link :href="route('admin.homepage')" class="nav-item" :class="{ active: currentRoute === 'admin.homepage' }">
           <i class="fa-solid fa-house"></i>
           <span v-if="!sidebarCollapsed">الصفحة الرئيسية</span>

@@ -9,6 +9,9 @@
     </div>
     <ul>
       <li v-for="(item, i) in c.nav" :key="i"><a :href="item.href">{{ item.label }}</a></li>
+      <li><a :href="route('subscribe')">الاشتراك</a></li>
+      <li><a :href="route('about')">عن المعهد</a></li>
+      <li><a :href="route('contact')">تواصل معنا</a></li>
     </ul>
     <div class="login-dd" ref="loginDd">
       <button class="btn-nav" @click="loginOpen = !loginOpen">
@@ -91,9 +94,9 @@
       <defs>
         <linearGradient id="threadGrad" x1="0%" y1="0%" x2="0%" y2="100%">
           <stop offset="0%"   stop-color="#8b5cf6"/>
-          <stop offset="33%"  stop-color="#06b6d4"/>
+          <stop offset="33%"  stop-color="#38bdf8"/>
           <stop offset="66%"  stop-color="#ec4899"/>
-          <stop offset="100%" stop-color="#f59e0b"/>
+          <stop offset="100%" stop-color="#a855f7"/>
         </linearGradient>
         <filter id="threadGlow">
           <feGaussianBlur stdDeviation="3" result="blur"/>
@@ -360,9 +363,10 @@ const props = defineProps({
 const c = computed(() => props.content)
 
 // ألوان بطاقات المميزات حسب الترتيب (محافظة على التصميم الأصلي)
-const featBorder = ['border border-violet-100 hover:border-violet-200', 'border border-cyan-100 hover:border-cyan-200', 'border border-pink-100 hover:border-pink-200', 'border border-amber-100 hover:border-amber-200']
-const featIconColor = ['text-violet-600', 'text-cyan-600', 'text-pink-600', 'text-amber-600']
-const featBlob = ['bg-gradient-to-br from-violet-200 to-purple-200', 'bg-gradient-to-br from-cyan-200 to-teal-200', 'bg-gradient-to-br from-pink-200 to-rose-200', 'bg-gradient-to-br from-amber-200 to-orange-200']
+// ألوان بطاقات المميزات — متناسقة مع باليتة الموقع (وردي/سماوي/بنفسجي) بدون أخضر
+const featBorder = ['border border-violet-100 hover:border-violet-200', 'border border-sky-100 hover:border-sky-200', 'border border-pink-100 hover:border-pink-200', 'border border-fuchsia-100 hover:border-fuchsia-200']
+const featIconColor = ['text-violet-600', 'text-sky-600', 'text-pink-600', 'text-fuchsia-600']
+const featBlob = ['bg-gradient-to-br from-violet-200 to-purple-200', 'bg-gradient-to-br from-sky-200 to-cyan-200', 'bg-gradient-to-br from-pink-200 to-rose-200', 'bg-gradient-to-br from-fuchsia-200 to-purple-200']
 
 const loginOpen = ref(false)
 const loginDd = ref(null)
@@ -458,16 +462,17 @@ onMounted(() => {
 :root {
   --sky: #EC4899; --sky-light: #FCE7F3; --sky-mid: #F9A8D4; --sky-dark: #9D174D;
   --pink: #38BDF8; --pink-light: #E0F4FF; --pink-mid: #7DD3F8; --pink-dark: #0E7490;
-  --lime: #84CC16; --lime-light: #F0FDF4; --lime-mid: #BEF264; --lime-dark: #3F6212;
+  /* اللون الثالث: بنفسجي بدل الأخضر — يكمّل الوردي والأزرق */
+  --lime: #A855F7; --lime-light: #F5F3FF; --lime-mid: #D8B4FE; --lime-dark: #7E22CE;
   --dark: #1C1C2E; --dark-mid: #2E2E42; --gray: #6B7280; --light: #F8FAFC; --white: #FFFFFF;
-  --grad-hero: linear-gradient(135deg, #FCE7F3 0%, #E0F4FF 50%, #F0FDF4 100%);
+  --grad-hero: linear-gradient(135deg, #FCE7F3 0%, #E0F4FF 50%, #F5F3FF 100%);
   --grad-cta: linear-gradient(135deg, #EC4899 0%, #38BDF8 100%);
   --grad-pricing: linear-gradient(135deg, #FCE7F3 0%, #E0F4FF 100%);
   --grad-card-pro: linear-gradient(135deg,#E0F4FF 0%,#7DD3F8 35%,#38BDF8 70%,#0E7490 100%);
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: 'Baloo Bhaijaan 2', cursive; color: var(--dark); overflow-x: hidden; background: var(--light); }
+body { font-family: 'ThmanyahSans', 'Segoe UI', Tahoma, sans-serif !important; color: var(--dark); overflow-x: hidden; background: var(--light); }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 

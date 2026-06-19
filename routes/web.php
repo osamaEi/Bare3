@@ -20,7 +20,9 @@ use App\Http\Controllers\Parent\TicketController as ParentTicketController;
 use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\AdminStudentProgressController;
 use App\Http\Controllers\Admin\AdminNotificationController;
+use App\Http\Controllers\Admin\AdminContactController;
 use App\Http\Controllers\Student\NotificationController as StudentNotificationController;
+use App\Http\Controllers\PublicPageController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -50,6 +52,12 @@ Route::get('/', function () {
         'content'     => $content,
     ]);
 });
+
+// ── Public pages ───────────────────────────────────────────────
+Route::get('/subscribe', [PublicPageController::class, 'subscribe'])->name('subscribe');
+Route::get('/about',     [PublicPageController::class, 'about'])->name('about');
+Route::get('/contact',   [PublicPageController::class, 'contact'])->name('contact');
+Route::post('/contact',  [PublicPageController::class, 'contactStore'])->name('contact.store');
 
 Route::get('/dashboard', function () {
     return redirect()->route(auth()->user()->homeRoute());
@@ -135,6 +143,11 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/notifications',  [AdminNotificationController::class, 'index'])->name('notifications');
     Route::post('/notifications', [AdminNotificationController::class, 'store'])->name('notifications.store');
     Route::delete('/notifications/{id}', [AdminNotificationController::class, 'destroy'])->name('notifications.destroy');
+
+    // Contact messages inbox
+    Route::get('/contact-messages', [AdminContactController::class, 'index'])->name('contact-messages');
+    Route::patch('/contact-messages/{id}/read', [AdminContactController::class, 'markRead'])->name('contact-messages.read');
+    Route::delete('/contact-messages/{id}', [AdminContactController::class, 'destroy'])->name('contact-messages.destroy');
 
     // Legacy aliases (keep sidebar links working)
     Route::get('/users',    [AdminUserController::class,    'index'])->name('users');
