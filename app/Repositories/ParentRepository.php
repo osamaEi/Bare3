@@ -3,7 +3,9 @@
 namespace App\Repositories;
 
 use App\Models\Enrollment;
+use App\Models\PaymentTransaction;
 use App\Models\QuizAttempt;
+use App\Models\Subscription;
 use App\Models\User;
 use App\Repositories\Contracts\ParentRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
@@ -99,30 +101,59 @@ class ParentRepository implements ParentRepositoryInterface
 
     public function billing(User $parent): array
     {
-        $subscription = $parent->activeSubscription()->with('plan')->first();
+        // كل المعاملات التي قام بها الأب (الدافع)
+        $allTx = $parent->transactions()->with('subscription.plan')->latest()->get();
 
-        $transactions = $parent->transactions()
-            ->with('subscription.plan')
-            ->latest()
-            ->get()
-            ->map(fn ($t) => [
-                'id' => $t->id,
-                'amount' => (float) $t->amount,
+        $children = $parent->children()->get();
+
+        $perChild = $children->map(function (User $child) use ($allTx) {
+            // اشتراك الطفل الحالي
+            $sub = Subscription::with('plan')->where('user_id', $child->id)->latest('starts_at')->first();
+
+            // مدفوعات هذا الطفل: إما المستفيد في الـ payload أو المرتبطة باشتراكه
+            $childTx = $allTx->filter(function ($t) use ($child, $sub) {
+                $beneficiary = $t->payload['beneficiary_id'] ?? null;
+
+                return (int) $beneficiary === $child->id
+                    || ($sub && $t->subscription_id === $sub->id);
+            })->map(fn ($t) => [
+                'id'      => $t->id,
+                'amount'  => (float) $t->amount,
                 'gateway' => $t->gateway,
-                'status' => $t->status,
-                'plan' => $t->subscription?->plan?->name ?? '—',
-                'date' => $t->created_at?->format('Y-m-d') ?? '—',
-            ])->toArray();
+                'status'  => $t->status,
+                'plan'    => $t->subscription?->plan?->name ?? '—',
+                'date'    => $t->created_at?->format('Y-m-d') ?? '—',
+            ])->values()->all();
+
+            return [
+                'id'           => $child->id,
+                'name'         => $child->name,
+                'subscription' => $sub ? [
+                    'plan'       => $sub->plan?->name,
+                    'status'     => $sub->status,
+                    'starts_at'  => $sub->starts_at?->format('Y-m-d'),
+                    'ends_at'    => $sub->ends_at?->format('Y-m-d'),
+                    'auto_renew' => (bool) $sub->auto_renew,
+                ] : null,
+                'transactions' => $childTx,
+            ];
+        })->values()->all();
 
         return [
-            'subscription' => $subscription ? [
-                'plan' => $subscription->plan?->name,
-                'status' => $subscription->status,
-                'starts_at' => $subscription->starts_at?->format('Y-m-d'),
-                'ends_at' => $subscription->ends_at?->format('Y-m-d'),
-                'auto_renew' => (bool) $subscription->auto_renew,
-            ] : null,
-            'transactions' => $transactions,
+            'children' => $perChild,
+            // المعاملات التي لم تُنسب لأي طفل (اشتراك الأب نفسه مثلاً)
+            'other_transactions' => $allTx->filter(function ($t) use ($children) {
+                $beneficiary = $t->payload['beneficiary_id'] ?? null;
+
+                return ! $beneficiary || ! $children->contains('id', (int) $beneficiary);
+            })->map(fn ($t) => [
+                'id'      => $t->id,
+                'amount'  => (float) $t->amount,
+                'gateway' => $t->gateway,
+                'status'  => $t->status,
+                'plan'    => $t->subscription?->plan?->name ?? '—',
+                'date'    => $t->created_at?->format('Y-m-d') ?? '—',
+            ])->values()->all(),
         ];
     }
 }
