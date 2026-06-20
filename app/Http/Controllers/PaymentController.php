@@ -129,13 +129,22 @@ class PaymentController extends Controller
         // PayTabs redirects back via POST (cross-site) — the tx id may be in query or body,
         // and the session may not carry an authenticated user.
         $txId = $request->input('tx', $request->query('tx'));
-        $tx = PaymentTransaction::find($txId);
-
-        $home = auth()->user()?->homeRoute() ?? 'login';
+        $tx = PaymentTransaction::with('user')->find($txId);
 
         if (! $tx) {
-            return redirect()->route($home);
+            return redirect()->route(auth()->user()?->homeRoute() ?? 'login');
         }
+
+        // Determine the payer's dashboard from the transaction itself (the cross-site
+        // POST from PayTabs may have dropped the session). Re-login the payer so the
+        // dashboard link actually works.
+        $payer = $tx->user;
+        if ($payer && ! auth()->check()) {
+            auth()->login($payer);
+            $request->session()->regenerate();
+        }
+
+        $home = ($payer ?? auth()->user())?->homeRoute() ?? 'login';
 
         // If still pending, try to reconcile now using the stored tran_ref.
         if ($tx->status === 'pending' && ! empty($tx->payload['tran_ref'])) {
