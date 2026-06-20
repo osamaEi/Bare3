@@ -43,7 +43,7 @@ class PaymentController extends Controller
     }
 
     /** Initiate a PayTabs hosted payment for the chosen plan. */
-    public function pay(Request $request): RedirectResponse
+    public function pay(Request $request)
     {
         $data = $request->validate([
             'plan_id'  => 'required|exists:plans,id',
