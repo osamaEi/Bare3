@@ -34,7 +34,7 @@
         <tbody>
           <tr v-for="t in billing.transactions" :key="t.id">
             <td>{{ t.plan }}</td>
-            <td class="amount">{{ t.amount.toLocaleString('ar-EG') }} ر.س</td>
+            <td class="amount">{{ t.amount.toLocaleString('ar-EG') }} <i class="fa-solid fa-saudi-riyal-symbol"></i></td>
             <td><span class="gw">{{ gwLabel(t.gateway) }}</span></td>
             <td><span class="status" :class="t.status">{{ txStatusLabel(t.status) }}</span></td>
             <td class="date">{{ t.date }}</td>

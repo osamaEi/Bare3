@@ -14,7 +14,7 @@
       <!-- Transaction -->
       <div class="card">
         <div class="card-title"><i class="fa-solid fa-receipt"></i> بيانات العملية</div>
-        <div class="row"><span>المبلغ</span><strong>{{ money(transaction.amount) }}</strong></div>
+        <div class="row"><span>المبلغ</span><strong v-html="money(transaction.amount)"></strong></div>
         <div class="row"><span>البوابة</span><span class="gw" :class="transaction.gateway">{{ gwLabel(transaction.gateway) }}</span></div>
         <div class="row"><span>الحالة</span><span class="status" :class="transaction.status">{{ statusLabel(transaction.status) }}</span></div>
         <div class="row"><span>معرّف البوابة</span><strong class="mono">{{ transaction.gateway_tx_id }}</strong></div>
@@ -34,8 +34,8 @@
       <div class="card" v-if="transaction.invoice">
         <div class="card-title"><i class="fa-solid fa-file-invoice"></i> الفاتورة</div>
         <div class="row"><span>رقم الفاتورة</span><strong class="mono">{{ transaction.invoice.invoice_number }}</strong></div>
-        <div class="row"><span>المبلغ</span><strong>{{ money(transaction.invoice.amount) }}</strong></div>
-        <div class="row"><span>الضريبة</span><strong>{{ money(transaction.invoice.tax_amount) }}</strong></div>
+        <div class="row"><span>المبلغ</span><strong v-html="money(transaction.invoice.amount)"></strong></div>
+        <div class="row"><span>الضريبة</span><strong v-html="money(transaction.invoice.tax_amount)"></strong></div>
       </div>
     </div>
   </AdminLayout>
@@ -50,7 +50,7 @@ const props = defineProps({ transaction: { type: Object, required: true } })
 
 const refunding = ref(false)
 
-const money = (v) => Number(v ?? 0).toLocaleString('ar-EG', { minimumFractionDigits: 2 }) + ' ر.س'
+const money = (v) => Number(v ?? 0).toLocaleString('ar-EG', { minimumFractionDigits: 2 }) + ' <i class="fa-solid fa-saudi-riyal-symbol"></i>'
 const fmt = (d) => d ? new Date(d).toLocaleString('ar-EG') : '—'
 const gwLabel = (g) => ({ mada: 'مدى', tabby: 'تابي', tamara: 'تمارا' }[g] ?? g)
 const statusLabel = (s) => ({ success: 'ناجحة', pending: 'معلّقة', failed: 'فاشلة', refunded: 'مستردّة' }[s] ?? s)

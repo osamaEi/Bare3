@@ -14,7 +14,7 @@
       <div class="stat ok"><div class="stat-val">{{ stats.active }}</div><div class="stat-lbl">نشط</div></div>
       <div class="stat warn"><div class="stat-val">{{ stats.expired }}</div><div class="stat-lbl">منتهٍ</div></div>
       <div class="stat gray"><div class="stat-val">{{ stats.cancelled }}</div><div class="stat-lbl">ملغى</div></div>
-      <div class="stat sky"><div class="stat-val">{{ stats.mrr }} <small>ريال</small></div><div class="stat-lbl">دخل شهري متكرر</div></div>
+      <div class="stat sky"><div class="stat-val">{{ stats.mrr }} <small><i class="fa-solid fa-saudi-riyal-symbol"></i></small></div><div class="stat-lbl">دخل شهري متكرر</div></div>
     </div>
 
     <!-- Filters -->
@@ -43,7 +43,7 @@
         <tbody>
           <tr v-for="s in subscriptions.data" :key="s.id">
             <td><div class="u-name">{{ s.user }}</div><div class="u-mail">{{ s.email }}</div></td>
-            <td><div class="p-name">{{ s.plan }}</div><div class="p-price">{{ s.price }} ريال / {{ cycleLabel(s.cycle) }}</div></td>
+            <td><div class="p-name">{{ s.plan }}</div><div class="p-price">{{ s.price }} <i class="fa-solid fa-saudi-riyal-symbol"></i> / {{ cycleLabel(s.cycle) }}</div></td>
             <td><span class="badge" :class="s.status">{{ statusLabel(s.status) }}</span></td>
             <td class="dt">{{ s.starts_at }}</td>
             <td class="dt">{{ s.ends_at }}</td>

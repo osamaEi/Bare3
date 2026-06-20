@@ -151,7 +151,7 @@
     <div v-for="(p, i) in c.pricing" :key="i" class="price-card" :class="{ featured: p.featured }">
       <div v-if="p.featured" style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--lime-mid);color:var(--lime-dark);font-size:.78rem;font-weight:800;padding:.3rem 1.2rem;border-radius:50px;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.15)"><i class="fa-solid fa-fire"></i> الأكثر شعبية</div>
       <div class="price-badge">{{ p.badge }}</div>
-      <div class="price-amount">{{ p.amount }} <span class="price-unit">{{ p.unit }}</span></div>
+      <div class="price-amount">{{ p.amount }} <i class="fa-solid fa-saudi-riyal-symbol riyal-ic"></i> <span class="price-unit">{{ p.unit }}</span></div>
       <div class="price-name">{{ p.name }}</div>
       <ul class="price-features">
         <li v-for="(feat, fi) in p.features" :key="fi"><i class="fa-solid fa-circle-check"></i> {{ feat }}</li>

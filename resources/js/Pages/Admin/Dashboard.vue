@@ -24,7 +24,7 @@
             {{ stat.change }}
           </div>
         </div>
-        <div class="stat-value">{{ stat.value }}</div>
+        <div class="stat-value" v-html="stat.value"></div>
         <div class="stat-label">{{ stat.label }}</div>
       </div>
     </div>
@@ -36,11 +36,11 @@
       <div class="card chart-card">
         <div class="card-header">
           <h3 class="card-title"><i class="fa-solid fa-chart-line"></i> إيرادات الأشهر الأخيرة</h3>
-          <div class="card-badge sky">ر.س</div>
+          <div class="card-badge sky"><i class="fa-solid fa-saudi-riyal-symbol"></i></div>
         </div>
         <div class="chart-bars">
           <div v-for="item in revenueChart" :key="item.month" class="bar-col">
-            <div class="bar-tooltip">{{ item.amount.toLocaleString() }} ر.س</div>
+            <div class="bar-tooltip">{{ item.amount.toLocaleString() }} <i class="fa-solid fa-saudi-riyal-symbol"></i></div>
             <div class="bar" :style="{ height: barHeight(item.amount) + '%' }"></div>
             <span class="bar-label">{{ item.month }}</span>
           </div>
@@ -277,7 +277,7 @@
           </div>
           <div class="summary-pill">
             <i class="fa-solid fa-coins" style="color:#84CC16"></i>
-            <span>{{ stats.revenue_month.toLocaleString() }} ر.س إيرادات الشهر</span>
+            <span>{{ stats.revenue_month.toLocaleString() }} <i class="fa-solid fa-saudi-riyal-symbol"></i> إيرادات الشهر</span>
           </div>
         </div>
       </div>
@@ -307,7 +307,7 @@ const statCards = computed(() => [
   { key: 'students', label: 'إجمالي الطلاب',   value: props.stats.total_students.toLocaleString(),                    icon: 'fa-solid fa-graduation-cap',  bg: '#EFF6FF', color: '#2563EB', change: '+٨٪ هذا الشهر', up: true },
   { key: 'parents',  label: 'أولياء الأمور',    value: props.stats.total_parents.toLocaleString(),                     icon: 'fa-solid fa-people-roof',     bg: '#FDF4FF', color: '#9333EA', change: '+٥٪ هذا الشهر', up: true },
   { key: 'teachers', label: 'المعلمون',          value: props.stats.total_teachers.toLocaleString(),                    icon: 'fa-solid fa-chalkboard-user', bg: '#F0FDF4', color: '#16A34A', change: '+٢ جدد',       up: true },
-  { key: 'revenue',  label: 'إيرادات الشهر',    value: props.stats.revenue_month.toLocaleString() + ' ر.س',           icon: 'fa-solid fa-sack-dollar',     bg: '#FFF7ED', color: '#EA580C', change: '+٣٢٪',          up: true },
+  { key: 'revenue',  label: 'إيرادات الشهر',    value: props.stats.revenue_month.toLocaleString() + ' <i class=\'fa-solid fa-saudi-riyal-symbol\'></i>', icon: 'fa-solid fa-sack-dollar',     bg: '#FFF7ED', color: '#EA580C', change: '+٣٢٪',          up: true },
   { key: 'paths',    label: 'المسارات النشطة',  value: props.stats.active_paths,                                       icon: 'fa-solid fa-map',             bg: '#F0F9FF', color: '#0E7490', change: 'لا تغيير',     up: true },
   { key: 'certs',    label: 'شهادات صدرت',      value: props.stats.completions.toLocaleString(),                       icon: 'fa-solid fa-certificate',     bg: '#FFFBEB', color: '#D97706', change: '+١٢٪',          up: true },
 ])

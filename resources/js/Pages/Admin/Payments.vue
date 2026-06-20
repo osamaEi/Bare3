@@ -30,7 +30,7 @@
             {{ kpi.change }}
           </span>
         </div>
-        <div class="kpi-val">{{ kpi.value }}</div>
+        <div class="kpi-val" v-html="kpi.value"></div>
         <div class="kpi-label">{{ kpi.label }}</div>
       </div>
     </div>
@@ -48,7 +48,7 @@
             </div>
             <div class="gw-info">
               <div class="gw-name">{{ gw.name }}</div>
-              <div class="gw-amount">{{ gw.amount.toLocaleString() }} ر.س</div>
+              <div class="gw-amount">{{ gw.amount.toLocaleString() }} <i class="fa-solid fa-saudi-riyal-symbol"></i></div>
             </div>
             <div class="gw-right">
               <div class="gw-pct-val">{{ gw.pct }}%</div>
@@ -78,7 +78,7 @@
       <div class="chart-col card">
         <div class="card-header">
           <h3 class="card-title"><i class="fa-solid fa-chart-area"></i> الإيرادات الشهرية</h3>
-          <span class="card-badge sky">ر.س</span>
+          <span class="card-badge sky"><i class="fa-solid fa-saudi-riyal-symbol"></i></span>
         </div>
         <div class="monthly-chart">
           <div v-for="m in monthlyRevenue" :key="m.month" class="monthly-col">
@@ -149,7 +149,7 @@
                   <i :class="gwIcon(tx.gateway)"></i> {{ tx.gateway }}
                 </span>
               </td>
-              <td class="tx-amount">{{ tx.amount.toLocaleString() }} ر.س</td>
+              <td class="tx-amount">{{ tx.amount.toLocaleString() }} <i class="fa-solid fa-saudi-riyal-symbol"></i></td>
               <td class="text-gray">{{ tx.date }}</td>
               <td>
                 <span class="status-badge" :class="tx.status">{{ statusLabel(tx.status) }}</span>
@@ -169,7 +169,7 @@
       <div class="table-footer">
         <span class="page-info">{{ filteredTx.length }} عملية</span>
         <div class="footer-total">
-          الإجمالي: <strong>{{ filteredTotal.toLocaleString() }} ر.س</strong>
+          الإجمالي: <strong>{{ filteredTotal.toLocaleString() }} <i class="fa-solid fa-saudi-riyal-symbol"></i></strong>
         </div>
       </div>
     </div>
@@ -211,9 +211,9 @@ const kpiCards = computed(() => {
   const successCount = props.counts.success || 1
   const avg = props.revenue_total / successCount
   return [
-    { label: 'إجمالي الإيرادات', value: fmtNum(props.revenue_total) + ' ر.س', icon: 'fa-solid fa-sack-dollar', bg: '#FFF7ED', color: '#EA580C', change: '', up: true },
+    { label: 'إجمالي الإيرادات', value: fmtNum(props.revenue_total) + ' <i class="fa-solid fa-saudi-riyal-symbol"></i>', icon: 'fa-solid fa-sack-dollar', bg: '#FFF7ED', color: '#EA580C', change: '', up: true },
     { label: 'عمليات ناجحة', value: fmtNum(props.counts.success), icon: 'fa-solid fa-circle-check', bg: '#F0FDF4', color: '#16A34A', change: '', up: true },
-    { label: 'متوسط قيمة الاشتراك', value: avg.toFixed(1) + ' ر.س', icon: 'fa-solid fa-chart-line', bg: '#EFF6FF', color: '#2563EB', change: '', up: true },
+    { label: 'متوسط قيمة الاشتراك', value: avg.toFixed(1) + ' <i class="fa-solid fa-saudi-riyal-symbol"></i>', icon: 'fa-solid fa-chart-line', bg: '#EFF6FF', color: '#2563EB', change: '', up: true },
     { label: 'عمليات مُستردّة', value: fmtNum(props.counts.refunded), icon: 'fa-solid fa-rotate-left', bg: '#FEF2F2', color: '#DC2626', change: '', up: false },
   ]
 })
@@ -276,7 +276,7 @@ const avatarColor = (name) => {
 
 const viewTx = (tx) => { router.get(route('admin.payments.show', tx.realId)) }
 const refundTx = (tx) => {
-  if (confirm(`استرداد ${tx.amount} ر.س للمستخدم "${tx.user}"؟`)) {
+  if (confirm(`استرداد ${tx.amount} ريال للمستخدم "${tx.user}"؟`)) {
     router.patch(route('admin.payments.refund', tx.realId), {}, { preserveScroll: true })
   }
 }

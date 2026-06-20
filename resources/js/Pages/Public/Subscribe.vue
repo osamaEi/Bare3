@@ -36,7 +36,7 @@ defineProps({
       <div class="price-badge">{{ p.badge }}</div>
 
       <div class="price-amount">
-        {{ p.amount }} <span class="price-unit">{{ p.unit }}</span>
+        {{ p.amount }} <i class="fa-solid fa-saudi-riyal-symbol"></i> <span class="price-unit">{{ p.unit }}</span>
       </div>
 
       <div class="price-name">{{ p.name }}</div>
