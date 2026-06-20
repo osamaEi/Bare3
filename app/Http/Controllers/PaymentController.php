@@ -123,15 +123,14 @@ class PaymentController extends Controller
         return response()->json(['ok' => true]);
     }
 
-    /** Browser return — verify again (in case IPN is delayed) and show result. */
-    public function paymentReturn(Request $request): RedirectResponse
+    /** Browser return — verify again (in case IPN is delayed) and show a result page. */
+    public function paymentReturn(Request $request): RedirectResponse|Response
     {
         // PayTabs redirects back via POST (cross-site) — the tx id may be in query or body,
         // and the session may not carry an authenticated user.
         $txId = $request->input('tx', $request->query('tx'));
         $tx = PaymentTransaction::find($txId);
 
-        // Where to send the user back to (their dashboard, else the login page).
         $home = auth()->user()?->homeRoute() ?? 'login';
 
         if (! $tx) {
@@ -145,9 +144,19 @@ class PaymentController extends Controller
             $tx->refresh();
         }
 
-        $msg = $tx->status === 'success' ? 'تم الدفع بنجاح وتفعيل اشتراكك! 🎉' : 'لم تكتمل عملية الدفع.';
+        $plan = ! empty($tx->payload['plan_id']) ? Plan::find($tx->payload['plan_id']) : null;
+        $sub = $tx->subscription_id ? Subscription::find($tx->subscription_id) : null;
 
-        return redirect()->route($home)->with($tx->status === 'success' ? 'success' : 'error', $msg);
+        return Inertia::render('Payment/Result', [
+            'success'    => $tx->status === 'success',
+            'status'     => $tx->status,
+            'amount'     => (float) $tx->amount,
+            'currency'   => $tx->currency,
+            'reference'  => $tx->payload['tran_ref'] ?? $tx->gateway_tx_id,
+            'plan_name'  => $plan?->name,
+            'ends_at'    => $sub?->ends_at?->toDateString(),
+            'home_route' => $home,
+        ]);
     }
 
     /** Mark the transaction paid/failed and (on success) activate the subscription. */
