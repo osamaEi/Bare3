@@ -66,8 +66,10 @@ Route::post('/contact',  [PublicPageController::class, 'contactStore'])->name('c
 Route::middleware('auth')->group(function () {
     Route::get('/checkout',  [PaymentController::class, 'checkout'])->name('payment.checkout');
     Route::post('/checkout/pay', [PaymentController::class, 'pay'])->name('payment.pay');
-    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
 });
+// PayTabs redirects the browser back via POST from its own domain (cross-site,
+// no session/CSRF token), so accept both verbs outside the auth group.
+Route::match(['get', 'post'], '/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
 // Server-to-server IPN (no auth — PayTabs calls this directly)
 Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 

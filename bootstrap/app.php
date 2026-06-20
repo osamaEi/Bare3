@@ -23,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
         // PayTabs server-to-server IPN can't carry a CSRF token
         $middleware->validateCsrfTokens(except: [
             'payment/callback',
+            'payment/return',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

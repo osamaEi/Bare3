@@ -126,9 +126,16 @@ class PaymentController extends Controller
     /** Browser return — verify again (in case IPN is delayed) and show result. */
     public function paymentReturn(Request $request): RedirectResponse
     {
-        $tx = PaymentTransaction::find($request->query('tx'));
+        // PayTabs redirects back via POST (cross-site) — the tx id may be in query or body,
+        // and the session may not carry an authenticated user.
+        $txId = $request->input('tx', $request->query('tx'));
+        $tx = PaymentTransaction::find($txId);
+
+        // Where to send the user back to (their dashboard, else the login page).
+        $home = auth()->user()?->homeRoute() ?? 'login';
+
         if (! $tx) {
-            return redirect()->route(auth()->user()->homeRoute());
+            return redirect()->route($home);
         }
 
         // If still pending, try to reconcile now using the stored tran_ref.
@@ -138,7 +145,6 @@ class PaymentController extends Controller
             $tx->refresh();
         }
 
-        $home = auth()->user()->homeRoute();
         $msg = $tx->status === 'success' ? 'تم الدفع بنجاح وتفعيل اشتراكك! 🎉' : 'لم تكتمل عملية الدفع.';
 
         return redirect()->route($home)->with($tx->status === 'success' ? 'success' : 'error', $msg);
