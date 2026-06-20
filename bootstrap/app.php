@@ -19,6 +19,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \App\Http\Middleware\EnsureUserRole::class,
         ]);
+
+        // PayTabs server-to-server IPN can't carry a CSRF token
+        $middleware->validateCsrfTokens(except: [
+            'payment/callback',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    'paytabs' => [
+        'profile_id'  => env('PAYTABS_PROFILE_ID'),
+        'server_key'  => env('PAYTABS_SERVER_KEY'),
+        // Regional API base. KSA: https://secure.paytabs.sa ; UAE: https://secure.paytabs.com ; EGY: https://secure-egypt.paytabs.com
+        'base_url'    => env('PAYTABS_BASE_URL', 'https://secure.paytabs.sa'),
+        'currency'    => env('PAYTABS_CURRENCY', 'SAR'),
+    ],
+
 ];

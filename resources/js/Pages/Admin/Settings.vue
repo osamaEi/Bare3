@@ -57,6 +57,35 @@
         </label>
       </div>
 
+      <!-- PayTabs -->
+      <div class="card">
+        <div class="card-title"><i class="fa-solid fa-credit-card"></i> بوابة الدفع (PayTabs)</div>
+        <p class="hint">احصل على هذه المفاتيح من لوحة تاجر PayTabs ← Developers ← Key Management.</p>
+        <div class="grid">
+          <div class="field">
+            <label>Profile ID</label>
+            <input type="text" v-model="form.paytabs_profile_id" class="inp" placeholder="مثال: 123456" />
+          </div>
+          <div class="field">
+            <label>Server Key</label>
+            <input type="text" v-model="form.paytabs_server_key" class="inp" placeholder="Sxxxxxxxxx-..." />
+          </div>
+          <div class="field">
+            <label>رابط الـ API (حسب الدولة)</label>
+            <select v-model="form.paytabs_base_url" class="inp">
+              <option value="https://secure.paytabs.sa">السعودية (secure.paytabs.sa)</option>
+              <option value="https://secure.paytabs.com">الإمارات (secure.paytabs.com)</option>
+              <option value="https://secure-egypt.paytabs.com">مصر (secure-egypt.paytabs.com)</option>
+              <option value="https://secure-global.paytabs.com">عالمي (secure-global.paytabs.com)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>العملة</label>
+            <input type="text" v-model="form.paytabs_currency" class="inp" placeholder="SAR" />
+          </div>
+        </div>
+      </div>
+
       <div class="save-bar">
         <span v-if="form.recentlySuccessful" class="saved">✓ تم حفظ الإعدادات</span>
         <button class="btn-save" :disabled="form.processing">
@@ -86,6 +115,7 @@ const save = () => form.post(route('admin.settings.update'), { preserveScroll: t
 .card { background: white; border-radius: 16px; box-shadow: 0 1px 8px rgba(0,0,0,.05); padding: 1.5rem; margin-bottom: 1.2rem; }
 .card-title { font-size: 1.05rem; font-weight: 800; color: #1E293B; display: flex; align-items: center; gap: .5rem; margin-bottom: 1.2rem; }
 .card-title i { color: #38BDF8; }
+.hint { font-size: .82rem; color: #94A3B8; margin-bottom: 1rem; line-height: 1.6; }
 
 .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .grid-3 { grid-template-columns: repeat(3, 1fr); }

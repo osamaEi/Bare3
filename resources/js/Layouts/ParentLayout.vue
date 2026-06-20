@@ -14,6 +14,7 @@
         </Link>
         <Link :href="route('parent.dashboard')" class="nav-item" :class="{ active: current === 'parent.dashboard' }"><i class="fa-solid fa-children"></i><span v-if="!collapsed">أبنائي</span></Link>
         <Link :href="route('parent.billing')" class="nav-item" :class="{ active: current === 'parent.billing' }"><i class="fa-solid fa-receipt"></i><span v-if="!collapsed">الفواتير والاشتراكات</span></Link>
+        <Link :href="route('payment.checkout')" class="nav-item" :class="{ active: current === 'payment.checkout' }"><i class="fa-solid fa-credit-card"></i><span v-if="!collapsed">الاشتراك والدفع</span></Link>
         <Link :href="route('parent.tickets')" class="nav-item" :class="{ active: current === 'parent.tickets' }"><i class="fa-solid fa-ticket"></i><span v-if="!collapsed">تذاكر الدعم</span></Link>
       </nav>
       <div class="sidebar-footer" v-if="!collapsed">

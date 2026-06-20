@@ -22,6 +22,10 @@ class AdminSettingsController extends Controller
                 'max_quiz_attempts' => (int) Setting::get('max_quiz_attempts', 3),
                 'notification_email' => (bool) Setting::get('notification_email', true),
                 'notification_in_app' => (bool) Setting::get('notification_in_app', true),
+                'paytabs_profile_id' => Setting::get('paytabs_profile_id', ''),
+                'paytabs_server_key' => Setting::get('paytabs_server_key', ''),
+                'paytabs_base_url' => Setting::get('paytabs_base_url', 'https://secure.paytabs.sa'),
+                'paytabs_currency' => Setting::get('paytabs_currency', 'SAR'),
             ],
         ]);
     }
@@ -36,6 +40,10 @@ class AdminSettingsController extends Controller
             'max_quiz_attempts' => 'integer|min:1|max:10',
             'notification_email' => 'boolean',
             'notification_in_app' => 'boolean',
+            'paytabs_profile_id' => 'nullable|string|max:100',
+            'paytabs_server_key' => 'nullable|string|max:255',
+            'paytabs_base_url' => 'nullable|string|max:255',
+            'paytabs_currency' => 'nullable|string|max:10',
         ]);
 
         foreach ($data as $key => $value) {

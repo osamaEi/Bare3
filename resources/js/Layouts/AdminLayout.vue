@@ -32,6 +32,14 @@
           <i class="fa-solid fa-photo-film"></i>
           <span v-if="!sidebarCollapsed">المحتوى</span>
         </Link>
+        <Link :href="route('admin.plans')" class="nav-item" :class="{ active: currentRoute === 'admin.plans' }">
+          <i class="fa-solid fa-layer-group"></i>
+          <span v-if="!sidebarCollapsed">الباقات</span>
+        </Link>
+        <Link :href="route('admin.subscriptions')" class="nav-item" :class="{ active: currentRoute === 'admin.subscriptions' }">
+          <i class="fa-solid fa-id-card"></i>
+          <span v-if="!sidebarCollapsed">الاشتراكات</span>
+        </Link>
         <Link :href="route('admin.payments')" class="nav-item" :class="{ active: currentRoute === 'admin.payments' }">
           <i class="fa-solid fa-credit-card"></i>
           <span v-if="!sidebarCollapsed">المدفوعات</span>

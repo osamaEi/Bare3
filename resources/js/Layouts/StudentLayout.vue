@@ -36,6 +36,10 @@
           <div class="nav-icon" style="background:var(--sky-light);color:var(--sky-dark)"><span class="mi">notifications</span></div>
           الإشعارات
         </Link>
+        <Link :href="route('payment.checkout')" class="nav-item" :class="{ active: isActive('payment.checkout') }">
+          <div class="nav-icon" style="background:var(--lime-light);color:var(--lime-dark)"><span class="mi">credit_card</span></div>
+          الاشتراك والدفع
+        </Link>
 
         <div class="sb-nav-label">أخرى</div>
         <Link :href="route('profile.edit')" class="nav-item">

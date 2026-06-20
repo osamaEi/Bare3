@@ -101,6 +101,7 @@
         <div class="header-filters">
           <select v-model="txGateway" class="filter-sel">
             <option value="">كل البوابات</option>
+            <option value="paytabs">PayTabs</option>
             <option value="mada">مدى</option>
             <option value="tabby">تابي</option>
             <option value="tamara">تمارا</option>
@@ -198,7 +199,8 @@ const txGateway = ref(props.filters.gateway ?? '')
 const txStatus = ref(props.filters.status ?? '')
 const txSearch = ref(props.filters.search ?? '')
 
-const GW = { mada: { label: 'مدى', icon: 'fa-solid fa-credit-card', bg: '#E0F4FF', color: '#0E7490' },
+const GW = { paytabs: { label: 'PayTabs', icon: 'fa-solid fa-credit-card', bg: '#FEF3C7', color: '#B45309' },
+             mada: { label: 'مدى', icon: 'fa-solid fa-credit-card', bg: '#E0F4FF', color: '#0E7490' },
              tabby: { label: 'تابي', icon: 'fa-solid fa-clock-rotate-left', bg: '#F5F3FF', color: '#5B21B6' },
              tamara: { label: 'تمارا', icon: 'fa-solid fa-hand-holding-dollar', bg: '#F0FDF4', color: '#15803D' } }
 const PLAN_COLORS = ['#EC4899', '#8B5CF6', '#94A3B8', '#38BDF8', '#16A34A']

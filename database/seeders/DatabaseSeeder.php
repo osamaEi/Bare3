@@ -77,6 +77,22 @@ class DatabaseSeeder extends Seeder
             'email_verified_at' => now(),
         ]));
 
+        // ── Parent → Children links ──────────────────
+        // أحمد العمري يصبح ولي أمر لأول ثلاثة طلاب
+        $ahmed = $parents->firstWhere('email', 'ahmed@bare3.sa');
+        if ($ahmed) {
+            $ahmed->children()->syncWithoutDetaching(
+                $students->take(3)->mapWithKeys(fn ($s) => [$s->id => ['created_at' => now()]])->all()
+            );
+        }
+        // خالد العتيبي يصبح ولي أمر للطفلين التاليين
+        $khalid = $parents->firstWhere('email', 'khalid@bare3.sa');
+        if ($khalid) {
+            $khalid->children()->syncWithoutDetaching(
+                $students->slice(3, 2)->mapWithKeys(fn ($s) => [$s->id => ['created_at' => now()]])->all()
+            );
+        }
+
         // ── Paths ────────────────────────────────────
         $pathsData = [
             ['slug' => 'creativity',    'title' => 'مهارة الإبداع والابتكار',         'icon' => 'fa-solid fa-lightbulb',       'color' => '#38BDF8', 'sort_order' => 1],

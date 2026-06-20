@@ -21,8 +21,11 @@ use App\Http\Controllers\Admin\AdminTicketController;
 use App\Http\Controllers\Admin\AdminStudentProgressController;
 use App\Http\Controllers\Admin\AdminNotificationController;
 use App\Http\Controllers\Admin\AdminContactController;
+use App\Http\Controllers\Admin\AdminSubscriptionController;
+use App\Http\Controllers\Admin\AdminPlanController;
 use App\Http\Controllers\Student\NotificationController as StudentNotificationController;
 use App\Http\Controllers\PublicPageController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -58,6 +61,15 @@ Route::get('/subscribe', [PublicPageController::class, 'subscribe'])->name('subs
 Route::get('/about',     [PublicPageController::class, 'about'])->name('about');
 Route::get('/contact',   [PublicPageController::class, 'contact'])->name('contact');
 Route::post('/contact',  [PublicPageController::class, 'contactStore'])->name('contact.store');
+
+// ── Payments (PayTabs) ─────────────────────────────────────────
+Route::middleware('auth')->group(function () {
+    Route::get('/checkout',  [PaymentController::class, 'checkout'])->name('payment.checkout');
+    Route::post('/checkout/pay', [PaymentController::class, 'pay'])->name('payment.pay');
+    Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
+});
+// Server-to-server IPN (no auth — PayTabs calls this directly)
+Route::post('/payment/callback', [PaymentController::class, 'callback'])->name('payment.callback');
 
 Route::get('/dashboard', function () {
     return redirect()->route(auth()->user()->homeRoute());
@@ -148,6 +160,18 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/contact-messages', [AdminContactController::class, 'index'])->name('contact-messages');
     Route::patch('/contact-messages/{id}/read', [AdminContactController::class, 'markRead'])->name('contact-messages.read');
     Route::delete('/contact-messages/{id}', [AdminContactController::class, 'destroy'])->name('contact-messages.destroy');
+
+    // Plans
+    Route::get('/plans',  [AdminPlanController::class, 'index'])->name('plans');
+    Route::post('/plans', [AdminPlanController::class, 'store'])->name('plans.store');
+    Route::patch('/plans/{plan}', [AdminPlanController::class, 'update'])->name('plans.update');
+    Route::delete('/plans/{plan}', [AdminPlanController::class, 'destroy'])->name('plans.destroy');
+
+    // Subscriptions
+    Route::get('/subscriptions',  [AdminSubscriptionController::class, 'index'])->name('subscriptions');
+    Route::post('/subscriptions', [AdminSubscriptionController::class, 'store'])->name('subscriptions.store');
+    Route::patch('/subscriptions/{subscription}', [AdminSubscriptionController::class, 'update'])->name('subscriptions.update');
+    Route::delete('/subscriptions/{subscription}', [AdminSubscriptionController::class, 'destroy'])->name('subscriptions.destroy');
 
     // Legacy aliases (keep sidebar links working)
     Route::get('/users',    [AdminUserController::class,    'index'])->name('users');
