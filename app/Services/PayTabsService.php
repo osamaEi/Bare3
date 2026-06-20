@@ -55,9 +55,17 @@ class PayTabsService
             'cart_amount'       => (float) $args['amount'],
             'callback'          => $args['callback'],   // server-to-server IPN
             'return'            => $args['return'],     // browser redirect back
+            // إخفاء قسم الشحن نهائياً من صفحة الدفع
+            'hide_shipping'     => true,
             'customer_details'  => [
-                'name'  => $args['customer']['name'] ?? 'Customer',
-                'email' => $args['customer']['email'] ?? 'customer@example.com',
+                'name'    => $args['customer']['name'] ?? 'Customer',
+                'email'   => $args['customer']['email'] ?? 'customer@example.com',
+                'phone'   => $args['customer']['phone'] ?? '0000000000',
+                'street1' => 'N/A',
+                'city'    => 'Riyadh',
+                'state'   => 'Riyadh',
+                'country' => 'SA',
+                'zip'     => '00000',
             ],
         ];
 
