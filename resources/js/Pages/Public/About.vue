@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import PublicShell from '@/Components/PublicShell.vue'
 
@@ -17,27 +18,78 @@ const stats = [
   { val: '٥',       label: 'مسارات مهارية' },
   { val: '٤.٩',     label: 'تقييم الأهل' },
 ]
+
+const activeTab = ref(0)
+
+const privacyItems = [
+  {
+    icon: 'fa-solid fa-database',
+    title: 'جمع البيانات',
+    desc: 'نقوم بجمع معلومات محدودة وضرورية فقط لتقديم الخدمة وتحسين تجربة المستخدم، مثل اسم المستخدم أو ولي الأمر، والبريد الإلكتروني، ورقم الجوال، والمرحلة الدراسية، وذلك لتقديم محتوى متوافق مع الفئة العمرية للمشترك.',
+  },
+  {
+    icon: 'fa-solid fa-shield-halved',
+    title: 'أمان وحماية الحسابات',
+    desc: 'المنصة مصمَّمة لتكون بيئة رقمية آمنة ومحمية بالكامل، تضمن تفاعلاً إيجابياً ومثمراً يحترم خصوصية المشتركين في جميع مراحلهم العمرية.',
+  },
+  {
+    icon: 'fa-solid fa-user-secret',
+    title: 'سرية المعلومات',
+    desc: 'نلتزم بعدم بيع أو تأجير أو مشاركة بيانات المستخدمين مع أي جهات تجارية أو إعلانية تابعة لأطراف ثالثة، تحت أي ظرف من الظروف.',
+  },
+  {
+    icon: 'fa-solid fa-fingerprint',
+    title: 'أمن البيانات',
+    desc: 'نطبّق أعلى معايير التشفير والبروتوكولات السيبرانية لضمان حماية البيانات من أي اختراق أو وصول غير مصرّح به.',
+  },
+]
+
+const termsItems = [
+  {
+    icon: 'fa-solid fa-copyright',
+    title: 'الملكية الفكرية',
+    desc: 'جميع محتويات المنصة من نصوص، وسيناريوهات، ورسوم متحركة، ومحتوى مرئي، وشخصيات كرتونية — وعلى رأسها بطل المنصة "بارع" — وألعاب تفاعلية، هي ملكية فكرية حصرية لمؤسسة رؤية بارع، ومحمية بموجب الأنظمة والقوانين المحلية والدولية لحقوق المؤلف والملكية الفكرية. لا يحق لأي مستخدم أو جهة نسخ أو توزيع أو إعادة استخدام هذا المحتوى تجارياً.',
+  },
+  {
+    icon: 'fa-solid fa-house-user',
+    title: 'الحساب الشخصي',
+    desc: 'الاشتراك في المنصة مخصص للاستخدام العائلي الشخصي، أو للاستخدام التعليمي للمدارس والجامعات وفق رخص خاصة. يتحمّل المستخدم أو ولي الأمر مسؤولية الحفاظ على سرية بيانات الدخول لحسابه.',
+  },
+  {
+    icon: 'fa-solid fa-book-open',
+    title: 'جودة وتحديث المحتوى',
+    desc: 'تلتزم المنصة بتقديم محتوى تعليمي وتطويري أصيل، حديث، وخالٍ من المعلومات المغلوطة، ومواكِب لجميع المستجدات التقنية والمالية والتربوية التي تتناسب مع مختلف الفئات العمرية والمراحل الدراسية والجامعية.',
+  },
+  {
+    icon: 'fa-solid fa-arrows-rotate',
+    title: 'تعديل الشروط',
+    desc: 'تحتفظ المنصة بالحق في تحديث شروط الاستخدام وسياسات الأسعار والاشتراكات، بما يضمن تطوير جودة الخدمة، ويتم إشعار المستخدمين بأي تحديثات جوهرية.',
+  },
+]
 </script>
 
 <template>
   <Head title="عن المعهد — بارع" />
   <PublicShell :brand="brand" :footer="footer">
     <section class="hero-band">
-      <h1>عن معهد بارع</h1>
-      <p>منصة تعليمية تفاعلية للأطفال من سن ٤ إلى ١٢ سنة</p>
+      <h1>منصة بارع التعليمية </h1>
+      <p>وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين</p>
     </section>
 
     <section class="about-intro">
       <div class="intro-text">
         <h2>رسالتنا</h2>
         <p>
-          في "بارع" نؤمن أن كل طفل يحمل بداخله موهبة فريدة تستحق أن تُكتشف وتُنمّى.
-          لذلك صمّمنا منصة تعليمية تجمع بين الخيال والعلم والابتكار، لتحوّل وقت الشاشة
-          إلى رحلة تعلّم ممتعة وآمنة تبني مهارات الطفل وثقته بنفسه.
+         تمكين الأجيال من مهارات القرن الـ 21 بأسلوب تفاعلي وقصصي ممتع ومبتكر، يدمج بين المعرفة العلمية والأمان الرقمي، ويسد الفجوة بين التعليم الأكاديمي ومتطلبات المستقبل، بالشراكة الفاعلة مع المربين وأولياء الأمور والجهات التعليمية.
         </p>
+        <h2>رؤيتنا</h2>
         <p>
-          نقدّم مسارات مهارية متنوّعة — من الإبداع والتواصل إلى الوعي المالي والذكاء العاطفي
-          والمهارات الرقمية — كلها بأسلوب قصصي تفاعلي يحبّه الأطفال.
+
+أن نكون المنصة التعليمية الرقمية الأولى
+ والأكثر موثوقية في المملكة العربية السعودية والعالم العربي في بناء وتطوير مهارات الحياة 
+والمستقبل للأجيال والشباب، في جميع مراحلهم التعليمية لإنشاء جيل مبتكر،
+ واعي تقنياً، ومتزن عاطفياً ومالياً.
+
         </p>
       </div>
       <div class="intro-stats">
@@ -56,6 +108,86 @@ const stats = [
           <h3>{{ v.title }}</h3>
           <p>{{ v.desc }}</p>
         </div>
+      </div>
+    </section>
+
+    <div class="tab-switch-wrap">
+      <div class="tab-track">
+        <div class="tab-thumb" :class="activeTab === 1 ? 'pos-1' : 'pos-0'"></div>
+        <button
+          class="tab-btn"
+          :class="{ active: activeTab === 0 }"
+          @click="activeTab = 0"
+        >
+          <i class="fa-solid fa-lock"></i> سياسة الخصوصية
+        </button>
+        <button
+          class="tab-btn"
+          :class="{ active: activeTab === 1 }"
+          @click="activeTab = 1"
+        >
+          <i class="fa-solid fa-file-signature"></i> شروط الاستخدام
+        </button>
+      </div>
+    </div>
+
+    <section class="policy-main">
+      <div v-if="activeTab === 0" class="policy-panel">
+        <div class="panel-head">
+          <div class="panel-icon panel-icon--blue"><i class="fa-solid fa-user-shield"></i></div>
+          <h2>سياسة الخصوصية</h2>
+          <p>
+            نضع خصوصية وأمان مستخدمينا في مقدّمة أولوياتنا، ونلتزم بحماية جميع البيانات
+            الشخصية وفق نظام حماية البيانات الشخصية المعمول به في المملكة العربية السعودية.
+          </p>
+        </div>
+
+        <div class="policy-list">
+          <article
+            v-for="(item, i) in privacyItems"
+            :key="i"
+            class="policy-item"
+            :class="`policy-item--${i % 4}`"
+          >
+            <div class="policy-icon"><i :class="item.icon"></i></div>
+            <div>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.desc }}</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div v-else class="policy-panel">
+        <div class="panel-head">
+          <div class="panel-icon panel-icon--pink"><i class="fa-solid fa-file-contract"></i></div>
+          <h2>شروط وأحكام الاستخدام</h2>
+          <p>
+            نرحّب بكم في منصة بارع. يخضع استخدامكم للمنصة والاشتراك في مساراتها التفاعلية
+            للشروط والأحكام التالية.
+          </p>
+        </div>
+
+        <div class="policy-list">
+          <article
+            v-for="(item, i) in termsItems"
+            :key="i"
+            class="policy-item"
+            :class="`policy-item--${i % 4}`"
+          >
+            <div class="policy-icon"><i :class="item.icon"></i></div>
+            <div>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.desc }}</p>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="policy-footer">
+        <div class="stars">٭ ٭ ٭</div>
+        <p class="footer-line"><i class="fa-solid fa-heart"></i> بارع يهتم بخصوصية وسلامة كل طفل وأسرة</p>
+        <p class="footer-sub">لأي استفسار حول هذه السياسات يسعدنا تواصلكم مع فريق الدعم</p>
       </div>
     </section>
   </PublicShell>
@@ -290,15 +422,206 @@ const stats = [
   line-height: 1.75;
 }
 
+/* ===== POLICY TAB SWITCH ===== */
+.tab-switch-wrap {
+  display: flex;
+  justify-content: center;
+  padding: 0 1.5rem;
+  margin-top: 2.5rem;
+  position: relative;
+  z-index: 5;
+}
+
+.tab-track {
+  position: relative;
+  display: flex;
+  width: 100%;
+  max-width: 26rem;
+  background: #fff;
+  border: 2px solid #F1F5F9;
+  border-radius: 999px;
+  padding: .25rem;
+  box-shadow: 0 10px 28px rgba(28,28,46,.08);
+}
+
+.tab-thumb {
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  width: calc(50% - 4px);
+  border-radius: 999px;
+  background: linear-gradient(90deg, #38BDF8, #EC4899);
+  transition: transform .35s cubic-bezier(.65,0,.35,1);
+  z-index: 0;
+}
+
+.tab-thumb.pos-0 { transform: translateX(0); }
+.tab-thumb.pos-1 { transform: translateX(calc(-100%)); }
+
+.tab-btn {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  padding: .65rem 1rem;
+  border-radius: 999px;
+  font-family: 'Baloo Bhaijaan 2', sans-serif;
+  font-weight: 700;
+  font-size: .85rem;
+  color: rgba(28,28,46,.55);
+  transition: color .3s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.tab-btn i { margin-inline-end: .35rem; }
+.tab-btn.active { color: #fff; }
+
+/* ===== POLICY MAIN ===== */
+.policy-main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 3rem 1.5rem 4.5rem;
+}
+
+.panel-head {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+.panel-icon {
+  width: 3.5rem;
+  height: 3.5rem;
+  margin: 0 auto .9rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+}
+
+.panel-icon--blue { background: #E0F4FF; color: #38BDF8; }
+.panel-icon--pink { background: #FCE7F3; color: #EC4899; }
+
+.panel-head h2 {
+  font-family: 'Baloo Bhaijaan 2', sans-serif;
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: #1C1C2E;
+  margin-bottom: .6rem;
+}
+
+.panel-head p {
+  color: #6B7280;
+  font-size: .92rem;
+  line-height: 1.9;
+  max-width: 32rem;
+  margin: 0 auto;
+}
+
+/* ===== POLICY LIST ===== */
+.policy-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.policy-item {
+  --p-color: #38BDF8;
+  --p-soft: #E0F4FF;
+  display: flex;
+  align-items: flex-start;
+  gap: 1.1rem;
+  background: #fff;
+  border: 2px solid #F1F5F9;
+  border-radius: 24px;
+  padding: 1.4rem 1.5rem;
+  transition: transform .25s ease, box-shadow .25s ease;
+}
+
+.policy-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 32px rgba(28,28,46,.08);
+}
+
+.policy-item--0 { --p-color: #38BDF8; --p-soft: #E0F4FF; }
+.policy-item--1 { --p-color: #EC4899; --p-soft: #FCE7F3; }
+.policy-item--2 { --p-color: #A16207; --p-soft: #FEF3C7; }
+.policy-item--3 { --p-color: #34D399; --p-soft: #D1FAE5; }
+
+.policy-icon {
+  flex-shrink: 0;
+  width: 3.4rem;
+  height: 3.4rem;
+  border-radius: 38% 62% 55% 45% / 50% 45% 55% 50%;
+  background: var(--p-soft);
+  color: var(--p-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: transform .3s ease, border-radius .3s ease;
+}
+
+.policy-item:hover .policy-icon {
+  transform: scale(1.08) rotate(-6deg);
+  border-radius: 50%;
+}
+
+.policy-item h3 {
+  font-family: 'Baloo Bhaijaan 2', sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: #1C1C2E;
+  margin-bottom: .4rem;
+}
+
+.policy-item p {
+  color: #475569;
+  font-size: .92rem;
+  line-height: 1.85;
+}
+
+/* ===== POLICY FOOTER ===== */
+.policy-footer {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.stars {
+  color: #FACC15;
+  font-size: 1rem;
+  letter-spacing: .3rem;
+  margin-bottom: .8rem;
+}
+
+.footer-line {
+  font-family: 'Baloo Bhaijaan 2', sans-serif;
+  font-weight: 700;
+  color: rgba(28,28,46,.7);
+  font-size: .95rem;
+}
+
+.footer-line i { color: #EC4899; margin-inline-end: .3rem; }
+
+.footer-sub {
+  color: #6B7280;
+  font-size: .8rem;
+  margin-top: .3rem;
+}
+
 @media (max-width: 768px) {
   .about-intro { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 480px) {
   .intro-stats { grid-template-columns: 1fr 1fr; gap: .8rem; }
+  .tab-btn { font-size: .75rem; padding: .6rem .5rem; }
+  .tab-btn i { margin-inline-end: .2rem; }
+  .policy-item { flex-direction: column; align-items: flex-start; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .stat-box, .value-card, .value-icon { transition: none; }
+  .stat-box, .value-card, .value-icon, .policy-item, .policy-icon, .tab-thumb { transition: none; }
 }
 </style>
