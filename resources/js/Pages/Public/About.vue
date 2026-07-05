@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import PublicShell from '@/Components/PublicShell.vue'
 
@@ -20,6 +20,18 @@ const stats = [
 ]
 
 const activeTab = ref(0)
+
+// افتح تبويب الشروط تلقائيًا عند القدوم من رابط /about#terms
+onMounted(() => {
+  const hash = window.location.hash
+  if (hash === '#terms') activeTab.value = 1
+  else if (hash === '#privacy') activeTab.value = 0
+
+  // مرّر الصفحة لقسم السياسات لو فيه hash
+  if (hash === '#terms' || hash === '#privacy') {
+    document.querySelector('.tab-switch-wrap')?.scrollIntoView({ behavior: 'smooth' })
+  }
+})
 
 const privacyItems = [
   {

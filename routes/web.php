@@ -61,6 +61,8 @@ Route::get('/subscribe', [PublicPageController::class, 'subscribe'])->name('subs
 Route::get('/about',     [PublicPageController::class, 'about'])->name('about');
 Route::get('/contact',   [PublicPageController::class, 'contact'])->name('contact');
 Route::post('/contact',  [PublicPageController::class, 'contactStore'])->name('contact.store');
+Route::get('/blog',          [PublicPageController::class, 'blog'])->name('blog');
+Route::get('/blog/{slug}',   [PublicPageController::class, 'blogShow'])->name('blog.show');
 
 // ── Payments (PayTabs) ─────────────────────────────────────────
 Route::middleware('auth')->group(function () {

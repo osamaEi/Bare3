@@ -17,6 +17,7 @@ defineProps({
           <li><Link href="/">الرئيسية</Link></li>
           <li><Link :href="route('subscribe')">الاشتراك</Link></li>
           <li><Link :href="route('about')">عن المعهد</Link></li>
+          <li><Link :href="route('blog')">المدونة</Link></li>
           <li><Link :href="route('contact')">تواصل معنا</Link></li>
         </ul>
         <Link :href="route('login')" class="pub-btn">تسجيل الدخول</Link>
@@ -53,6 +54,7 @@ defineProps({
           <li><Link href="/">الرئيسية</Link></li>
           <li><Link :href="route('subscribe')">الاشتراك</Link></li>
           <li><Link :href="route('about')">عن المعهد</Link></li>
+          <li><Link :href="route('blog')">المدونة</Link></li>
           <li><Link :href="route('contact')">تواصل معنا</Link></li>
         </ul>
       </div>
