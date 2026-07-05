@@ -7,16 +7,17 @@
 
 <!-- NAVBAR -->
 
-<nav>
+<nav id="top">
   <div class="nav-inner">
     <div class="nav-logo" style="display:flex; align-items:center; gap:.4rem;">
       <img :src="c.brand.logo" style="width: 200px;" alt="">
     </div>
     <ul>
-      <li><a href="/">الرئيسية</a></li>
-      <li><a :href="route('subscribe')">الاشتراك</a></li>
-      <li><a :href="route('about')">عن المعهد</a></li>
-      <li><a :href="route('contact')">تواصل معنا</a></li>
+      <li><a href="#top">الرئيسية</a></li>
+      <li><a href="#pricing">الاشتراك</a></li>
+      <li><a href="#about">عن المعهد</a></li>
+      <li><a href="#blog">المدونة</a></li>
+      <li><a href="#contact">تواصل معنا</a></li>
     </ul>
     <div class="login-dd" ref="loginDd">
       <button class="btn-nav" @click="loginOpen = !loginOpen">
@@ -267,6 +268,87 @@
 
 
 
+<!-- ABOUT -->
+<section id="about" class="home-about">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-graduation-cap" style="color:var(--sky-dark)"></i> عن المعهد</div>
+    <h2>منصة بارع التعليمية</h2>
+    <p class="section-sub">وجهتك الأولى لتمكين الأجيال من مهارات القرن الحادي والعشرين</p>
+  </div>
+  <div class="about-cards">
+    <div class="about-card">
+      <div class="about-ic sky"><i class="fa-solid fa-bullseye"></i></div>
+      <h3>رسالتنا</h3>
+      <p>تمكين الأجيال من مهارات القرن الـ 21 بأسلوب تفاعلي وقصصي ممتع ومبتكر، يدمج بين المعرفة العلمية والأمان الرقمي، ويسدّ الفجوة بين التعليم الأكاديمي ومتطلبات المستقبل.</p>
+    </div>
+    <div class="about-card">
+      <div class="about-ic pink"><i class="fa-solid fa-eye"></i></div>
+      <h3>رؤيتنا</h3>
+      <p>أن نكون المنصة التعليمية الرقمية الأولى والأكثر موثوقية في المملكة والعالم العربي في بناء وتطوير مهارات الحياة، لإنشاء جيل مبتكر واعٍ تقنياً ومتزن عاطفياً ومالياً.</p>
+    </div>
+  </div>
+  <div class="about-more">
+    <a :href="route('about')" class="about-link">تعرّف علينا أكثر <i class="fa-solid fa-arrow-left"></i></a>
+  </div>
+</section>
+
+<!-- BLOG -->
+<section id="blog" class="home-blog" v-if="latestPosts.length">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-newspaper" style="color:var(--pink)"></i> المدونة</div>
+    <h2>أحدث المقالات</h2>
+    <p class="section-sub">رؤى تربوية تساعدك على إعداد جيل واعٍ ومبتكر</p>
+  </div>
+  <div class="home-blog-grid">
+    <Link v-for="post in latestPosts" :key="post.slug" :href="route('blog.show', post.slug)" class="home-blog-card">
+      <span v-if="post.category" class="hb-cat">{{ post.category }}</span>
+      <h3>{{ post.title }}</h3>
+      <p>{{ post.excerpt }}</p>
+      <span class="hb-more">اقرأ المقال <i class="fa-solid fa-arrow-left"></i></span>
+    </Link>
+  </div>
+  <div class="about-more">
+    <a :href="route('blog')" class="about-link">كل المقالات <i class="fa-solid fa-arrow-left"></i></a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="home-contact">
+  <div class="section-center">
+    <div class="section-tag"><i class="fa-solid fa-envelope" style="color:var(--sky-dark)"></i> تواصل معنا</div>
+    <h2>عندك سؤال؟ راسلنا</h2>
+    <p class="section-sub">فريقنا جاهز للرد على استفساراتك</p>
+  </div>
+  <form class="contact-form" @submit.prevent="submitContact">
+    <div v-if="$page.props.flash?.success" class="contact-ok">{{ $page.props.flash.success }}</div>
+    <div class="cf-row">
+      <div class="cf-field">
+        <input v-model="contactForm.name" type="text" placeholder="الاسم" />
+        <span v-if="contactForm.errors.name" class="cf-err">{{ contactForm.errors.name }}</span>
+      </div>
+      <div class="cf-field">
+        <input v-model="contactForm.email" type="email" placeholder="البريد الإلكتروني" />
+        <span v-if="contactForm.errors.email" class="cf-err">{{ contactForm.errors.email }}</span>
+      </div>
+    </div>
+    <div class="cf-row">
+      <div class="cf-field">
+        <input v-model="contactForm.phone" type="text" placeholder="رقم الجوال (اختياري)" />
+      </div>
+      <div class="cf-field">
+        <input v-model="contactForm.subject" type="text" placeholder="الموضوع (اختياري)" />
+      </div>
+    </div>
+    <div class="cf-field">
+      <textarea v-model="contactForm.message" rows="4" placeholder="رسالتك"></textarea>
+      <span v-if="contactForm.errors.message" class="cf-err">{{ contactForm.errors.message }}</span>
+    </div>
+    <button type="submit" class="btn-primary" :disabled="contactForm.processing">
+      {{ contactForm.processing ? 'جاري الإرسال...' : 'إرسال الرسالة' }}
+    </button>
+  </form>
+</section>
+
 <!-- FOOTER -->
 <footer>
   <div class="footer-inner">
@@ -318,12 +400,14 @@
 
 <script setup>
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue'
+import { Link, useForm } from '@inertiajs/vue3'
 import SupportChat from '../Components/SupportChat.vue'
 
 const props = defineProps({
   canLogin: Boolean,
   canRegister: Boolean,
   content: { type: Object, default: () => ({}) },
+  latestPosts: { type: Array, default: () => [] },
 })
 
 // محتوى الصفحة (يصل من الباك-إند مدموجًا مع الافتراضيات)
@@ -334,6 +418,15 @@ const c = computed(() => props.content)
 const featBorder = ['border border-violet-100 hover:border-violet-200', 'border border-sky-100 hover:border-sky-200', 'border border-pink-100 hover:border-pink-200', 'border border-fuchsia-100 hover:border-fuchsia-200']
 const featIconColor = ['text-violet-600', 'text-sky-600', 'text-pink-600', 'text-fuchsia-600']
 const featBlob = ['bg-gradient-to-br from-violet-200 to-purple-200', 'bg-gradient-to-br from-sky-200 to-cyan-200', 'bg-gradient-to-br from-pink-200 to-rose-200', 'bg-gradient-to-br from-fuchsia-200 to-purple-200']
+
+// فورم التواصل (يرسل إلى نفس مسار صفحة "تواصل معنا")
+const contactForm = useForm({ name: '', email: '', phone: '', subject: '', message: '' })
+function submitContact() {
+  contactForm.post(route('contact.store'), {
+    preserveScroll: true,
+    onSuccess: () => contactForm.reset(),
+  })
+}
 
 const loginOpen = ref(false)
 const loginDd = ref(null)
@@ -626,11 +719,50 @@ footer address { font-style: normal; opacity: .7; font-size: .88rem; line-height
 .footer-langs span { cursor: pointer; transition: opacity .2s; }
 .footer-langs span:hover { opacity: 1; }
 
+/* ── ABOUT section ── */
+.home-about { padding: 5rem 2rem; background: var(--light); }
+.about-cards { max-width: 1000px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+.about-card { background: var(--white); border-radius: 24px; padding: 2.2rem 2rem; box-shadow: 0 4px 24px rgba(0,0,0,.06); border: 2px solid #F1F5F9; transition: transform .3s; }
+.about-card:hover { transform: translateY(-5px); }
+.about-ic { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.1rem; }
+.about-ic.sky { background: var(--pink-light); color: var(--pink-dark); }
+.about-ic.pink { background: var(--sky-light); color: var(--sky-dark); }
+.about-card h3 { font-size: 1.3rem; font-weight: 800; margin-bottom: .7rem; }
+.about-card p { color: var(--gray); line-height: 1.9; font-size: 1.02rem; }
+.about-more { text-align: center; margin-top: 2rem; }
+.about-link { display: inline-flex; align-items: center; gap: .5rem; color: var(--sky-dark); font-weight: 800; font-size: 1rem; }
+.about-link:hover { color: var(--sky); }
+
+/* ── BLOG section ── */
+.home-blog { padding: 5rem 2rem; background: linear-gradient(135deg, var(--sky-light) 0%, var(--pink-light) 100%); }
+.home-blog-grid { max-width: 1050px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; }
+.home-blog-card { background: var(--white); border-radius: 22px; padding: 1.8rem 1.6rem; box-shadow: 0 4px 20px rgba(0,0,0,.06); text-decoration: none; color: inherit; display: flex; flex-direction: column; transition: transform .3s, box-shadow .3s; }
+.home-blog-card:hover { transform: translateY(-6px); box-shadow: 0 14px 32px rgba(0,0,0,.1); }
+.hb-cat { align-self: flex-start; background: var(--sky-light); color: var(--sky-dark); font-size: .72rem; font-weight: 800; padding: .25rem .8rem; border-radius: 50px; margin-bottom: .8rem; }
+.home-blog-card h3 { font-weight: 800; font-size: 1.1rem; line-height: 1.5; margin-bottom: .6rem; color: var(--dark); }
+.home-blog-card p { color: var(--gray); font-size: .9rem; line-height: 1.8; flex: 1; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.hb-more { color: var(--pink); font-weight: 800; font-size: .85rem; display: inline-flex; align-items: center; gap: .35rem; }
+
+/* ── CONTACT section ── */
+.home-contact { padding: 5rem 2rem; background: var(--light); }
+.contact-form { max-width: 640px; margin: 0 auto; }
+.contact-ok { background: var(--lime-light); color: var(--lime-dark); border: 2px solid var(--lime-mid); border-radius: 14px; padding: .9rem 1.2rem; font-weight: 700; margin-bottom: 1.2rem; text-align: center; }
+.cf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
+.cf-field { display: flex; flex-direction: column; margin-bottom: 1rem; }
+.cf-row .cf-field { margin-bottom: 0; }
+.contact-form input, .contact-form textarea { font-family: inherit; font-size: 1rem; padding: .9rem 1.1rem; border-radius: 14px; border: 2px solid #E2E8F0; background: var(--white); transition: border-color .2s; resize: vertical; }
+.contact-form input:focus, .contact-form textarea:focus { outline: none; border-color: var(--sky); }
+.cf-err { color: #DC2626; font-size: .8rem; font-weight: 700; margin-top: .35rem; }
+.contact-form .btn-primary { width: 100%; margin-top: .5rem; }
+.contact-form .btn-primary:disabled { opacity: .6; cursor: not-allowed; }
+
 @media (max-width: 768px) {
   nav ul { display: none; }
   .hero-img img { width: 300px; }
   .hero-inner { text-align: center; }
   .hero-btns { justify-content: center; }
   .hero-stats { justify-content: center; }
+  .about-cards { grid-template-columns: 1fr; }
+  .cf-row { grid-template-columns: 1fr; }
 }
 </style>

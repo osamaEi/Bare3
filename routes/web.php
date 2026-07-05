@@ -49,10 +49,23 @@ Route::get('/', function () {
         $content['testimonials'][$i]['avatar'] = $url($t['avatar'] ?? null);
     }
 
+    $latestPosts = \App\Models\BlogPost::published()
+        ->with('category:id,name')
+        ->orderByDesc('published_at')
+        ->limit(3)
+        ->get()
+        ->map(fn ($p) => [
+            'title'    => $p->title,
+            'slug'     => $p->slug,
+            'excerpt'  => $p->excerpt,
+            'category' => $p->category?->name,
+        ]);
+
     return Inertia::render('Welcome', [
         'canLogin'    => Route::has('login'),
         'canRegister' => Route::has('register'),
         'content'     => $content,
+        'latestPosts' => $latestPosts,
     ]);
 });
 
