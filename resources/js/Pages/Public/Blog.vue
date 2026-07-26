@@ -1,7 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { Head, Link } from '@inertiajs/vue3'
-import PublicShell from '@/Components/PublicShell.vue'
+import Bare3Layout from '@/Layouts/Bare3Layout.vue'
 
 const props = defineProps({
   brand:  Object,
@@ -9,143 +9,90 @@ const props = defineProps({
   posts:  { type: Array, default: () => [] },
 })
 
-// أقسام المقالات المتاحة (تُشتق من المقالات نفسها)
+// التصنيفات تُشتق من المقالات الفعلية
 const categories = computed(() => {
   const set = [...new Set(props.posts.map(p => p.category).filter(Boolean))]
   return ['الكل', ...set]
 })
-
 const activeCat = ref('الكل')
-
 const filteredPosts = computed(() =>
-  activeCat.value === 'الكل'
-    ? props.posts
-    : props.posts.filter(p => p.category === activeCat.value)
+  activeCat.value === 'الكل' ? props.posts : props.posts.filter(p => p.category === activeCat.value)
 )
 
-// ألوان دورية لأغلفة البطاقات (متناسقة مع باليتة الموقع)
+// صور غلاف دورية + ألوان الشارات
 const covers = [
-  { bg: 'linear-gradient(135deg,#38BDF8,#0E7490)', icon: 'fa-solid fa-rocket' },
-  { bg: 'linear-gradient(135deg,#EC4899,#9D174D)', icon: 'fa-solid fa-lightbulb' },
-  { bg: 'linear-gradient(135deg,#A855F7,#7E22CE)', icon: 'fa-solid fa-brain' },
-  { bg: 'linear-gradient(135deg,#F59E0B,#B45309)', icon: 'fa-solid fa-coins' },
-  { bg: 'linear-gradient(135deg,#34D399,#047857)', icon: 'fa-solid fa-heart-pulse' },
+  'https://www.amlood.net/images/interior.png',
+  'https://www.amlood.net/images/child-activity.png',
+  'https://www.amlood.net/images/workspace.jpg',
 ]
-const coverFor = (i) => covers[i % covers.length]
+const badgeColors = ['bg-purple-100 text-purple-700', 'bg-teal-100 text-teal-700', 'bg-orange-100 text-orange-700']
 </script>
 
 <template>
-  <Head title="المدونة — بارع" />
-  <PublicShell :brand="brand" :footer="footer">
+  <Head title="المدونة | Bare3" />
+  <Bare3Layout active="blog">
+
     <!-- HERO -->
-    <section class="blog-hero">
-      <div class="blog-hero-tag"><i class="fa-solid fa-newspaper"></i> مجتمع بارع</div>
-      <h1>مدونة بارع</h1>
-      <p>مقالات ورؤى تربوية تساعدك على إعداد جيل واعٍ ومبتكر لمهارات القرن الحادي والعشرين</p>
+    <section class="blog-hero min-h-[65vh] flex items-center text-white relative">
+      <div class="max-w-5xl mx-auto px-6 text-center">
+        <h1 class="text-5xl md:text-6xl font-black mb-6" data-aos="fade-up">المدونة</h1>
+        <p class="text-2xl text-purple-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
+          رؤى عميقة ومقالات متخصصة حول الصحة النفسية وجودة الحياة
+        </p>
+      </div>
     </section>
 
-    <div class="blog-wrap">
-      <!-- فلاتر الأقسام -->
-      <div v-if="categories.length > 2" class="cat-filters">
-        <button
-          v-for="c in categories"
-          :key="c"
-          class="cat-chip"
-          :class="{ active: activeCat === c }"
-          @click="activeCat = c"
-        >{{ c }}</button>
-      </div>
+    <!-- BLOG SECTION -->
+    <section class="py-20">
+      <div class="max-w-7xl mx-auto px-6">
 
-      <!-- شبكة المقالات -->
-      <div v-if="filteredPosts.length" class="posts-grid">
-        <Link
-          v-for="(post, i) in filteredPosts"
-          :key="post.slug"
-          :href="route('blog.show', post.slug)"
-          class="post-card"
-        >
-          <div class="post-cover" :style="{ background: coverFor(i).bg }">
-            <i :class="coverFor(i).icon"></i>
-          </div>
-          <div class="post-body">
-            <span v-if="post.category" class="post-cat">{{ post.category }}</span>
-            <h3 class="post-title">{{ post.title }}</h3>
-            <p class="post-excerpt">{{ post.excerpt }}</p>
-            <div class="post-meta">
-              <span v-if="post.published_at"><i class="fa-regular fa-calendar"></i> {{ post.published_at }}</span>
-              <span class="read-more">اقرأ المقال <i class="fa-solid fa-arrow-left"></i></span>
+        <!-- Categories Filter -->
+        <div v-if="categories.length > 1" class="flex flex-wrap justify-center gap-3 mb-12" data-aos="fade-up">
+          <button v-for="cat in categories" :key="cat" @click="activeCat = cat"
+                  class="px-6 py-2 rounded-full text-sm font-medium transition"
+                  :class="activeCat === cat ? 'bg-purple-700 text-white' : 'hover:bg-purple-100'">
+            {{ cat }}
+          </button>
+        </div>
+
+        <div v-if="filteredPosts.length" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <Link v-for="(post, i) in filteredPosts" :key="post.slug" :href="route('blog.show', post.slug)"
+                class="article-card bg-white rounded-3xl overflow-hidden shadow-md block">
+            <img :src="covers[i % covers.length]" class="w-full h-56 object-cover">
+            <div class="p-7">
+              <span v-if="post.category" class="text-xs px-4 py-1.5 rounded-full" :class="badgeColors[i % badgeColors.length]">
+                {{ post.category }}
+              </span>
+              <h3 class="font-bold text-xl mt-5 leading-tight">{{ post.title }}</h3>
+              <p class="text-gray-600 mt-4 line-clamp-3">{{ post.excerpt }}</p>
+              <div class="mt-6 flex items-center justify-between text-sm text-gray-500">
+                <span>{{ post.published_at }}</span>
+                <span class="text-purple-700 font-medium">اقرأ المقال ←</span>
+              </div>
             </div>
-          </div>
-        </Link>
-      </div>
+          </Link>
+        </div>
 
-      <!-- حالة فارغة -->
-      <div v-else class="blog-empty">
-        <i class="fa-regular fa-newspaper"></i>
-        <p>لا توجد مقالات منشورة بعد — ترقّبوا الجديد قريبًا!</p>
+        <div v-else class="text-center py-16 text-gray-400">
+          <i class="fa-regular fa-newspaper text-5xl mb-4"></i>
+          <p class="font-medium">لا توجد مقالات منشورة بعد.</p>
+        </div>
+
       </div>
-    </div>
-  </PublicShell>
+    </section>
+  </Bare3Layout>
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap');
-
 .blog-hero {
-  text-align: center;
-  padding: 4.5rem 2rem 5.5rem;
-  background: linear-gradient(155deg, #FCE7F3 0%, #E0F4FF 50%, #F5F3FF 100%);
-  position: relative;
-  overflow: hidden;
+  background: linear-gradient(rgba(75,53,104,0.8), rgba(143,119,174,0.75)),
+              url('https://www.amlood.net/images/interior.png');
+  background-size: cover;
+  background-position: center;
 }
-.blog-hero-tag {
-  display: inline-flex; align-items: center; gap: .5rem;
-  background: #fff; border: 2px solid #38BDF8; border-radius: 50px;
-  padding: .35rem 1.1rem; font-weight: 800; font-size: .85rem; color: #0E7490;
-  margin-bottom: 1rem; box-shadow: 0 3px 0 #E0F4FF;
+.article-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+.article-card:hover {
+  transform: translateY(-12px);
+  box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
-.blog-hero h1 {
-  font-family: 'Baloo Bhaijaan 2', sans-serif;
-  font-size: clamp(2rem, 4.5vw, 3rem); font-weight: 800; color: #1C1C2E; margin-bottom: .6rem;
-}
-.blog-hero p { color: #475569; font-size: 1.1rem; font-weight: 600; max-width: 620px; margin: 0 auto; line-height: 1.8; }
-
-.blog-wrap { max-width: 1100px; margin: 0 auto; padding: 3rem 1.5rem 4.5rem; }
-
-.cat-filters { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: center; margin-bottom: 2.5rem; }
-.cat-chip {
-  border: 2px solid #E2E8F0; background: #fff; color: #475569;
-  font-family: inherit; font-weight: 700; font-size: .88rem;
-  padding: .5rem 1.2rem; border-radius: 50px; cursor: pointer; transition: all .2s;
-}
-.cat-chip:hover { border-color: #38BDF8; color: #0E7490; }
-.cat-chip.active { background: #EC4899; border-color: #EC4899; color: #fff; box-shadow: 0 4px 0 #9D174D; }
-
-.posts-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.6rem;
-}
-.post-card {
-  display: flex; flex-direction: column; background: #fff; border-radius: 24px; overflow: hidden;
-  border: 2px solid #F1F5F9; box-shadow: 0 4px 20px rgba(28,28,46,.05);
-  text-decoration: none; color: inherit; transition: transform .3s, box-shadow .3s, border-color .3s;
-}
-.post-card:hover { transform: translateY(-6px); box-shadow: 0 16px 34px rgba(28,28,46,.1); border-color: #E0F4FF; }
-.post-cover { height: 150px; display: flex; align-items: center; justify-content: center; color: #fff; }
-.post-cover i { font-size: 2.6rem; opacity: .9; }
-.post-body { padding: 1.4rem 1.5rem 1.6rem; display: flex; flex-direction: column; flex: 1; }
-.post-cat {
-  align-self: flex-start; background: #E0F4FF; color: #0E7490;
-  font-size: .72rem; font-weight: 800; padding: .25rem .8rem; border-radius: 50px; margin-bottom: .7rem;
-}
-.post-title {
-  font-family: 'Baloo Bhaijaan 2', sans-serif; font-weight: 800; font-size: 1.12rem;
-  color: #1C1C2E; line-height: 1.5; margin-bottom: .6rem;
-}
-.post-excerpt { color: #6B7280; font-size: .9rem; line-height: 1.8; flex: 1; margin-bottom: 1.1rem; }
-.post-meta { display: flex; align-items: center; justify-content: space-between; font-size: .8rem; color: #94A3B8; font-weight: 700; }
-.read-more { color: #EC4899; display: inline-flex; align-items: center; gap: .35rem; }
-
-.blog-empty { text-align: center; padding: 4rem 1rem; color: #94A3B8; }
-.blog-empty i { font-size: 3rem; margin-bottom: 1rem; display: block; }
-.blog-empty p { font-weight: 700; }
 </style>

@@ -59,6 +59,16 @@ class PublicPageController extends Controller
         ]);
     }
 
+    public function courses(): Response
+    {
+        $content = $this->shared();
+
+        return Inertia::render('Public/Courses', [
+            'brand'  => $content['brand'],
+            'footer' => $content['footer'],
+        ]);
+    }
+
     public function blog(): Response
     {
         $content = $this->shared();
