@@ -10,25 +10,50 @@ const props = defineProps({
   latestPosts: { type: Array, default: () => [] },
 })
 
-const IMG = '/images/new-bare3'
-
-// أول 5 مقالات لعرضها في قسم "رؤانا" (مع صور غلاف احتياطية)
-const insightCovers = [
-  'https://i.pinimg.com/736x/0f/81/bf/0f81bfb0f356a37edebece4e9b575932.jpg',
-  'https://i.pinimg.com/736x/31/c2/06/31c206905aa424484fcfce4613fbcb24.jpg',
-  'https://i.pinimg.com/736x/0b/ca/de/0bcade7415533cf12d21b704425357b1.jpg',
-  'https://i.pinimg.com/vwebp/736x/a6/50/a1/a650a1cd83d27b077cb56ee9132f6abf.webp',
-  'https://i.pinimg.com/236x/fe/60/d6/fe60d661ac3ebfd6bf3ae0ab5195ce64.jpg',
-]
 const insights = computed(() => props.latestPosts.slice(0, 5))
 
-// فورم التواصل — مربوط بـ contact.store
+// المسارات الخمسة — بالعبارات التسويقية المخصّصة + بيانات الـ hover
 const tracks = [
-  { value: 'بارع مهني',    color: 'var(--navy)' },
-  { value: 'بارع أطفال',   color: 'var(--orange)' },
-  { value: 'بارع اجتماعي', color: 'var(--coral)' },
-  { value: 'بارع تعليمي',  color: 'var(--teal)' },
+  {
+    key: 'creativity', title: 'الإبداع والابتكار والتفكير التصميمي', icon: 'fa-lightbulb', color: '#f0806a',
+    slogan: 'فكّر خارج الأطر.. حوّل خيالك إلى ابتكار يصنع الفارق',
+    sub: 'هنا نعلّم العقول كيف تلاحظ وتتحدى المألوف',
+    age: '٨–١٢ سنة', skill: 'حل المشكلات إبداعياً', price: '٧٩ ر.س/شهر',
+  },
+  {
+    key: 'emotional', title: 'الذكاء العاطفي والاجتماعي', icon: 'fa-heart-pulse', color: '#f2b866',
+    slogan: 'ثقة واتزان.. لنعبّر عن مشاعرنا بشجاعة ونقود حواراتنا بذكاء',
+    sub: 'الحصن النفسي والمرونة التي تحمي شخصية أبنائكم في عالم المشتتات',
+    age: '٦–١٢ سنة', skill: 'الوعي الذاتي والتعاطف', price: '٧٩ ر.س/شهر',
+  },
+  {
+    key: 'finance', title: 'الوعي المالي الذكي', icon: 'fa-coins', color: '#4bb5a8',
+    slogan: 'مستقبل مالي آمن.. من إدارة المصروف اليومي إلى صناعة أول مشروع',
+    sub: 'نعلّم جيل اليوم كيف يدّخر، يستثمر، ويفكر كروّاد الأعمال',
+    age: '٩–١٢ سنة', skill: 'الادخار والاستثمار', price: '٧٩ ر.س/شهر',
+  },
+  {
+    key: 'digital', title: 'المهارة التقنية والمواطنة الرقمية', icon: 'fa-microchip', color: '#7c5cbf',
+    slogan: 'كن أنت القائد.. طوّع أدوات الذكاء الاصطناعي والتكنولوجيا لخدمة إبداعك',
+    sub: 'من مستهلك رقمي إلى مبتكر ذكي؛ نفهم لغة العصر ونبحر فيه بأمان',
+    age: '٨–١٢ سنة', skill: 'الأمان والإبداع الرقمي', price: '٧٩ ر.س/شهر',
+  },
+  {
+    key: 'decision', title: 'اتخاذ القرارات وحل المشكلات', icon: 'fa-chess-knight', color: '#3d6ea5',
+    slogan: 'اصنع قرارك بثقة.. مواقف حية تصنع شخصية قيادية لا تعرف التردد',
+    sub: 'تحديات يومية تُكسب المشتركين مهارة تفكيك المشكلات المعقدة وحلّها باقتدار',
+    age: '١٠–١٢ سنة', skill: 'القيادة واتخاذ القرار', price: '٧٩ ر.س/شهر',
+  },
 ]
+
+// العبارات الفرعية للـ hero (rotating-style، نعرضها كشرائح)
+const subSlogans = [
+  'من مقاعد الدراسة إلى ريادة المستقبل — مهارات حقيقية لحياة ذكية',
+  'أكثر من مجرد تعليم.. رحلة تفاعلية تبني الشخصية وتصنع القادة',
+  'لأن الشهادة وحدها لا تكفي — نمنح أبناءكم أدوات التميز في عصر الذكاء الاصطناعي',
+]
+
+// فورم التواصل — مربوط بـ contact.store
 const form = useForm({ name: '', email: '', phone: '', subject: '', message: '' })
 function submitContact() {
   form.post(route('contact.store'), { preserveScroll: true, onSuccess: () => form.reset() })
@@ -36,321 +61,265 @@ function submitContact() {
 </script>
 
 <template>
-  <Head title="بارع | Bare3" />
+  <Head title="بارع | مهارات جيل اليوم" />
   <Bare3Layout active="home">
 
-    <!-- HERO -->
-    <section id="hero" class="hero-bg relative min-h-[500px] sm:min-h-[600px] flex items-center justify-center sm:justify-end">
-      <div class="relative z-10 px-6 sm:px-0 text-center sm:text-right max-w-2xl sm:ml-8 mx-auto sm:mx-0">
-        <span data-aos="fade-down" class="baree-eyebrow">
-          <i class="fa-solid fa-sun"></i> براعتك تبدأ من هنا
+    <!-- ============ HERO ============ -->
+    <section id="hero" class="relative overflow-hidden bg-[#FAFAFB] pt-16 pb-24 sm:pt-24 sm:pb-32">
+      <!-- أشكال 3D تجريدية مولّدة بالكود (هوية بارع الخاصة) -->
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+
+      <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+        <span data-aos="fade-down" class="eyebrow">
+          <span class="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse"></span>
+          براعتك تبدأ من هنا
         </span>
-        <h1 data-aos="zoom-in" data-aos-delay="150" class="baree-title mt-5">
-          نمنح أجيالنا مهارات الغد.. <span class="baree-title__accent">اليوم</span>
+
+        <h1 data-aos="fade-up" class="mt-7 text-4xl sm:text-5xl md:text-6xl font-black leading-[1.25] text-[var(--ink)]">
+          لأن المستقبل لا ينتظر..<br>
+          <span class="text-[var(--brand)]">نصقل مهارات جيل اليوم</span> ليقود المستقبل بثقة
         </h1>
-        <p data-aos="fade-up" data-aos-delay="200" class="baree-sub mt-4">
-          رحلة تعليمية تفاعلية وقصصية ترافق أبناءكم من المدرسة للجامعة، وتصقل منظومة متكاملة من المهارات لصناعة رواد وقادة الغد.
+
+        <p data-aos="fade-up" data-aos-delay="150" class="mt-6 text-lg sm:text-xl text-gray-500 leading-loose max-w-2xl mx-auto">
+          رحلة تعليمية تفاعلية وقصصية ترافق أبناءكم من المدرسة للجامعة، وتصقل منظومة متكاملة من المهارات لصناعة روّاد وقادة الغد.
         </p>
-        <ul data-aos="fade-up" data-aos-delay="300" class="baree-path mt-8">
-          <li><span class="baree-path__dot" style="background:var(--orange)"></span>اجتماعية وعاطفية</li>
-          <li><span class="baree-path__dot" style="background:var(--coral)"></span>شخصية</li>
-          <li><span class="baree-path__dot" style="background:var(--teal)"></span>تقنية</li>
-          <li><span class="baree-path__dot" style="background:var(--navy)"></span>مالية</li>
-        </ul>
-        <a href="#tracks" data-aos="fade-up" data-aos-delay="400" class="baree-cta mt-8 sm:mt-10">
-          <span>اكتشف مساراتنا</span>
-          <i class="fa-solid fa-arrow-left"></i>
-        </a>
-      </div>
-      <img :src="`${IMG}/03.png`" class="decor-img hero-img1 hide-mobile" data-aos="fade-left" data-aos-delay="500">
-      <img :src="`${IMG}/26.png`" class="decor-img hero-img2 hide-mobile" data-aos="fade-left" data-aos-delay="500">
-    </section>
 
-    <!-- ABOUT -->
-    <section id="about" class="relative overflow-hidden bg-cover" :style="{ backgroundImage: `url('${IMG}/about-bg.png')` }">
-      <div class="relative max-w-6xl mx-auto px-6 md:px-10 py-16 md:py-24">
-        <div class="grid grid-cols-1 md:grid-cols-2">
-          <div class="text-right" data-aos="fade-right">
-            <h2 class="text-3xl sm:text-4xl md:text-5xl font-black text-slate-900">عن بارع</h2>
-            <div class="mt-2 inline-block">
-              <span class="en text-slate-400 text-lg tracking-wide">About Bare3</span>
-              <div class="h-[3px] w-full bg-violet-400 mt-1"></div>
-            </div>
-            <h3 class="mt-10 text-3xl sm:text-4xl md:text-5xl font-extrabold text-violet-400">رعاية تُثمر استدامة</h3>
-
-            <div class="mt-10 flex items-start justify-end gap-5" data-aos="fade-left" data-aos-delay="100">
-              <div class="relative shrink-0 bg-violet-200/70 rounded-full p-4">
-                <img :src="`${IMG}/leaderboard.png`" class="w-10">
-              </div>
-              <p class="text-slate-800 leading-loose text-base sm:text-lg max-w-xl">
-                منصة بارع التعليمية هي وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين.
-              </p>
-              <div class="h-full w-px bg-slate-200 self-stretch"></div>
-            </div>
-
-            <div class="mt-10 ms-12 flex items-start justify-end gap-5" data-aos="fade-left" data-aos-delay="250">
-              <div class="relative shrink-0 bg-violet-200/70 rounded-full p-4">
-                <img :src="`${IMG}/blog-icon.png`" class="w-10">
-              </div>
-              <p class="text-slate-800 leading-loose text-base sm:text-lg max-w-2xl">
-                نرافق الأجيال في مختلف مراحلهم الدراسية والجامعية عبر رحلة تعليمية تفاعلية، تهدف إلى صقل منظومة متكاملة من المهارات (الاجتماعية والعاطفية والشخصية والتقنية والمالية)؛ لنربط المعرفة بمتطلبات المستقبل، ونشارك في صناعة رواد وقادة الغد.
-              </p>
-              <div class="h-full w-px bg-slate-200 self-stretch"></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- VALUES -->
-    <section class="values-bg py-12 sm:py-20" :style="{ backgroundImage: `linear-gradient(rgba(122,94,160,0.7),rgba(122,94,160,0.7)), url('${IMG}/values-bg.png')` }">
-      <div class="max-w-7xl mx-auto px-4 sm:px-1">
-        <div class="flex items-center gap-6 mb-16" data-aos="fade-down">
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
-          <div class="text-center">
-            <h2 class="text-5xl font-black text-gray-100 tracking-[-2px]">قيمنا</h2>
-            <p class="en text-purple-200 text-xl font-medium -mt-1">bare3 Values</p>
-          </div>
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
-        </div>
-
-        <div class="relative grid grid-cols-1 md:grid-cols-6 gap-6 md:gap-8 py-10">
-          <div class="fade-card bg-white/10 border border-white/30 rounded-[2.5rem_1rem_2.5rem_1rem] p-8 sm:p-14 text-center text-white md:col-span-4 md:-rotate-2 shadow-2xl hover:rotate-0 hover:scale-[1.02] transition-transform duration-500" data-aos="flip-up">
-            <i class="fa-solid fa-circle-check text-6xl mb-6"></i>
-            <h3 class="text-3xl font-bold mb-3">المسؤولية والجودة</h3>
-            <div class="w-14 h-[2px] bg-white/60 mx-auto mb-4"></div>
-            <p class="text-lg text-purple-50 leading-loose">تلتزم بمسؤوليتها المهنية والوطنية وتضع أعلى معايير الجودة لضمان مخرجات تتسم بالدقة والموثوقية.</p>
-          </div>
-          <div class="fade-card bg-white/10 border border-white/30 rounded-full p-8 sm:p-10 text-center text-white md:col-span-2 md:rotate-3 shadow-xl aspect-square flex flex-col justify-center items-center hover:rotate-0 hover:scale-105 transition-transform duration-500" data-aos="flip-up" data-aos-delay="150">
-            <i class="fa-solid fa-lightbulb text-4xl mb-4"></i>
-            <h3 class="text-lg font-bold mb-2">الابتكار<br>والاستدامة</h3>
-            <div class="w-8 h-[2px] bg-white/60 mx-auto mb-2"></div>
-            <p class="text-xs text-purple-50 leading-snug px-2">نبتكر حلولاً إبداعية يمتد أثرها للفرد والمنظمة.</p>
-          </div>
-          <div class="fade-card bg-white/10 border border-white/30 rounded-2xl p-6 sm:p-8 text-center text-white md:col-span-2 md:rotate-[-4deg] shadow-lg flex flex-col justify-center hover:rotate-0 hover:scale-105 transition-transform duration-500" data-aos="flip-up" data-aos-delay="300">
-            <i class="fa-solid fa-heart text-3xl mb-3"></i>
-            <h3 class="text-base font-bold mb-2">العطاء والاحتواء</h3>
-            <div class="w-8 h-[2px] bg-white/60 mx-auto mb-2"></div>
-            <p class="text-xs text-purple-50 leading-snug">تنطلق من شغفها لخدمة الإنسان في بيئة آمنة وداعمة.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TRACKS -->
-    <section id="tracks" class="bg-gradient-to-r from-[#956BAD] to-[#5B3A73] text-white relative overflow-hidden py-16">
-      <div class="max-w-7xl mx-auto px-4 sm:px-1 pt-16 pb-8 text-right">
-        <div class="flex items-center gap-6 mb-16" data-aos="fade-down">
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
-          <div class="text-center">
-            <h2 class="text-5xl font-black text-gray-100 tracking-[-2px]">مساراتنا</h2>
-            <p class="en text-purple-200 text-xl font-medium -mt-1">bare3 Tracks</p>
-          </div>
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
-        </div>
-        <h3 class="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mt-8" data-aos="fade-up" data-aos-delay="100">
-          حلول تخصصية.. تُرافق الإنسان وتمكّن الكيان
-        </h3>
-        <p class="text-purple-100 leading-loose mt-4 mr-12 ml-auto text-lg sm:text-2xl max-w-5xl" data-aos="fade-up" data-aos-delay="200">
-          صممنا مساراتنا في بارع لتغطي كافة جوانب جودة الحياة النفسية والاجتماعية، بمنهجية تجمع بين الفهم العميق للاحتياجات الفردية والمتطلبات الاستراتيجية للمنظومات.
-        </p>
-        <div class="mt-10" data-aos="fade-up" data-aos-delay="300">
-          <Link :href="route('courses')" class="inline-flex items-center gap-2 bg-white text-purple-800 font-bold px-8 py-3.5 rounded-full hover:bg-purple-50 transition">
-            تصفّح كل المسارات <i class="fa-solid fa-arrow-left"></i>
+        <div data-aos="fade-up" data-aos-delay="250" class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="#tracks" class="cta-primary">
+            <span>اكتشف مساراتنا</span>
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <Link :href="route('subscribe')" class="cta-ghost">
+            <span>تصفّح الباقات</span>
           </Link>
         </div>
+
+        <!-- العبارات الفرعية -->
+        <div data-aos="fade-up" data-aos-delay="350" class="mt-12 grid sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          <div v-for="(s, i) in subSlogans" :key="i" class="glass-mini text-sm text-gray-600 leading-relaxed">
+            {{ s }}
+          </div>
+        </div>
       </div>
-      <img :src="`${IMG}/06.png`" class="absolute hide-mobile -bottom-10 left-16 w-32 sm:w-48 opacity-70" data-aos="fade-right" data-aos-delay="400">
     </section>
 
-    <!-- INSIGHTS / رؤانا -->
-    <section id="insights" class="py-20 bg-white relative">
-      <div class="max-w-7xl mx-auto px-6 relative">
-        <div class="flex items-center gap-6 mb-16" data-aos="fade-down">
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
-          <div class="text-center">
-            <h2 class="text-5xl font-black text-gray-900 tracking-[-2px]">رؤانا</h2>
-            <p class="en text-purple-600 text-xl font-medium -mt-1">bare3 Insights</p>
+    <!-- ============ TRACKS (Glassmorphism + hover) ============ -->
+    <section id="tracks" class="relative py-20 sm:py-28 bg-gradient-to-b from-white to-[var(--brand-soft)]">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+          <span class="text-[var(--brand)] font-bold">مساراتنا التعليمية</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">خمس مهارات.. تصنع شخصية قيادية متكاملة</h2>
+          <p class="text-gray-500 mt-4 leading-loose">مرّر على كل مسار لتكتشف تفاصيله والمهارة التي يكتسبها طفلك.</p>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div v-for="(t, i) in tracks" :key="t.key" class="track-card group" data-aos="fade-up" :data-aos-delay="i * 80"
+               :style="{ '--tc': t.color }">
+            <!-- الوجه الأمامي -->
+            <div class="track-face">
+              <div class="track-icon"><i class="fa-solid" :class="t.icon"></i></div>
+              <h3 class="text-xl font-black text-[var(--ink)] leading-snug mb-3">{{ t.title }}</h3>
+              <p class="text-[var(--tc)] font-bold leading-relaxed">{{ t.slogan }}</p>
+              <p class="text-gray-500 text-sm mt-3 leading-relaxed">{{ t.sub }}</p>
+            </div>
+
+            <!-- طبقة الـ hover -->
+            <div class="track-hover">
+              <div class="flex items-center justify-between text-sm">
+                <span class="hover-tag"><i class="fa-solid fa-child-reaching ml-1"></i> {{ t.age }}</span>
+                <span class="hover-tag"><i class="fa-solid fa-star ml-1"></i> {{ t.skill }}</span>
+              </div>
+              <div class="text-center my-5">
+                <div class="text-3xl font-black text-white">{{ t.price }}</div>
+              </div>
+              <Link :href="route('subscribe')" class="join-btn">
+                انضم للمسار <i class="fa-solid fa-arrow-left"></i>
+              </Link>
+            </div>
           </div>
-          <div class="flex-1 h-px bg-gradient-to-r from-transparent via-purple-300 to-transparent"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ABOUT (نبذة) ============ -->
+    <section id="about" class="py-20 sm:py-28 bg-white">
+      <div class="max-w-5xl mx-auto px-6 text-center">
+        <span class="text-[var(--brand)] font-bold" data-aos="fade-up">عن بارع</span>
+        <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">رعاية تُثمر استدامة</h2>
+        <p class="text-gray-500 mt-6 leading-loose text-lg max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+          منصة بارع التعليمية هي وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين — عبر رحلة تعليمية تفاعلية تربط المعرفة بمتطلبات المستقبل، وتشارك في صناعة روّاد وقادة الغد.
+        </p>
+        <Link :href="route('about')" class="cta-primary mt-8 inline-flex" data-aos="fade-up" data-aos-delay="150">
+          <span>تعرّف علينا أكثر</span>
+          <i class="fa-solid fa-arrow-left"></i>
+        </Link>
+      </div>
+    </section>
+
+    <!-- ============ INSIGHTS / المدونة ============ -->
+    <section id="insights" class="py-20 sm:py-28 bg-[#FAFAFB]">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+          <span class="text-[var(--brand)] font-bold">رؤانا</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">أحدث المقالات</h2>
+          <p class="text-gray-500 mt-4 leading-loose">رؤى تربوية تساعدك على إعداد جيل واعٍ ومبتكر.</p>
         </div>
 
-        <div class="max-w-2xl mx-auto text-center mb-16">
-          <p class="text-xl text-gray-700 leading-relaxed mb-4">في هذا القسم نتشارك رؤى بارع حول الصحة النفسية والعوامل التي تؤثر على جودة الحياة.</p>
-          <p class="text-lg text-gray-600">نستعرض المواضيع من زوايا متعددة لنربط المعرفة بالحياة اليومية.</p>
-        </div>
-
-        <div v-if="insights.length" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <Link v-for="(post, i) in insights" :key="post.slug" :href="route('blog.show', post.slug)"
-                class="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-500 border border-purple-100 block">
-            <div class="relative overflow-hidden">
-              <img :src="insightCovers[i % insightCovers.length]" class="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-700">
-              <span class="absolute top-5 right-5 px-5 py-1.5 bg-white text-purple-700 text-sm font-bold rounded-3xl shadow">مقالة</span>
+        <div v-if="insights.length" class="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
+          <Link v-for="post in insights" :key="post.slug" :href="route('blog.show', post.slug)"
+                class="insight-card group" data-aos="fade-up">
+            <div class="insight-cover" :class="`c-${post.category ? (post.category.length % 4) : 0}`">
+              <i class="fa-solid fa-feather-pointed"></i>
             </div>
             <div class="p-7">
-              <h3 class="font-bold text-xl leading-tight mb-3 text-gray-900 group-hover:text-purple-700 transition-colors">{{ post.title }}</h3>
-              <p class="text-gray-600 line-clamp-3">{{ post.excerpt }}</p>
+              <span v-if="post.category" class="insight-cat">{{ post.category }}</span>
+              <h3 class="font-black text-lg text-[var(--ink)] leading-snug mt-3 mb-2 group-hover:text-[var(--brand)] transition-colors">{{ post.title }}</h3>
+              <p class="text-gray-500 text-sm line-clamp-3 leading-relaxed">{{ post.excerpt }}</p>
             </div>
           </Link>
         </div>
 
-        <div class="text-center mt-16">
-          <Link :href="route('blog')" class="group inline-flex items-center gap-3 border-2 border-purple-600 text-purple-700 hover:bg-purple-600 hover:text-white px-9 py-4 rounded-3xl text-lg font-medium transition-all">
-            المزيد من الرؤى
-            <span class="text-2xl group-hover:rotate-90 transition-transform">↗</span>
+        <div class="text-center mt-14" data-aos="fade-up">
+          <Link :href="route('blog')" class="cta-ghost inline-flex">
+            <span>كل المقالات</span>
+            <i class="fa-solid fa-arrow-left"></i>
           </Link>
         </div>
       </div>
     </section>
 
-    <!-- CONTACT -->
-    <section id="contact" class="relative overflow-hidden bg-[var(--purple-100)] pt-24 pb-24">
-      <div class="max-w-7xl mx-auto px-6 relative">
-        <div class="max-w-2xl mb-16 text-right mr-0 mx-auto md:mx-0">
-          <span class="inline-flex items-center gap-2 bg-white text-[var(--purple-800)] text-sm font-bold px-4 py-1.5 rounded-full shadow-sm">
-            <span class="w-1.5 h-1.5 rounded-full bg-[var(--coral)]"></span> تواصل معنا
-          </span>
-          <h2 class="font-extrabold text-4xl sm:text-5xl mt-5 text-[var(--purple-900)] leading-[1.15]">
-            اختر مسارك، <br class="hidden sm:block"> وابدأ الحديث معنا
-          </h2>
-          <p class="mt-5 text-[var(--purple-800)]/70 leading-loose">
-            كل مسار من مسارات بارع له طابعه الخاص. اختر ما يناسبك، واملأ بياناتك، وسيعود إليك فريقنا خلال يوم عمل واحد.
-          </p>
+    <!-- ============ CONTACT ============ -->
+    <section id="contact" class="py-20 sm:py-28 bg-white">
+      <div class="max-w-3xl mx-auto px-6">
+        <div class="text-center mb-12" data-aos="fade-up">
+          <span class="text-[var(--brand)] font-bold">تواصل معنا</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">عندك سؤال؟ راسلنا</h2>
+          <p class="text-gray-500 mt-4">سيعود إليك فريقنا خلال يوم عمل واحد.</p>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-10 items-start">
-
-          <!-- بيانات التواصل -->
-          <div class="text-right order-2 md:order-1">
-            <div class="flex flex-col gap-4">
-              <div class="relative bg-white rounded-2xl pr-7 pl-6 py-5 shadow-sm flex items-center gap-4 justify-end">
-                <div class="text-right">
-                  <p class="font-bold text-[var(--purple-900)]">المقر الرئيسي</p>
-                  <p class="text-[var(--purple-800)]/60 text-sm mt-0.5">الرياض، السعودية</p>
-                </div>
-                <div class="w-11 h-11 shrink-0 rounded-xl bg-[var(--navy)]/10 flex items-center justify-center"><i class="fa-solid fa-location-dot text-[var(--navy)]"></i></div>
-                <span class="absolute right-0 top-4 bottom-4 w-1 rounded-full bg-[var(--navy)]"></span>
-              </div>
-              <div class="relative bg-white rounded-2xl pr-7 pl-6 py-5 shadow-sm flex items-center gap-4 justify-end">
-                <div class="text-right">
-                  <p class="font-bold text-[var(--purple-900)]" dir="ltr">info@Bare3.Net</p>
-                  <p class="text-[var(--purple-800)]/60 text-sm mt-0.5">للاستفسارات والخدمات</p>
-                </div>
-                <div class="w-11 h-11 shrink-0 rounded-xl bg-[var(--teal)]/10 flex items-center justify-center"><i class="fa-solid fa-envelope text-[var(--teal)]"></i></div>
-                <span class="absolute right-0 top-4 bottom-4 w-1 rounded-full bg-[var(--teal)]"></span>
-              </div>
-              <div class="relative bg-white rounded-2xl pr-7 pl-6 py-5 shadow-sm flex items-center gap-4 justify-end">
-                <div class="text-right">
-                  <p class="font-bold text-[var(--purple-900)]" dir="ltr">Hr@Bare3.Net</p>
-                  <p class="text-[var(--purple-800)]/60 text-sm mt-0.5">للراغبين بالانضمام إلينا</p>
-                </div>
-                <div class="w-11 h-11 shrink-0 rounded-xl bg-[var(--coral)]/10 flex items-center justify-center"><i class="fa-solid fa-briefcase text-[var(--coral)]"></i></div>
-                <span class="absolute right-0 top-4 bottom-4 w-1 rounded-full bg-[var(--coral)]"></span>
-              </div>
-            </div>
+        <div class="glass-card p-8 sm:p-10" data-aos="fade-up" data-aos-delay="100">
+          <div v-if="$page.props.flash?.success" class="mb-6 bg-green-50 text-green-700 border border-green-200 rounded-2xl px-5 py-3 text-sm font-medium">
+            {{ $page.props.flash.success }}
           </div>
-
-          <!-- النموذج -->
-          <div class="relative bg-white rounded-[2rem] p-7 sm:p-10 shadow-xl order-1 md:order-2">
-            <div class="absolute -top-4 -left-4 w-14 h-14 bg-[var(--orange)] rounded-full flex items-center justify-center shadow-lg">
-              <i class="fa-regular fa-comment-dots text-white"></i>
+          <form class="space-y-5" @submit.prevent="submitContact">
+            <div class="grid sm:grid-cols-2 gap-5">
+              <div>
+                <input type="text" v-model="form.name" placeholder="الاسم الكريم" class="field">
+                <span v-if="form.errors.name" class="err">{{ form.errors.name }}</span>
+              </div>
+              <div>
+                <input type="email" v-model="form.email" placeholder="البريد الإلكتروني" dir="ltr" class="field">
+                <span v-if="form.errors.email" class="err">{{ form.errors.email }}</span>
+              </div>
             </div>
-            <h3 class="text-2xl sm:text-3xl font-bold text-[var(--purple-900)] mb-1">شاركنا فكرتك</h3>
-            <p class="text-[var(--purple-800)]/60 mb-7 text-sm">اختر المسار المناسب واملأ البيانات</p>
-
-            <div v-if="$page.props.flash?.success" class="mb-6 bg-green-50 text-green-700 border border-green-200 rounded-2xl px-5 py-3 text-sm font-medium">
-              {{ $page.props.flash.success }}
+            <input type="text" v-model="form.phone" placeholder="رقم الجوال (اختياري)" dir="ltr" class="field">
+            <input type="text" v-model="form.subject" placeholder="الموضوع (اختياري)" class="field">
+            <div>
+              <textarea v-model="form.message" rows="4" placeholder="رسالتك" class="field resize-none"></textarea>
+              <span v-if="form.errors.message" class="err">{{ form.errors.message }}</span>
             </div>
-
-            <form class="space-y-6" @submit.prevent="submitContact">
-              <div>
-                <span class="block text-sm font-medium text-[var(--purple-900)] mb-4">نوع المسار المهتم به</span>
-                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                  <label v-for="t in tracks" :key="t.value" class="cursor-pointer block">
-                    <input type="radio" name="track" :value="t.value" v-model="form.subject" class="peer hidden">
-                    <span class="flex items-center justify-center gap-1.5 border-2 text-xs sm:text-sm font-bold py-3 rounded-xl transition"
-                          :style="{ borderColor: t.color, color: form.subject === t.value ? '#fff' : t.color, background: form.subject === t.value ? t.color : 'transparent' }">
-                      {{ t.value }}
-                    </span>
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-[var(--purple-900)] mb-2">* الاسم الكريم</label>
-                <input type="text" v-model="form.name" placeholder="أدخل اسمك الكريم"
-                       class="w-full px-5 py-3.5 rounded-2xl border-2 border-[var(--purple-100)] bg-[var(--purple-100)]/40 focus:border-[var(--purple-700)] focus:outline-none focus:bg-white text-[var(--purple-900)] transition-colors">
-                <span v-if="form.errors.name" class="text-red-500 text-xs mt-1 block">{{ form.errors.name }}</span>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-[var(--purple-900)] mb-2">* البريد الإلكتروني</label>
-                <input type="email" v-model="form.email" placeholder="example@mail.com" dir="ltr"
-                       class="w-full px-5 py-3.5 rounded-2xl border-2 border-[var(--purple-100)] bg-[var(--purple-100)]/40 focus:border-[var(--purple-700)] focus:outline-none focus:bg-white text-[var(--purple-900)] transition-colors">
-                <span v-if="form.errors.email" class="text-red-500 text-xs mt-1 block">{{ form.errors.email }}</span>
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-[var(--purple-900)] mb-2">رقم الجوال (اختياري)</label>
-                <input type="text" v-model="form.phone" placeholder="05xxxxxxxx" dir="ltr"
-                       class="w-full px-5 py-3.5 rounded-2xl border-2 border-[var(--purple-100)] bg-[var(--purple-100)]/40 focus:border-[var(--purple-700)] focus:outline-none focus:bg-white text-[var(--purple-900)] transition-colors">
-              </div>
-
-              <div>
-                <label class="block text-sm font-medium text-[var(--purple-900)] mb-2">* رسالتك</label>
-                <textarea v-model="form.message" rows="4" placeholder="اكتب رسالتك هنا..."
-                          class="w-full px-5 py-3.5 rounded-2xl border-2 border-[var(--purple-100)] bg-[var(--purple-100)]/40 focus:border-[var(--purple-700)] focus:outline-none focus:bg-white text-[var(--purple-900)] resize-none transition-colors"></textarea>
-                <span v-if="form.errors.message" class="text-red-500 text-xs mt-1 block">{{ form.errors.message }}</span>
-              </div>
-
-              <button type="submit" :disabled="form.processing"
-                      class="w-full bg-[var(--blue-btn)] hover:bg-[var(--navy)] transition-colors text-white font-bold py-4 rounded-full text-lg mt-2 shadow-lg flex items-center justify-center gap-3 disabled:opacity-60">
-                <span>{{ form.processing ? 'جاري الإرسال...' : 'إرسال الرسالة' }}</span>
-                <i class="fa-solid fa-paper-plane text-sm" style="transform:scaleX(-1);"></i>
-              </button>
-            </form>
-          </div>
-
+            <button type="submit" :disabled="form.processing" class="cta-primary w-full justify-center">
+              <span>{{ form.processing ? 'جاري الإرسال...' : 'إرسال الرسالة' }}</span>
+              <i class="fa-solid fa-paper-plane" style="transform:scaleX(-1)"></i>
+            </button>
+          </form>
         </div>
       </div>
-      <img :src="`${IMG}/09.png`" class="absolute hide-mobile top-16 left-24 h-72 w-40 opacity-40 -z-0" data-aos="fade-right" data-aos-delay="400">
     </section>
 
   </Bare3Layout>
 </template>
 
 <style scoped>
-.baree-eyebrow {
-  display:inline-flex; align-items:center; gap:8px; color:var(--orange); font-weight:700;
-  font-size:.85rem; padding:6px 16px; border:1px solid rgba(240,161,92,.4);
-  background:rgba(240,161,92,.1); border-radius:9999px;
+/* ── أشكال 3D تجريدية (blobs) — هوية بصرية خاصة بـ بارع ── */
+.blob { position:absolute; border-radius:50%; filter:blur(60px); opacity:.5; pointer-events:none; }
+.blob-1 { width:420px; height:420px; background:radial-gradient(circle,#c9b4f0,#7c5cbf); top:-120px; right:-80px; }
+.blob-2 { width:340px; height:340px; background:radial-gradient(circle,#ffd9b0,#f0806a); bottom:-100px; left:-60px; opacity:.35; }
+.blob-3 { width:260px; height:260px; background:radial-gradient(circle,#b8ede6,#4bb5a8); top:40%; left:15%; opacity:.3; }
+
+.eyebrow {
+  display:inline-flex; align-items:center; gap:8px; background:#fff; color:var(--brand);
+  font-weight:700; font-size:.85rem; padding:8px 18px; border-radius:9999px;
+  box-shadow:0 4px 20px rgba(124,92,191,.12); border:1px solid var(--brand-soft);
 }
-.baree-title { color:#f3f0f8; font-weight:800; line-height:1.35; font-size:1.6rem; }
-@media (min-width:640px){ .baree-title{ font-size:2.15rem; } }
-@media (min-width:768px){ .baree-title{ font-size:2.6rem; } }
-.baree-title__accent { color:var(--orange); }
-.baree-sub { color:var(--purple-100); opacity:.85; font-weight:500; font-size:1rem; line-height:1.9; }
 
-.baree-path { position:relative; display:flex; flex-wrap:wrap; align-items:flex-start; justify-content:center; gap:28px; padding-top:16px; list-style:none; }
-.baree-path::before { content:''; position:absolute; top:0; right:0; left:0; height:2px;
-  background-image:linear-gradient(to left, var(--purple-300) 50%, transparent 50%); background-size:10px 2px; background-repeat:repeat-x; opacity:.55; }
-@media (min-width:640px){ .baree-path{ justify-content:flex-end; } }
-.baree-path li { display:flex; flex-direction:column; align-items:center; gap:6px; font-size:.78rem; font-weight:700; color:var(--purple-100); }
-.baree-path__dot { width:12px; height:12px; border-radius:9999px; box-shadow:0 0 0 4px rgba(255,255,255,.08); }
+/* الأزرار — padding مضبوط + سهم لليسار */
+.cta-primary {
+  display:inline-flex; align-items:center; gap:10px; background:var(--brand); color:#fff;
+  font-weight:700; font-size:1.05rem; padding:15px 34px; border-radius:9999px;
+  box-shadow:0 8px 24px rgba(124,92,191,.28); transition:all .25s ease; text-decoration:none;
+}
+.cta-primary:hover { background:var(--brand-dark); transform:translateY(-2px); }
+.cta-ghost {
+  display:inline-flex; align-items:center; gap:10px; background:#fff; color:var(--ink);
+  font-weight:700; font-size:1.05rem; padding:15px 34px; border-radius:9999px;
+  border:2px solid #ece8f5; transition:all .25s ease; text-decoration:none;
+}
+.cta-ghost:hover { border-color:var(--brand); color:var(--brand); }
 
-.baree-cta { display:inline-flex; align-items:center; gap:10px; background:var(--blue-btn); padding:14px 30px; border-radius:9999px; color:#fff; font-weight:700; font-size:1.05rem; transition:background .25s ease, transform .25s ease; }
-.baree-cta:hover { background:#274a70; transform:translateY(-2px); }
+.glass-mini {
+  background:rgba(255,255,255,.6); backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.9); border-radius:20px; padding:18px 20px;
+  box-shadow:0 8px 30px rgba(30,27,46,.05);
+}
 
-.hero-bg { background:linear-gradient(180deg, rgba(122,94,160,.55), rgba(75,53,104,.75)), url('/images/new-bare3/bg-hero.png'); background-size:cover; background-position:center; }
-.values-bg { background-size:cover; background-position:center; }
-.fade-card { backdrop-filter: blur(2px); }
+/* ── بطاقات المسارات (Glassmorphism + hover reveal) ── */
+.track-card {
+  position:relative; overflow:hidden; border-radius:28px; min-height:280px;
+  background:rgba(255,255,255,.65); backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.85); box-shadow:0 10px 40px rgba(30,27,46,.06);
+  transition:transform .4s ease, box-shadow .4s ease;
+}
+.track-card:hover { transform:translateY(-8px); box-shadow:0 24px 50px rgba(30,27,46,.14); }
+.track-face { padding:32px 28px; transition:opacity .35s ease; }
+.track-icon {
+  width:60px; height:60px; border-radius:18px; display:flex; align-items:center; justify-content:center;
+  font-size:1.6rem; color:#fff; background:var(--tc); margin-bottom:18px;
+  box-shadow:0 8px 20px color-mix(in srgb, var(--tc) 40%, transparent);
+}
+.track-hover {
+  position:absolute; inset:0; padding:32px 28px; display:flex; flex-direction:column; justify-content:center;
+  background:linear-gradient(160deg, color-mix(in srgb, var(--tc) 92%, black 5%), color-mix(in srgb, var(--tc) 70%, black 20%));
+  opacity:0; transition:opacity .35s ease;
+}
+.track-card:hover .track-hover { opacity:1; }
+.hover-tag {
+  background:rgba(255,255,255,.2); color:#fff; font-weight:700; font-size:.72rem;
+  padding:5px 12px; border-radius:9999px;
+}
+.join-btn {
+  display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#fff; color:var(--ink);
+  font-weight:800; padding:13px; border-radius:9999px; transition:transform .2s ease; text-decoration:none;
+}
+.join-btn:hover { transform:scale(1.03); }
 
-.decor-img { position:absolute; opacity:.7; transition:all .4s ease; }
-.hero-img1 { bottom:5%; right:10%; width:130px; height:280px; }
-.hero-img2 { bottom:8%; right:20%; width:110px; height:260px; }
-@media (min-width:1024px){ .hero-img1{ width:160px; height:320px; right:18%; } .hero-img2{ width:140px; height:300px; right:32%; } }
-@media (min-width:1280px){ .hero-img1{ width:180px; right:12%; height:380px; } .hero-img2{ width:160px; right:20%; height:300px; } }
+/* ── بطاقات المدونة ── */
+.insight-card {
+  background:#fff; border-radius:24px; overflow:hidden; border:1px solid #f0eef7;
+  box-shadow:0 6px 24px rgba(30,27,46,.05); transition:transform .3s ease, box-shadow .3s ease; display:block; text-decoration:none;
+}
+.insight-card:hover { transform:translateY(-6px); box-shadow:0 18px 40px rgba(30,27,46,.1); }
+.insight-cover { height:120px; display:flex; align-items:center; justify-content:center; font-size:2.4rem; color:#fff; }
+.insight-cover.c-0 { background:linear-gradient(135deg,#7c5cbf,#5f4398); }
+.insight-cover.c-1 { background:linear-gradient(135deg,#4bb5a8,#2f8a7e); }
+.insight-cover.c-2 { background:linear-gradient(135deg,#f0806a,#d95f4a); }
+.insight-cover.c-3 { background:linear-gradient(135deg,#f2b866,#d99236); }
+.insight-cat {
+  display:inline-block; background:var(--brand-soft); color:var(--brand);
+  font-size:.72rem; font-weight:800; padding:4px 12px; border-radius:9999px;
+}
 
-.hide-mobile { display:none; }
-@media (min-width:768px){ .hide-mobile{ display:block; } }
+/* ── فورم زجاجي ── */
+.glass-card {
+  background:rgba(255,255,255,.7); backdrop-filter:blur(16px);
+  border:1px solid #f0eef7; border-radius:28px; box-shadow:0 12px 40px rgba(30,27,46,.07);
+}
+.field {
+  width:100%; padding:14px 18px; border-radius:16px; border:2px solid #f0eef7; background:#fafafb;
+  font-size:1rem; color:var(--ink); transition:border-color .2s ease;
+}
+.field:focus { outline:none; border-color:var(--brand); background:#fff; }
+.err { color:#dc2626; font-size:.78rem; font-weight:700; margin-top:5px; display:block; }
 </style>

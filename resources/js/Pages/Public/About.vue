@@ -85,10 +85,10 @@ defineProps({ brand: Object, footer: Object })
 
 <style scoped>
 .hero-about {
-  background: linear-gradient(rgba(75,53,104,0.75), rgba(122,94,160,0.65)),
-              url('https://www.amlood.net/images/workspace.jpg');
-  background-size: cover;
-  background-position: center;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(240,128,106,.35), transparent 45%),
+    radial-gradient(circle at 80% 70%, rgba(75,181,168,.3), transparent 45%),
+    linear-gradient(135deg, #5f4398, #7c5cbf);
 }
 .section-title { position: relative; display: inline-block; }
 .section-title:after {

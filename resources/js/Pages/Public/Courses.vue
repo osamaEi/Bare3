@@ -77,10 +77,10 @@ const courses = [
 
 <style scoped>
 .courses-hero {
-  background: linear-gradient(rgba(75,53,104,0.85), rgba(143,119,174,0.8)),
-              url('https://www.amlood.net/images/workspace.jpg');
-  background-size: cover;
-  background-position: center;
+  background:
+    radial-gradient(circle at 15% 40%, rgba(242,184,102,.3), transparent 45%),
+    radial-gradient(circle at 85% 60%, rgba(61,110,165,.3), transparent 45%),
+    linear-gradient(135deg, #5f4398, #7c5cbf);
 }
 .course-card { transition: all 0.4s ease; }
 .course-card:hover { transform: translateY(-15px); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15); }

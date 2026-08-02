@@ -19,12 +19,14 @@ const filteredPosts = computed(() =>
   activeCat.value === 'الكل' ? props.posts : props.posts.filter(p => p.category === activeCat.value)
 )
 
-// صور غلاف دورية + ألوان الشارات
+// أغلفة gradient مولّدة بالكود (هوية بارع) + ألوان الشارات
 const covers = [
-  'https://www.amlood.net/images/interior.png',
-  'https://www.amlood.net/images/child-activity.png',
-  'https://www.amlood.net/images/workspace.jpg',
+  'linear-gradient(135deg,#7c5cbf,#5f4398)',
+  'linear-gradient(135deg,#4bb5a8,#2f8a7e)',
+  'linear-gradient(135deg,#f0806a,#d95f4a)',
+  'linear-gradient(135deg,#f2b866,#d99236)',
 ]
+const coverIcons = ['fa-brain', 'fa-heart-pulse', 'fa-coins', 'fa-microchip']
 const badgeColors = ['bg-purple-100 text-purple-700', 'bg-teal-100 text-teal-700', 'bg-orange-100 text-orange-700']
 </script>
 
@@ -58,7 +60,9 @@ const badgeColors = ['bg-purple-100 text-purple-700', 'bg-teal-100 text-teal-700
         <div v-if="filteredPosts.length" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           <Link v-for="(post, i) in filteredPosts" :key="post.slug" :href="route('blog.show', post.slug)"
                 class="article-card bg-white rounded-3xl overflow-hidden shadow-md block">
-            <img :src="covers[i % covers.length]" class="w-full h-56 object-cover">
+            <div class="w-full h-48 flex items-center justify-center text-white text-4xl" :style="{ background: covers[i % covers.length] }">
+              <i class="fa-solid" :class="coverIcons[i % coverIcons.length]"></i>
+            </div>
             <div class="p-7">
               <span v-if="post.category" class="text-xs px-4 py-1.5 rounded-full" :class="badgeColors[i % badgeColors.length]">
                 {{ post.category }}
@@ -85,10 +89,10 @@ const badgeColors = ['bg-purple-100 text-purple-700', 'bg-teal-100 text-teal-700
 
 <style scoped>
 .blog-hero {
-  background: linear-gradient(rgba(75,53,104,0.8), rgba(143,119,174,0.75)),
-              url('https://www.amlood.net/images/interior.png');
-  background-size: cover;
-  background-position: center;
+  background:
+    radial-gradient(circle at 25% 35%, rgba(124,92,191,.4), transparent 45%),
+    radial-gradient(circle at 75% 65%, rgba(75,181,168,.3), transparent 45%),
+    linear-gradient(135deg, #5f4398, #7c5cbf);
 }
 .article-card { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 .article-card:hover {
