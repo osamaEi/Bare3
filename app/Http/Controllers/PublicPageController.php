@@ -49,6 +49,26 @@ class PublicPageController extends Controller
         ]);
     }
 
+    public function privacyPolicy(): Response
+    {
+        $content = $this->shared();
+
+        return Inertia::render('Public/PrivacyPolicy', [
+            'brand'  => $content['brand'],
+            'footer' => $content['footer'],
+        ]);
+    }
+
+    public function terms(): Response
+    {
+        $content = $this->shared();
+
+        return Inertia::render('Public/Terms', [
+            'brand'  => $content['brand'],
+            'footer' => $content['footer'],
+        ]);
+    }
+
     public function contact(): Response
     {
         $content = $this->shared();

@@ -103,8 +103,8 @@ onMounted(() => {
         <div>
           <h4 class="font-bold text-lg mb-5">الدعم والتواصل</h4>
           <ul class="space-y-3 text-sm text-white/70">
-            <li><Link :href="route('about')" class="footer-link">سياسة الخصوصية</Link></li>
-            <li><Link :href="route('about')" class="footer-link">شروط وأحكام الاستخدام</Link></li>
+            <li><Link :href="route('privacy.policy')" class="footer-link">سياسة الخصوصية</Link></li>
+            <li><Link :href="route('terms')" class="footer-link">شروط وأحكام الاستخدام</Link></li>
             <li dir="ltr" class="text-right"><a href="mailto:info@bareaedu.sa" class="footer-link">info@bareaedu.sa</a></li>
             <li dir="ltr" class="text-right"><a href="https://wa.me/966500000000" class="footer-link"><i class="fa-brands fa-whatsapp ml-1"></i> واتساب الدعم</a></li>
           </ul>
@@ -144,8 +144,18 @@ onMounted(() => {
   --ink:#1e1b2e;
   --coral:#f0806a; --teal:#4bb5a8; --amber:#f2b866; --navy:#3d6ea5;
 }
-.bare3, .bare3 * { font-family:'Tajawal','Poppins',sans-serif; }
+.bare3, .bare3 *:not([class*="fa-"]) { font-family:'Tajawal','Poppins',sans-serif; }
 .bare3 .en { font-family:'Poppins',sans-serif; }
+
+/* لا تُبدّل خط أيقونات Font Awesome */
+.bare3 i[class*="fa-"],
+.bare3 .fa, .bare3 .fas, .bare3 .far, .bare3 .fab,
+.bare3 [class*="fa-"]::before {
+  font-family:"Font Awesome 6 Free","Font Awesome 6 Brands" !important;
+}
+.bare3 i[class*="fa-solid"], .bare3 .fas { font-weight:900 !important; }
+.bare3 i[class*="fa-regular"], .bare3 .far { font-weight:400 !important; }
+.bare3 i[class*="fa-brands"], .bare3 .fab { font-family:"Font Awesome 6 Brands" !important; font-weight:400 !important; }
 
 .bare3 .nav-link { position:relative; }
 .bare3 .nav-link.active { color:var(--brand); font-weight:700; }

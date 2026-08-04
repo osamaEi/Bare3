@@ -72,6 +72,8 @@ Route::get('/', function () {
 // ── Public pages ───────────────────────────────────────────────
 Route::get('/subscribe', [PublicPageController::class, 'subscribe'])->name('subscribe');
 Route::get('/about',     [PublicPageController::class, 'about'])->name('about');
+Route::get('/privacy-policy', [PublicPageController::class, 'privacyPolicy'])->name('privacy.policy');
+Route::get('/terms', [PublicPageController::class, 'terms'])->name('terms');
 Route::get('/contact',   [PublicPageController::class, 'contact'])->name('contact');
 Route::post('/contact',  [PublicPageController::class, 'contactStore'])->name('contact.store');
 Route::get('/courses',       [PublicPageController::class, 'courses'])->name('courses');
