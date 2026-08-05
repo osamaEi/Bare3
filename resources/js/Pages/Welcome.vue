@@ -252,11 +252,13 @@ function submitContact() {
     <!-- ============ CONTACT ============ -->
     <section id="contact" class="py-20 sm:py-28 bg-white">
       <div class="max-w-3xl mx-auto px-6">
-        <div class="text-center mb-12" data-aos="fade-up">
+        <div class="contact-head mb-12" data-aos="fade-up">
           <img src="/images/characters/05.png" alt="" class="contact-char" aria-hidden="true" />
-          <span class="text-[var(--brand)] font-bold">تواصل معنا</span>
-          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">عندك سؤال؟ راسلنا</h2>
-          <p class="text-gray-500 mt-4">سيعود إليك فريقنا خلال يوم عمل واحد.</p>
+          <div class="contact-head-text">
+            <span class="text-[var(--brand)] font-bold">تواصل معنا</span>
+            <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">عندك سؤال؟ راسلنا</h2>
+            <p class="text-gray-500 mt-4">سيعود إليك فريقنا خلال يوم عمل واحد.</p>
+          </div>
         </div>
 
         <div class="glass-card p-8 sm:p-10" data-aos="fade-up" data-aos-delay="100">
@@ -329,10 +331,19 @@ function submitContact() {
   filter:drop-shadow(0 22px 38px rgba(30,27,46,.16));
 }
 
-/* ── شخصية قسم التواصل ── */
+/* ── شخصية قسم التواصل — بجانب النص ── */
+.contact-head {
+  display:flex; align-items:center; justify-content:center; gap:2rem;
+  text-align:right;
+}
+.contact-head-text { flex:1; max-width:32rem; }
 .contact-char {
-  width:130px; height:auto; margin:0 auto .5rem;
-  filter:drop-shadow(0 14px 26px rgba(30,27,46,.14));
+  width:230px; height:auto; flex-shrink:0;
+  filter:drop-shadow(0 18px 32px rgba(30,27,46,.16));
+}
+@media (max-width:640px) {
+  .contact-head { flex-direction:column; gap:1rem; text-align:center; }
+  .contact-char { width:180px; }
 }
 
 /* ── بطاقات المزايا (أيقونات بارع) ── */

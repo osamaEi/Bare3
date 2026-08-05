@@ -1,6 +1,6 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import PublicShell from '@/Components/PublicShell.vue'
+import Bare3Layout from '@/Layouts/Bare3Layout.vue'
 
 defineProps({
   brand:   Object,
@@ -11,7 +11,7 @@ defineProps({
 
 <template>
   <Head title="الاشتراك — بارع" />
-  <PublicShell :brand="brand" :footer="footer">
+  <Bare3Layout active="subscribe">
     <section class="hero-band">
       <div class="hero-content">
         <span class="eyebrow">ابدأ رحلة تعليمية ممتعة</span>
@@ -85,7 +85,7 @@ defineProps({
         </div>
       </div>
     </section>
-  </PublicShell>
+  </Bare3Layout>
 </template>
 
 <style scoped>
@@ -93,7 +93,10 @@ defineProps({
   position: relative;
   overflow: hidden;
   padding: 5rem 1.5rem 4rem;
-  background: linear-gradient(135deg, #f7f0ff 0%, #fdf8f2 45%, #f4f8ff 100%);
+  background:
+    radial-gradient(circle at 15% 40%, rgba(242,184,102,.28), transparent 45%),
+    radial-gradient(circle at 85% 60%, rgba(61,110,165,.28), transparent 45%),
+    linear-gradient(135deg, #5f4398, #7c5cbf);
   --brand: #7c5cbf;
   --brand-dark: #5f4398;
   --brand-soft: #f3effb;

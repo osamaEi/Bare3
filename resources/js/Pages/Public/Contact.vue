@@ -1,7 +1,7 @@
 <script setup>
 import { Head, useForm, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import PublicShell from '@/Components/PublicShell.vue'
+import Bare3Layout from '@/Layouts/Bare3Layout.vue'
 
 const props = defineProps({ brand: Object, footer: Object })
 
@@ -17,7 +17,7 @@ const submit = () => form.post(route('contact.store'), {
 
 <template>
   <Head title="تواصل معنا — بارع" />
-  <PublicShell :brand="brand" :footer="footer">
+  <Bare3Layout active="contact">
     <section class="hero-band">
       <h1>تواصل معنا</h1>
       <p>عندك سؤال أو اقتراح؟ يسعدنا أن نسمع منك</p>
@@ -68,7 +68,7 @@ const submit = () => form.post(route('contact.store'), {
         </button>
       </div>
     </section>
-  </PublicShell>
+  </Bare3Layout>
 </template>
 
 <style scoped>
@@ -80,7 +80,10 @@ const submit = () => form.post(route('contact.store'), {
   overflow: hidden;
   text-align: center;
   padding: 5.5rem 2rem 7rem;
-  background: linear-gradient(155deg, #FFE9C7 0%, #FFD7EC 48%, #DCF1FF 100%);
+  background:
+    radial-gradient(circle at 15% 40%, rgba(242,184,102,.30), transparent 45%),
+    radial-gradient(circle at 85% 60%, rgba(61,110,165,.30), transparent 45%),
+    linear-gradient(135deg, #5f4398, #7c5cbf);
 }
 
 .hero-band::before {
@@ -110,14 +113,14 @@ const submit = () => form.post(route('contact.store'), {
   font-family: 'Baloo Bhaijaan 2', sans-serif;
   font-size: clamp(2rem, 4.2vw, 2.9rem);
   font-weight: 800;
-  color: #1C1C2E;
+  color: #fff;
   margin-bottom: .7rem;
 }
 
 .hero-band p {
   position: relative;
   z-index: 1;
-  color: #475569;
+  color: rgba(255,255,255,.85);
   font-size: 1.15rem;
   font-weight: 600;
 }
@@ -315,7 +318,7 @@ const submit = () => form.post(route('contact.store'), {
 
 .inp:focus {
   outline: none;
-  border-bottom: 2px solid #38BDF8;
+  border-bottom: 2px solid #7c5cbf;
 }
 
 textarea.inp {
@@ -338,7 +341,7 @@ textarea.inp:focus {
 }
 
 .btn-send {
-  background: linear-gradient(135deg, #38BDF8, #0EA5E9);
+  background: linear-gradient(135deg, #7c5cbf, #5f4398);
   color: #fff;
   border: none;
   font-family: inherit;
@@ -350,24 +353,24 @@ textarea.inp:focus {
   display: inline-flex;
   align-items: center;
   gap: .6rem;
-  box-shadow: 0 5px 0 #0E7490;
+  box-shadow: 0 5px 0 #4a3479;
   transition: transform .12s ease, box-shadow .12s ease;
 }
 
 .btn-send:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 7px 0 #0E7490;
+  box-shadow: 0 7px 0 #4a3479;
 }
 
 .btn-send:active:not(:disabled) {
   transform: translateY(3px);
-  box-shadow: 0 2px 0 #0E7490;
+  box-shadow: 0 2px 0 #4a3479;
 }
 
 .btn-send:disabled {
   opacity: .6;
   cursor: not-allowed;
-  box-shadow: 0 5px 0 #0E7490;
+  box-shadow: 0 5px 0 #4a3479;
 }
 
 @media (max-width: 768px) {

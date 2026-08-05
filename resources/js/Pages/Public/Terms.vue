@@ -1,6 +1,6 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
-import PublicShell from '@/Components/PublicShell.vue'
+import Bare3Layout from '@/Layouts/Bare3Layout.vue'
 
 defineProps({
   brand: Object,
@@ -10,7 +10,7 @@ defineProps({
 
 <template>
   <Head title="الشروط والأحكام — بارع" />
-  <PublicShell :brand="brand" :footer="footer">
+  <Bare3Layout>
     <section class="page-wrap">
       <div class="page-card">
         <span class="eyebrow">الشروط والأحكام</span>
@@ -43,7 +43,7 @@ defineProps({
         </div>
       </div>
     </section>
-  </PublicShell>
+  </Bare3Layout>
 </template>
 
 <style scoped>
