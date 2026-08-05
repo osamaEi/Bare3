@@ -13,7 +13,10 @@
       <div v-for="p in paths" :key="p.id" class="path-block">
         <div class="path-head" @click="toggle(p.id)">
           <div class="path-head-info">
-            <span class="path-dot" :style="{ background: p.color || '#38BDF8' }"></span>
+            <img v-if="p.cover_image" :src="`/storage/${p.cover_image}`" class="path-cover" alt="" />
+            <span v-else class="path-cover placeholder" :style="{ background: p.color || '#38BDF8' }">
+              <i :class="p.icon || 'fa-solid fa-graduation-cap'"></i>
+            </span>
             <span class="path-name">{{ p.title }}</span>
             <span class="path-count">{{ p.lessons?.length ?? 0 }} درس</span>
           </div>
@@ -107,6 +110,15 @@
         <div class="fg"><label>اللون</label><input type="color" v-model="pathForm.color" class="inp color" /></div>
       </div>
       <div class="fg"><label>الوصف</label><textarea v-model="pathForm.description" class="inp" rows="2"></textarea></div>
+      <div class="fg">
+        <label>صورة المسار</label>
+        <div class="cover-picker">
+          <img v-if="coverPreview || currentCover" :src="coverPreview || currentCover" class="cover-thumb" alt="" />
+          <div v-else class="cover-thumb empty"><i class="fa-solid fa-image"></i></div>
+          <input type="file" accept="image/*" class="inp" @change="pickCover" />
+        </div>
+        <small class="hint">JPG / PNG / WEBP — بحد أقصى 4 ميجابايت</small>
+      </div>
       <Errors :form="pathForm" />
       <template #footer><button class="btn-save" :disabled="pathForm.processing" @click="savePath">حفظ</button></template>
     </Modal>
@@ -324,17 +336,29 @@ const deletePart = () => {
 }
 
 // ── Path ──
-const pathForm = useForm({ id: null, title: '', slug: '', icon: '', color: '#38BDF8', description: '' })
+const pathForm = useForm({ id: null, title: '', slug: '', icon: '', color: '#38BDF8', description: '', cover: null })
+const coverPreview = ref(null)
+const currentCover = ref(null)
 const openPathModal = (p = null) => {
   pathForm.clearErrors()
   if (p) { pathForm.id = p.id; pathForm.title = p.title; pathForm.icon = p.icon ?? ''; pathForm.color = p.color ?? '#38BDF8'; pathForm.description = p.description ?? '' }
   else { pathForm.reset(); pathForm.id = null }
+  pathForm.cover = null
+  coverPreview.value = null
+  currentCover.value = p?.cover_image ? `/storage/${p.cover_image}` : null
   modal.value = 'path'
 }
+const pickCover = (e) => {
+  const file = e.target.files?.[0] ?? null
+  pathForm.cover = file
+  coverPreview.value = file ? URL.createObjectURL(file) : null
+}
 const savePath = () => {
-  const opts = { preserveScroll: true, onSuccess: () => { modal.value = null } }
-  pathForm.id ? pathForm.put(route('admin.content.paths.update', pathForm.id), opts)
-              : pathForm.post(route('admin.content.paths.store'), opts)
+  const opts = { preserveScroll: true, forceFormData: true, onSuccess: () => { modal.value = null } }
+  // رفع الملفات يتطلب POST — نستخدم تزوير الميثود للتعديل
+  pathForm.id
+    ? pathForm.transform((d) => ({ ...d, _method: 'put' })).post(route('admin.content.paths.update', pathForm.id), opts)
+    : pathForm.post(route('admin.content.paths.store'), opts)
 }
 
 // ── Lesson ──
@@ -469,6 +493,12 @@ Errors.props = ['form']
 .path-head:hover { background: #FAFAFA; }
 .path-head-info { display: flex; align-items: center; gap: .7rem; }
 .path-dot { width: 12px; height: 12px; border-radius: 50%; }
+.path-cover { width: 46px; height: 46px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #F1F5F9; }
+.path-cover.placeholder { display: flex; align-items: center; justify-content: center; color: #fff; font-size: .95rem; }
+.cover-picker { display: flex; align-items: center; gap: .7rem; }
+.cover-thumb { width: 64px; height: 64px; border-radius: 10px; object-fit: cover; flex-shrink: 0; background: #F1F5F9; }
+.cover-thumb.empty { display: flex; align-items: center; justify-content: center; color: #94A3B8; border: 1px dashed #CBD5E1; }
+.modal-overlay .hint { font-size: .76rem; color: #94A3B8; }
 .path-name { font-weight: 800; color: #1E293B; }
 .path-count { font-size: .75rem; color: #64748B; background: #F1F5F9; padding: .15rem .6rem; border-radius: 50px; }
 .path-head-actions { display: flex; align-items: center; gap: .5rem; }

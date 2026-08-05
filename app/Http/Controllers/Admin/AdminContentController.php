@@ -41,7 +41,13 @@ class AdminContentController extends Controller
             'icon' => 'nullable|string',
             'color' => 'nullable|string|max:10',
             'sort_order' => 'integer|min:0',
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
         ]);
+
+        if ($request->hasFile('cover')) {
+            $data['cover_image'] = $request->file('cover')->store('paths', 'public');
+        }
+        unset($data['cover']);
 
         $this->content->createPath($data);
 
@@ -50,13 +56,21 @@ class AdminContentController extends Controller
 
     public function updatePath(Request $request, int $id): RedirectResponse
     {
-        $this->content->updatePath($id, $request->validate([
+        $data = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'nullable|string',
             'icon' => 'nullable|string',
             'color' => 'nullable|string|max:10',
             'is_active' => 'boolean',
-        ]));
+            'cover' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+        ]);
+
+        if ($request->hasFile('cover')) {
+            $data['cover_image'] = $request->file('cover')->store('paths', 'public');
+        }
+        unset($data['cover']);
+
+        $this->content->updatePath($id, $data);
 
         return back()->with('success', 'تم تعديل المسار');
     }

@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\AdminPlanController;
 use App\Http\Controllers\Student\NotificationController as StudentNotificationController;
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PaymentController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -249,5 +250,27 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+// ── Trigger: seed paths & lessons ──────────────────────────────
+// تحذير: يحذف المسارات والدروس القديمة وكل ما يرتبط بها قبل الزرع.
+Route::get('/seed-paths', function () {
+    Artisan::call('db:seed', [
+        '--class' => \Database\Seeders\PathsSeeder::class,
+        '--force' => true,
+    ]);
+
+    return response(Artisan::output(), 200)->header('Content-Type', 'text/plain');
+})->name('seed.paths');
+
+// ── Trigger: create the public storage symlink ─────────────────
+Route::get('/storage-link', function () {
+    if (file_exists(public_path('storage'))) {
+        return response('Storage link already exists.', 200)->header('Content-Type', 'text/plain');
+    }
+
+    Artisan::call('storage:link');
+
+    return response(Artisan::output(), 200)->header('Content-Type', 'text/plain');
+})->name('storage.link');
 
 require __DIR__.'/auth.php';
