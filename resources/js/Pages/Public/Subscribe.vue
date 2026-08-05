@@ -22,6 +22,7 @@ defineProps({
           <a href="#policies" class="secondary-btn">سياسة الخصوصية والشروط</a>
         </div>
       </div>
+      <img src="/images/characters/20.png" alt="شخصية بارع" class="hero-char" />
     </section>
 
     <section id="plans" class="pricing-wrap">
@@ -89,6 +90,8 @@ defineProps({
 
 <style scoped>
 .hero-band {
+  position: relative;
+  overflow: hidden;
   padding: 5rem 1.5rem 4rem;
   background: linear-gradient(135deg, #f7f0ff 0%, #fdf8f2 45%, #f4f8ff 100%);
   --brand: #7c5cbf;
@@ -100,7 +103,23 @@ defineProps({
   --amber: #f2b866;
 }
 
+/* شخصية بارع بجانب بطاقة الباقات */
+.hero-band .hero-char {
+  position: absolute;
+  bottom: 0;
+  inset-inline-start: 2%;
+  width: 210px;
+  height: auto;
+  z-index: 0;
+  opacity: .95;
+  filter: drop-shadow(0 18px 32px rgba(30, 27, 46, .18));
+  pointer-events: none;
+}
+@media (max-width: 1279px) { .hero-band .hero-char { display: none; } }
+
 .hero-content {
+  position: relative;
+  z-index: 1;
   max-width: 980px;
   margin: 0 auto;
   text-align: center;

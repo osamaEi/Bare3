@@ -11,11 +11,15 @@ defineProps({ brand: Object, footer: Object })
   <Bare3Layout active="about">
 
     <!-- HERO -->
-    <section class="hero-about min-h-[70vh] flex items-center text-white relative">
-      <div class="max-w-5xl mx-auto px-6 text-center">
-        <h1 class="text-5xl md:text-6xl font-black leading-tight mb-6" data-aos="fade-up">عن بارع</h1>
-        <p class="en text-2xl text-purple-100 mb-8" data-aos="fade-up" data-aos-delay="200">رعاية تُثمر استدامة</p>
-        <div class="w-24 h-1 bg-white mx-auto rounded-full" data-aos="fade-up" data-aos-delay="400"></div>
+    <section class="hero-about min-h-[70vh] flex items-center text-white relative overflow-hidden">
+      <div class="max-w-6xl mx-auto px-6 grid lg:grid-cols-[1fr_auto] items-center gap-8 w-full">
+        <div class="text-center lg:text-right">
+          <h1 class="text-5xl md:text-6xl font-black leading-tight mb-6" data-aos="fade-up">عن بارع</h1>
+          <p class="en text-2xl text-purple-100 mb-8" data-aos="fade-up" data-aos-delay="200">رعاية تُثمر استدامة</p>
+          <div class="w-24 h-1 bg-white mx-auto lg:mx-0 rounded-full" data-aos="fade-up" data-aos-delay="400"></div>
+        </div>
+        <img src="/images/characters/09.png" alt="شخصية بارع"
+             class="about-hero-char hidden lg:block" data-aos="fade-left" data-aos-delay="300" />
       </div>
     </section>
 
@@ -34,7 +38,7 @@ defineProps({ brand: Object, footer: Object })
           <div data-aos="fade-left" class="flex justify-center">
             <div class="bg-gradient-to-br from-purple-100 to-purple-200 p-10 rounded-3xl w-full max-w-md">
               <div class="text-center">
-                <i class="fa-solid fa-seedling text-6xl text-purple-700 mb-6"></i>
+                <img src="/images/characters/26.png" alt="" class="vision-char" loading="lazy" aria-hidden="true" />
                 <h3 class="text-2xl font-bold text-purple-900">نزرع الوعي.. نحصد الاستدامة</h3>
               </div>
             </div>
@@ -84,6 +88,14 @@ defineProps({ brand: Object, footer: Object })
 </template>
 
 <style scoped>
+.about-hero-char {
+  width:300px; height:auto;
+  filter:drop-shadow(0 24px 40px rgba(0,0,0,.28));
+}
+.vision-char {
+  width:170px; height:auto; margin:0 auto 1.25rem;
+  filter:drop-shadow(0 16px 28px rgba(95,67,152,.28));
+}
 .hero-about {
   background:
     radial-gradient(circle at 20% 30%, rgba(240,128,106,.35), transparent 45%),

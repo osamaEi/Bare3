@@ -262,6 +262,35 @@ Route::get('/seed-paths', function () {
     return response(Artisan::output(), 200)->header('Content-Type', 'text/plain');
 })->name('seed.paths');
 
+// ── Trigger: fix permissions on uploaded storage files (403 fix) ──
+Route::get('/fix-storage-perms', function () {
+    $root = storage_path('app/public');
+    $out = [];
+
+    if (! is_dir($root)) {
+        return response("Missing: $root", 200)->header('Content-Type', 'text/plain');
+    }
+
+    $items = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($root, RecursiveDirectoryIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::SELF_FIRST
+    );
+
+    foreach ($items as $item) {
+        $target = $item->isDir() ? 0755 : 0644;
+        $before = substr(sprintf('%o', $item->getPerms()), -4);
+        @chmod($item->getPathname(), $target);
+        clearstatcache(true, $item->getPathname());
+        $after = substr(sprintf('%o', fileperms($item->getPathname())), -4);
+        $out[] = sprintf('%s  %s -> %s', str_replace($root, '', $item->getPathname()), $before, $after);
+    }
+
+    @chmod($root, 0755);
+
+    return response(implode(PHP_EOL, $out) ?: 'No files found.', 200)
+        ->header('Content-Type', 'text/plain');
+})->name('storage.fixperms');
+
 // ── Trigger: create the public storage symlink ─────────────────
 Route::get('/storage-link', function () {
     if (file_exists(public_path('storage'))) {

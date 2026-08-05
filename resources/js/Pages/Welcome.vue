@@ -16,34 +16,49 @@ const insights = computed(() => props.latestPosts.slice(0, 5))
 const tracks = [
   {
     key: 'creativity', title: 'الإبداع والابتكار والتفكير التصميمي', icon: 'fa-lightbulb', color: '#f0806a',
+    char: '/images/characters/01.png',
     slogan: 'فكّر خارج الأطر.. حوّل خيالك إلى ابتكار يصنع الفارق',
     sub: 'هنا نعلّم العقول كيف تلاحظ وتتحدى المألوف',
     age: '٨–١٢ سنة', skill: 'حل المشكلات إبداعياً', price: '٧٩ ر.س/شهر',
   },
   {
     key: 'emotional', title: 'الذكاء العاطفي والاجتماعي', icon: 'fa-heart-pulse', color: '#f2b866',
+    char: '/images/characters/26.png',
     slogan: 'ثقة واتزان.. لنعبّر عن مشاعرنا بشجاعة ونقود حواراتنا بذكاء',
     sub: 'الحصن النفسي والمرونة التي تحمي شخصية أبنائكم في عالم المشتتات',
     age: '٦–١٢ سنة', skill: 'الوعي الذاتي والتعاطف', price: '٧٩ ر.س/شهر',
   },
   {
     key: 'finance', title: 'الوعي المالي الذكي', icon: 'fa-coins', color: '#4bb5a8',
+    char: '/images/characters/09.png',
     slogan: 'مستقبل مالي آمن.. من إدارة المصروف اليومي إلى صناعة أول مشروع',
     sub: 'نعلّم جيل اليوم كيف يدّخر، يستثمر، ويفكر كروّاد الأعمال',
     age: '٩–١٢ سنة', skill: 'الادخار والاستثمار', price: '٧٩ ر.س/شهر',
   },
   {
     key: 'digital', title: 'المهارة التقنية والمواطنة الرقمية', icon: 'fa-microchip', color: '#7c5cbf',
+    char: '/images/characters/20.png',
     slogan: 'كن أنت القائد.. طوّع أدوات الذكاء الاصطناعي والتكنولوجيا لخدمة إبداعك',
     sub: 'من مستهلك رقمي إلى مبتكر ذكي؛ نفهم لغة العصر ونبحر فيه بأمان',
     age: '٨–١٢ سنة', skill: 'الأمان والإبداع الرقمي', price: '٧٩ ر.س/شهر',
   },
   {
     key: 'decision', title: 'اتخاذ القرارات وحل المشكلات', icon: 'fa-chess-knight', color: '#3d6ea5',
+    char: '/images/characters/05.png',
     slogan: 'اصنع قرارك بثقة.. مواقف حية تصنع شخصية قيادية لا تعرف التردد',
     sub: 'تحديات يومية تُكسب المشتركين مهارة تفكيك المشكلات المعقدة وحلّها باقتدار',
     age: '١٠–١٢ سنة', skill: 'القيادة واتخاذ القرار', price: '٧٩ ر.س/شهر',
   },
+]
+
+// أيقونات بارع الخاصة — تظهر في قسم "كيف تعمل المنصة"
+const features = [
+  { icon: '/images/icons/paths.svg',       title: 'مسارات تعليمية',   desc: 'محتوى متدرّج يرافق الطالب من الابتدائي حتى الثانوي.' },
+  { icon: '/images/icons/quiz.svg',        title: 'اختبارات تفاعلية', desc: 'قياس فوري للفهم بعد كل درس مع تغذية راجعة.' },
+  { icon: '/images/icons/leaderboard.svg', title: 'لوحة الصدارة',     desc: 'تحفيز صحي بروح المنافسة بين الطلاب.' },
+  { icon: '/images/icons/store.svg',       title: 'المتجر الرقمي',    desc: 'استبدال النقاط المكتسبة بمكافآت ملموسة.' },
+  { icon: '/images/icons/profile.svg',     title: 'ملف الطالب',       desc: 'متابعة التقدّم والشهادات والأوسمة في مكان واحد.' },
+  { icon: '/images/icons/dashboard.svg',   title: 'لوحة ولي الأمر',   desc: 'تقارير واضحة عن أداء الأبناء أولاً بأول.' },
 ]
 
 // العبارات الفرعية للـ hero (rotating-style، نعرضها كشرائح)
@@ -71,29 +86,40 @@ function submitContact() {
       <div class="blob blob-2"></div>
       <div class="blob blob-3"></div>
 
-      <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
-        <span data-aos="fade-down" class="eyebrow">
-          <span class="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse"></span>
-          براعتك تبدأ من هنا
-        </span>
+      <div class="max-w-7xl mx-auto px-6 relative z-10">
+        <div class="grid lg:grid-cols-[1.15fr_.85fr] items-center gap-10">
+          <!-- النص -->
+          <div class="text-center lg:text-right">
+            <span data-aos="fade-down" class="eyebrow">
+              <span class="w-2 h-2 rounded-full bg-[var(--brand)] animate-pulse"></span>
+              براعتك تبدأ من هنا
+            </span>
 
-        <h1 data-aos="fade-up" class="mt-7 text-4xl sm:text-5xl md:text-6xl font-black leading-[1.25] text-[var(--ink)]">
-          لأن المستقبل لا ينتظر..<br>
-          <span class="text-[var(--brand)]">نصقل مهارات جيل اليوم</span> ليقود المستقبل بثقة
-        </h1>
+            <h1 data-aos="fade-up" class="mt-7 text-4xl sm:text-5xl md:text-6xl font-black leading-[1.25] text-[var(--ink)]">
+              لأن المستقبل لا ينتظر..<br>
+              <span class="text-[var(--brand)]">نصقل مهارات جيل اليوم</span> ليقود المستقبل بثقة
+            </h1>
 
-        <p data-aos="fade-up" data-aos-delay="150" class="mt-6 text-lg sm:text-xl text-gray-500 leading-loose max-w-2xl mx-auto">
-          رحلة تعليمية تفاعلية وقصصية ترافق أبناءكم من المدرسة للجامعة، وتصقل منظومة متكاملة من المهارات لصناعة روّاد وقادة الغد.
-        </p>
+            <p data-aos="fade-up" data-aos-delay="150" class="mt-6 text-lg sm:text-xl text-gray-500 leading-loose max-w-2xl mx-auto lg:mx-0">
+              رحلة تعليمية تفاعلية وقصصية ترافق أبناءكم من المدرسة للجامعة، وتصقل منظومة متكاملة من المهارات لصناعة روّاد وقادة الغد.
+            </p>
 
-        <div data-aos="fade-up" data-aos-delay="250" class="mt-9 flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#tracks" class="cta-primary">
-            <span>اكتشف مساراتنا</span>
-            <i class="fa-solid fa-arrow-left"></i>
-          </a>
-          <Link :href="route('subscribe')" class="cta-ghost">
-            <span>تصفّح الباقات</span>
-          </Link>
+            <div data-aos="fade-up" data-aos-delay="250" class="mt-9 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-4">
+              <a href="#tracks" class="cta-primary">
+                <span>اكتشف مساراتنا</span>
+                <i class="fa-solid fa-arrow-left"></i>
+              </a>
+              <Link :href="route('subscribe')" class="cta-ghost">
+                <span>تصفّح الباقات</span>
+              </Link>
+            </div>
+          </div>
+
+          <!-- شخصية بارع الترحيبية -->
+          <div class="hero-char-wrap" data-aos="fade-left" data-aos-delay="200">
+            <div class="hero-char-glow"></div>
+            <img src="/images/characters/26.png" alt="شخصية بارع" class="hero-char" />
+          </div>
         </div>
 
         <!-- العبارات الفرعية -->
@@ -127,34 +153,67 @@ function submitContact() {
 
             <!-- طبقة الـ hover -->
             <div class="track-hover">
-              <div class="flex items-center justify-between text-sm">
-                <span class="hover-tag"><i class="fa-solid fa-child-reaching ml-1"></i> {{ t.age }}</span>
-                <span class="hover-tag"><i class="fa-solid fa-star ml-1"></i> {{ t.skill }}</span>
+              <img :src="t.char" alt="" class="track-char" aria-hidden="true" />
+              <div class="relative z-10">
+                <div class="flex items-center justify-between text-sm">
+                  <span class="hover-tag"><i class="fa-solid fa-child-reaching ml-1"></i> {{ t.age }}</span>
+                  <span class="hover-tag"><i class="fa-solid fa-star ml-1"></i> {{ t.skill }}</span>
+                </div>
+                <div class="text-center my-5">
+                  <div class="text-3xl font-black text-white">{{ t.price }}</div>
+                </div>
+                <Link :href="route('subscribe')" class="join-btn">
+                  انضم للمسار <i class="fa-solid fa-arrow-left"></i>
+                </Link>
               </div>
-              <div class="text-center my-5">
-                <div class="text-3xl font-black text-white">{{ t.price }}</div>
-              </div>
-              <Link :href="route('subscribe')" class="join-btn">
-                انضم للمسار <i class="fa-solid fa-arrow-left"></i>
-              </Link>
             </div>
           </div>
         </div>
       </div>
     </section>
 
+    <!-- ============ FEATURES (أيقونات بارع) ============ -->
+    <section id="features" class="py-20 sm:py-28 bg-white">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+          <span class="text-[var(--brand)] font-bold">داخل المنصة</span>
+          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">تجربة تعليمية متكاملة</h2>
+          <p class="text-gray-500 mt-4 leading-loose">كل ما يحتاجه الطالب وولي الأمر في منصة واحدة.</p>
+        </div>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-7">
+          <div v-for="(f, i) in features" :key="f.title" class="feature-card"
+               data-aos="fade-up" :data-aos-delay="i * 70">
+            <div class="feature-icon">
+              <img :src="f.icon" :alt="f.title" loading="lazy" />
+            </div>
+            <h3 class="font-black text-lg text-[var(--ink)] mb-2">{{ f.title }}</h3>
+            <p class="text-gray-500 text-sm leading-relaxed">{{ f.desc }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- ============ ABOUT (نبذة) ============ -->
-    <section id="about" class="py-20 sm:py-28 bg-white">
-      <div class="max-w-5xl mx-auto px-6 text-center">
-        <span class="text-[var(--brand)] font-bold" data-aos="fade-up">عن بارع</span>
-        <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">رعاية تُثمر استدامة</h2>
-        <p class="text-gray-500 mt-6 leading-loose text-lg max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
-          منصة بارع التعليمية هي وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين — عبر رحلة تعليمية تفاعلية تربط المعرفة بمتطلبات المستقبل، وتشارك في صناعة روّاد وقادة الغد.
-        </p>
-        <Link :href="route('about')" class="cta-primary mt-8 inline-flex" data-aos="fade-up" data-aos-delay="150">
-          <span>تعرّف علينا أكثر</span>
-          <i class="fa-solid fa-arrow-left"></i>
-        </Link>
+    <section id="about" class="py-20 sm:py-28 bg-[var(--brand-soft)] overflow-hidden">
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="grid lg:grid-cols-2 items-center gap-12">
+          <div class="about-char-wrap" data-aos="fade-right">
+            <img src="/images/characters/01.png" alt="شخصية بارع" class="about-char" loading="lazy" />
+          </div>
+
+          <div class="text-center lg:text-right">
+            <span class="text-[var(--brand)] font-bold" data-aos="fade-up">عن بارع</span>
+            <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">رعاية تُثمر استدامة</h2>
+            <p class="text-gray-500 mt-6 leading-loose text-lg" data-aos="fade-up" data-aos-delay="100">
+              منصة بارع التعليمية هي وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين — عبر رحلة تعليمية تفاعلية تربط المعرفة بمتطلبات المستقبل، وتشارك في صناعة روّاد وقادة الغد.
+            </p>
+            <Link :href="route('about')" class="cta-primary mt-8 inline-flex" data-aos="fade-up" data-aos-delay="150">
+              <span>تعرّف علينا أكثر</span>
+              <i class="fa-solid fa-arrow-left"></i>
+            </Link>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -171,7 +230,7 @@ function submitContact() {
           <Link v-for="post in insights" :key="post.slug" :href="route('blog.show', post.slug)"
                 class="insight-card group" data-aos="fade-up">
             <div class="insight-cover" :class="`c-${post.category ? (post.category.length % 4) : 0}`">
-              <i class="fa-solid fa-feather-pointed"></i>
+              <img src="/images/icons/blog.svg" alt="" class="insight-cover-icon" aria-hidden="true" />
             </div>
             <div class="p-7">
               <span v-if="post.category" class="insight-cat">{{ post.category }}</span>
@@ -194,6 +253,7 @@ function submitContact() {
     <section id="contact" class="py-20 sm:py-28 bg-white">
       <div class="max-w-3xl mx-auto px-6">
         <div class="text-center mb-12" data-aos="fade-up">
+          <img src="/images/characters/05.png" alt="" class="contact-char" aria-hidden="true" />
           <span class="text-[var(--brand)] font-bold">تواصل معنا</span>
           <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">عندك سؤال؟ راسلنا</h2>
           <p class="text-gray-500 mt-4">سيعود إليك فريقنا خلال يوم عمل واحد.</p>
@@ -239,6 +299,70 @@ function submitContact() {
 .blob-2 { width:340px; height:340px; background:radial-gradient(circle,#ffd9b0,#f0806a); bottom:-100px; left:-60px; opacity:.35; }
 .blob-3 { width:260px; height:260px; background:radial-gradient(circle,#b8ede6,#4bb5a8); top:40%; left:15%; opacity:.3; }
 
+/* ── شخصية الـ hero ── */
+.hero-char-wrap { position:relative; display:flex; justify-content:center; align-items:flex-end; }
+.hero-char {
+  position:relative; z-index:2; width:100%; max-width:380px; height:auto;
+  filter:drop-shadow(0 24px 40px rgba(30,27,46,.18));
+  animation:float-char 6s ease-in-out infinite;
+}
+.hero-char-glow {
+  position:absolute; z-index:1; bottom:6%; left:50%; transform:translateX(-50%);
+  width:78%; aspect-ratio:1/1; border-radius:50%;
+  background:radial-gradient(circle, rgba(124,92,191,.30), transparent 68%);
+  filter:blur(26px);
+}
+@keyframes float-char {
+  0%,100% { transform:translateY(0); }
+  50%     { transform:translateY(-16px); }
+}
+@media (max-width:1023px) {
+  .hero-char { max-width:260px; margin-top:2rem; }
+  .hero-char-wrap { order:-1; }
+}
+@media (prefers-reduced-motion:reduce) { .hero-char { animation:none; } }
+
+/* ── شخصية قسم "عن بارع" ── */
+.about-char-wrap { display:flex; justify-content:center; }
+.about-char {
+  width:100%; max-width:340px; height:auto;
+  filter:drop-shadow(0 22px 38px rgba(30,27,46,.16));
+}
+
+/* ── شخصية قسم التواصل ── */
+.contact-char {
+  width:130px; height:auto; margin:0 auto .5rem;
+  filter:drop-shadow(0 14px 26px rgba(30,27,46,.14));
+}
+
+/* ── بطاقات المزايا (أيقونات بارع) ── */
+.feature-card {
+  background:#fff; border:1px solid #f0eef7; border-radius:24px; padding:32px 28px;
+  box-shadow:0 6px 24px rgba(30,27,46,.05);
+  transition:transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+.feature-card:hover {
+  transform:translateY(-6px); border-color:#e2dcf5;
+  box-shadow:0 18px 40px rgba(30,27,46,.1);
+}
+.feature-icon {
+  width:76px; height:76px; border-radius:22px; margin-bottom:18px;
+  display:flex; align-items:center; justify-content:center;
+  background:var(--brand-soft); transition:background .3s ease;
+}
+.feature-icon img { width:46px; height:46px; object-fit:contain; }
+.feature-card:hover .feature-icon { background:#e7dffb; }
+
+/* أيقونة غلاف المقالة */
+.insight-cover-icon { width:52px; height:52px; filter:brightness(0) invert(1); opacity:.92; }
+
+/* شخصية داخل بطاقة المسار عند الـ hover */
+.track-char {
+  position:absolute; bottom:-6%; left:-8%; width:52%; height:auto;
+  opacity:.35; pointer-events:none; z-index:0;
+  filter:drop-shadow(0 10px 18px rgba(0,0,0,.25));
+}
+
 .eyebrow {
   display:inline-flex; align-items:center; gap:8px; background:#fff; color:var(--brand);
   font-weight:700; font-size:.85rem; padding:8px 18px; border-radius:9999px;
@@ -282,7 +406,7 @@ function submitContact() {
 .track-hover {
   position:absolute; inset:0; padding:32px 28px; display:flex; flex-direction:column; justify-content:center;
   background:linear-gradient(160deg, color-mix(in srgb, var(--tc) 92%, black 5%), color-mix(in srgb, var(--tc) 70%, black 20%));
-  opacity:0; transition:opacity .35s ease;
+  opacity:0; transition:opacity .35s ease; overflow:hidden;
 }
 .track-card:hover .track-hover { opacity:1; }
 .hover-tag {

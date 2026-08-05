@@ -8,6 +8,7 @@ use App\Services\ScormService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -31,6 +32,23 @@ class AdminContentController extends Controller
         ]);
     }
 
+    /**
+     * يخزّن صورة الغلاف ويضبط صلاحياتها لتكون قابلة للقراءة من خادم الويب.
+     * بعض الاستضافات تكتب الملفات بصلاحيات 0600 مما يسبب خطأ 403 عند العرض.
+     */
+    private function storeCover(\Illuminate\Http\UploadedFile $file): string
+    {
+        $path = $file->store('paths', 'public');
+
+        try {
+            @chmod(Storage::disk('public')->path($path), 0644);
+        } catch (\Throwable) {
+            // لا توقف الرفع إن تعذّر ضبط الصلاحيات
+        }
+
+        return $path;
+    }
+
     // ── Paths ──────────────────────────────────────────────
     public function storePath(Request $request): RedirectResponse
     {
@@ -45,7 +63,7 @@ class AdminContentController extends Controller
         ]);
 
         if ($request->hasFile('cover')) {
-            $data['cover_image'] = $request->file('cover')->store('paths', 'public');
+            $data['cover_image'] = $this->storeCover($request->file('cover'));
         }
         unset($data['cover']);
 
@@ -66,7 +84,7 @@ class AdminContentController extends Controller
         ]);
 
         if ($request->hasFile('cover')) {
-            $data['cover_image'] = $request->file('cover')->store('paths', 'public');
+            $data['cover_image'] = $this->storeCover($request->file('cover'));
         }
         unset($data['cover']);
 

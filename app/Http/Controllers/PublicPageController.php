@@ -83,9 +83,24 @@ class PublicPageController extends Controller
     {
         $content = $this->shared();
 
+        $paths = \App\Models\Path::where('is_active', true)
+            ->withCount('lessons')
+            ->orderBy('sort_order')
+            ->get()
+            ->map(fn ($p) => [
+                'slug'         => $p->slug,
+                'title'        => $p->title,
+                'description'  => $p->description,
+                'icon'         => $p->icon,
+                'color'        => $p->color ?: '#5f4398',
+                'cover'        => $p->cover_image ? asset('storage/'.ltrim($p->cover_image, '/')) : null,
+                'lessons_count' => $p->lessons_count,
+            ]);
+
         return Inertia::render('Public/Courses', [
             'brand'  => $content['brand'],
             'footer' => $content['footer'],
+            'paths'  => $paths,
         ]);
     }
 

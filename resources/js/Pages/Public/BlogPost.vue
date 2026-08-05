@@ -37,7 +37,7 @@ defineProps({
       <div class="mt-16 rounded-3xl bg-gradient-to-l from-purple-700 to-purple-500 text-white text-center p-10">
         <p class="text-xl font-bold mb-6">هل أعجبك المقال؟ استكشف مساراتنا</p>
         <Link :href="route('courses')" class="inline-flex items-center gap-2 bg-white text-purple-800 font-bold px-8 py-3.5 rounded-full hover:bg-purple-50 transition">
-          تصفّح الكورسات <i class="fa-solid fa-arrow-left"></i>
+          تصفّح المسارات <i class="fa-solid fa-arrow-left"></i>
         </Link>
       </div>
     </article>

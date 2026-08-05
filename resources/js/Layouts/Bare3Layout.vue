@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { Link } from '@inertiajs/vue3'
 
 defineProps({
@@ -7,10 +7,25 @@ defineProps({
 })
 
 const mobileOpen = ref(false)
+const loginOpen = ref(false)
+const loginWrap = ref(null)
+
+const loginOptions = [
+  { key: 'student', label: 'طالب',   icon: 'fa-user-graduate',    route: 'login.student' },
+  { key: 'parent',  label: 'ولي أمر', icon: 'fa-user-shield',      route: 'login.parent' },
+  { key: 'admin',   label: 'مشرف',   icon: 'fa-user-gear',        route: 'login.admin' },
+]
+
+const closeLogin = (e) => {
+  if (loginWrap.value && !loginWrap.value.contains(e.target)) loginOpen.value = false
+}
 
 onMounted(() => {
   if (window.AOS) window.AOS.init({ duration: 800, easing: 'ease-out-cubic', once: true, offset: 80 })
+  document.addEventListener('click', closeLogin)
 })
+
+onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
 </script>
 
 <template>
@@ -32,9 +47,25 @@ onMounted(() => {
         </nav>
 
         <div class="flex items-center gap-4">
-          <Link :href="route('login')" class="hidden sm:inline-flex items-center gap-2 bg-[var(--brand)] hover:bg-[var(--brand-dark)] text-white font-bold text-sm px-6 py-2.5 rounded-full transition-colors">
-            تسجيل الدخول
-          </Link>
+          <div ref="loginWrap" class="relative hidden sm:block">
+            <button type="button"
+                    class="inline-flex items-center gap-2 bg-[var(--brand)] hover:bg-[var(--brand-dark)] text-white font-bold text-sm px-6 py-2.5 rounded-full transition-colors"
+                    :aria-expanded="loginOpen ? 'true' : 'false'" aria-haspopup="true"
+                    @click.stop="loginOpen = !loginOpen">
+              تسجيل الدخول
+              <i class="fa-solid fa-chevron-down text-xs transition-transform" :class="{ 'rotate-180': loginOpen }"></i>
+            </button>
+
+            <transition name="drop">
+              <div v-if="loginOpen" class="login-menu">
+                <Link v-for="o in loginOptions" :key="o.key" :href="route(o.route)"
+                      class="login-item" @click="loginOpen = false">
+                  <i class="fa-solid" :class="o.icon"></i>
+                  <span>{{ o.label }}</span>
+                </Link>
+              </div>
+            </transition>
+          </div>
           <button class="hamburger md:hidden" :class="{ open: mobileOpen }" aria-label="فتح القائمة"
                   :aria-expanded="mobileOpen ? 'true' : 'false'" @click="mobileOpen = !mobileOpen">
             <span></span><span></span><span></span>
@@ -50,7 +81,15 @@ onMounted(() => {
           <Link :href="route('courses')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">المسارات</Link>
           <Link :href="route('subscribe')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">الباقات</Link>
           <Link :href="route('blog')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">المدونة</Link>
-          <Link :href="route('login')" class="w-full text-right py-2 mt-2 text-[var(--brand)] font-bold" @click="mobileOpen = false">تسجيل الدخول</Link>
+          <div class="w-full mt-2 pt-3 border-t border-gray-100">
+            <span class="block text-right text-xs text-gray-400 mb-1">تسجيل الدخول</span>
+            <Link v-for="o in loginOptions" :key="o.key" :href="route(o.route)"
+                  class="w-full flex items-center justify-end gap-2 py-2 text-[var(--brand)] font-bold"
+                  @click="mobileOpen = false">
+              {{ o.label }}
+              <i class="fa-solid" :class="o.icon"></i>
+            </Link>
+          </div>
         </div>
       </nav>
     </header>
@@ -144,6 +183,24 @@ onMounted(() => {
   --ink:#1e1b2e;
   --coral:#f0806a; --teal:#4bb5a8; --amber:#f2b866; --navy:#3d6ea5;
 }
+/* ── قائمة تسجيل الدخول المنسدلة ── */
+.bare3 .login-menu {
+  position:absolute; top:calc(100% + .6rem); inset-inline-end:0;
+  min-width:12rem; background:#fff; border:1px solid #EEF0F4;
+  border-radius:1rem; box-shadow:0 18px 40px -12px rgb(30 27 46 / .22);
+  padding:.4rem; z-index:60; overflow:hidden;
+}
+.bare3 .login-item {
+  display:flex; align-items:center; gap:.7rem;
+  padding:.65rem .85rem; border-radius:.7rem;
+  font-size:.9rem; font-weight:700; color:#2b2b2b;
+  transition:background .18s ease, color .18s ease;
+}
+.bare3 .login-item:hover { background:var(--brand-soft); color:var(--brand-dark); }
+.bare3 .login-item i { width:1.1rem; text-align:center; color:var(--brand); }
+.drop-enter-active, .drop-leave-active { transition:opacity .16s ease, transform .16s ease; }
+.drop-enter-from, .drop-leave-to { opacity:0; transform:translateY(-.4rem); }
+
 .bare3, .bare3 *:not([class*="fa-"]) { font-family:'Tajawal','Poppins',sans-serif; }
 .bare3 .en { font-family:'Poppins',sans-serif; }
 
