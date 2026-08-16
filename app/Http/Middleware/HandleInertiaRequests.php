@@ -38,6 +38,24 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
+            // إشعارات مختصرة للقائمة المنسدلة في الشريط العلوي
+            'notifications' => fn () => $request->user()
+                ? [
+                    'items' => $request->user()->notifications()
+                        ->latest()
+                        ->limit(8)
+                        ->get()
+                        ->map(fn ($n) => [
+                            'id'         => $n->id,
+                            'title'      => $n->title,
+                            'body'       => $n->body,
+                            'type'       => $n->type,
+                            'read'       => (bool) $n->read_at,
+                            'created_at' => $n->created_at?->diffForHumans(),
+                        ]),
+                    'unread' => $request->user()->notifications()->unread()->count(),
+                ]
+                : null,
         ];
     }
 }

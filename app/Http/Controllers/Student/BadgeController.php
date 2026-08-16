@@ -22,6 +22,7 @@ class BadgeController extends Controller
             'desc' => $b->description,
             'path' => $b->path?->title,
             'icon' => 'emoji_events',
+            'image' => $b->image ? \Illuminate\Support\Facades\Storage::disk('public')->url($b->image) : null,
             'earned' => $earned->has($b->id),
         ])->toArray();
 

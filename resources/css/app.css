@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ──────────────────────────────────────────────────────────────
+   القوائم المنسدلة — السهم دائماً في الجهة اليسرى
+   نخفي سهم المتصفح الافتراضي ونرسم سهماً مخصّصاً على اليسار،
+   مع ترك مساحة كافية لليسار حتى لا يتداخل النص مع السهم.
+   ────────────────────────────────────────────────────────────── */
+select:not([multiple]):not([size]) {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
+  /* سهم مرسوم كـ SVG بلون رمادي هادئ
+     نستخدم !important لأن بعض الصفحات تُعرّف background المختصر
+     الذي يمسح background-image الخاص بالسهم. */
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none'%3E%3Cpath d='M1 1.5L6 6.5L11 1.5' stroke='%2394A3B8' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") !important;
+  background-repeat: no-repeat !important;
+  background-position: left 0.85rem center !important;
+  background-size: 12px 8px !important;
+
+  /* مساحة لليسار للسهم — والنص يبقى في جهة البداية (يمين في RTL) */
+  padding-left: 2.2rem !important;
+}
+
+/* في المتصفحات التي تُظهر سهماً إضافياً */
+select::-ms-expand {
+  display: none;
+}

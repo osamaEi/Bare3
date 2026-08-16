@@ -6,7 +6,14 @@
 
         {{-- <title inertia>{{ config('app.name', 'Laravel') }}</title> --}}
 <title>بارع</title>
-<link rel="icon" type="image/png" href="./images/logo3.png" />
+
+        <!-- Favicon -->
+        <link rel="icon" href="/favicon.ico" sizes="any">
+        <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16.png">
+        <link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/favicon-180.png">
+        <link rel="manifest" href="/site.webmanifest">
+        <meta name="theme-color" content="#7c5cbf">
         <!-- Fonts & Icons -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet" />

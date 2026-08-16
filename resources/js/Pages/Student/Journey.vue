@@ -1,7 +1,7 @@
 <template>
   <Head :title="journey.enrollment.title + ' — بارع'" />
   <StudentLayout>
-    <div class="journey-head" :style="{ '--accent': journey.enrollment.color || '#38BDF8' }">
+    <div class="journey-head" :style="{ '--accent': journey.enrollment.color || '#7c5cbf' }">
       <Link :href="route('student.paths')" class="back"><span class="mi">arrow_forward_ios</span> المسارات</Link>
       <h1>{{ journey.enrollment.title }}</h1>
       <div class="prog-row">
@@ -49,29 +49,29 @@ const notifyLocked = () => {}
 * { box-sizing:border-box; }
 .mi { font-family:'Material Icons Round'; font-style:normal; line-height:1; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
 
-.journey-head { background:#fff; border-radius:24px; padding:1.6rem 1.8rem; margin-bottom:1.4rem; border:1.5px solid #E2E8F0; box-shadow:0 2px 12px rgba(15,23,42,.06); }
-.back { display:inline-flex; align-items:center; gap:.3rem; color:#64748B; font-weight:700; font-size:.85rem; text-decoration:none; margin-bottom:.7rem; }
+.journey-head { background:#fff; border-radius:24px; padding:1.6rem 1.8rem; margin-bottom:1.4rem; border:1.5px solid #f0eef7; box-shadow:0 2px 12px rgba(15,23,42,.06); }
+.back { display:inline-flex; align-items:center; gap:.3rem; color:#6B7280; font-weight:700; font-size:.85rem; text-decoration:none; margin-bottom:.7rem; }
 .back .mi { font-size:.9rem; }
-.journey-head h1 { font-size:1.5rem; font-weight:800; color:#0F172A; margin-bottom:1rem; }
+.journey-head h1 { font-size:1.5rem; font-weight:800; color:#1e1b2e; margin-bottom:1rem; }
 .prog-row { display:flex; align-items:center; gap:.8rem; }
-.prog-bar { flex:1; height:10px; background:#E2E8F0; border-radius:99px; overflow:hidden; }
+.prog-bar { flex:1; height:10px; background:#f0eef7; border-radius:99px; overflow:hidden; }
 .prog-fill { height:100%; border-radius:99px; background:var(--accent); transition:width .8s; }
 .prog-pct { font-weight:800; color:var(--accent); font-size:.9rem; }
 
 .lessons { display:flex; flex-direction:column; gap:.7rem; }
-.lesson-row { display:flex; align-items:center; gap:1rem; background:#fff; border:1.5px solid #E2E8F0; border-radius:18px;
+.lesson-row { display:flex; align-items:center; gap:1rem; background:#fff; border:1.5px solid #f0eef7; border-radius:18px;
   padding:1.1rem 1.3rem; text-decoration:none; transition:all .2s; }
 .lesson-row.completed, .lesson-row.in_progress { cursor:pointer; }
-.lesson-row.in_progress:hover, .lesson-row.completed:hover { border-color:#38BDF8; transform:translateX(-4px); box-shadow:0 6px 20px rgba(15,23,42,.08); }
+.lesson-row.in_progress:hover, .lesson-row.completed:hover { border-color:#7c5cbf; transform:translateX(-4px); box-shadow:0 6px 20px rgba(15,23,42,.08); }
 .lesson-row.locked { opacity:.55; cursor:not-allowed; }
-.lesson-num { width:40px; height:40px; border-radius:12px; background:#F1F5F9; color:#64748B; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-.lesson-row.completed .lesson-num { background:#F0FDF4; color:#3F6212; }
-.lesson-row.in_progress .lesson-num { background:#E0F4FF; color:#0E7490; }
+.lesson-num { width:40px; height:40px; border-radius:12px; background:#f5f4f9; color:#6B7280; font-weight:800; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.lesson-row.completed .lesson-num { background:#eaf7f5; color:#2f8a7e; }
+.lesson-row.in_progress .lesson-num { background:#f3effb; color:#5f4398; }
 .lesson-info { flex:1; }
-.lesson-title { font-weight:800; color:#0F172A; margin-bottom:.2rem; }
-.lesson-state { font-size:.8rem; font-weight:700; color:#64748B; display:flex; align-items:center; gap:.3rem; }
+.lesson-title { font-weight:800; color:#1e1b2e; margin-bottom:.2rem; }
+.lesson-state { font-size:.8rem; font-weight:700; color:#6B7280; display:flex; align-items:center; gap:.3rem; }
 .lesson-state .mi { font-size:1rem; }
-.lesson-row.completed .lesson-state { color:#3F6212; }
-.lesson-row.in_progress .lesson-state { color:#0E7490; }
+.lesson-row.completed .lesson-state { color:#2f8a7e; }
+.lesson-row.in_progress .lesson-state { color:#5f4398; }
 .chevron { color:#94A3B8; font-size:1.3rem; }
 </style>

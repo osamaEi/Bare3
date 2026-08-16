@@ -179,12 +179,16 @@
         <div class="info-card">
           <div class="section-head">
             <div class="section-title"><i class="fa-solid fa-medal"></i> الشارات المكتسبة</div>
-            <button class="btn-grant" @click="badgeModal = true"><i class="fa-solid fa-plus"></i> منح شارة</button>
+            <div class="head-actions">
+              <button class="btn-grant" @click="badgeModal = true"><i class="fa-solid fa-plus"></i> منح شارة</button>
+              <button class="btn-grant upload" @click="badgeUploadModal = true"><i class="fa-solid fa-upload"></i> رفع شارة</button>
+            </div>
           </div>
           <div v-if="badges.length === 0" class="empty-sm">لا توجد شارات بعد</div>
           <div v-else class="badges-grid">
             <div v-for="b in badges" :key="b.id" class="badge-item">
-              <div class="badge-icon">{{ b.icon || '🏅' }}</div>
+              <img v-if="b.image" :src="b.image" :alt="b.name" class="badge-img" />
+              <div v-else class="badge-icon">{{ b.icon || '🏅' }}</div>
               <div class="badge-name">{{ b.name }}</div>
               <div class="badge-date">{{ b.earned_at }}</div>
             </div>
@@ -195,17 +199,22 @@
         <div class="info-card">
           <div class="section-head">
             <div class="section-title"><i class="fa-solid fa-certificate"></i> الشهادات</div>
-            <button class="btn-grant" @click="certModal = true" :disabled="enrollments.length === 0"><i class="fa-solid fa-plus"></i> إصدار شهادة</button>
+            <div class="head-actions">
+              <button class="btn-grant" @click="certModal = true" :disabled="enrollments.length === 0"><i class="fa-solid fa-plus"></i> إصدار شهادة</button>
+              <button class="btn-grant upload" @click="certUploadModal = true" :disabled="enrollments.length === 0"><i class="fa-solid fa-upload"></i> رفع شهادة</button>
+            </div>
           </div>
           <div v-if="certificates.length === 0" class="empty-sm">لا توجد شهادات بعد</div>
           <div v-else class="certs-list">
             <div v-for="c in certificates" :key="c.id" class="cert-item">
               <i class="fa-solid fa-certificate cert-ico"></i>
-              <div>
+              <div class="cert-body">
                 <div class="cert-path">{{ c.path_title }}</div>
                 <div class="cert-num">{{ c.cert_number }}</div>
                 <div class="cert-date">{{ c.issued_at }}</div>
               </div>
+              <a v-if="c.file_url" :href="c.file_url" target="_blank" rel="noopener" class="cert-view"
+                 title="عرض الملف"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
             </div>
           </div>
         </div>
@@ -248,6 +257,77 @@
         </div>
       </div>
     </div>
+
+    <!-- Upload Badge Modal -->
+    <div v-if="badgeUploadModal" class="modal-bg" @click.self="closeBadgeUpload">
+      <div class="modal">
+        <h3 class="modal-title">رفع شارة للطالب</h3>
+
+        <div class="field">
+          <label>اسم الشارة</label>
+          <input v-model="badgeUploadForm.name" class="inp" placeholder="مثال: شارة التميّز" />
+          <span v-if="badgeUploadForm.errors.name" class="err">{{ badgeUploadForm.errors.name }}</span>
+        </div>
+
+        <div class="field">
+          <label>الوصف (اختياري)</label>
+          <textarea v-model="badgeUploadForm.description" class="inp" rows="2" placeholder="سبب منح الشارة"></textarea>
+        </div>
+
+        <div class="field">
+          <label>صورة الشارة</label>
+          <div class="upload-row">
+            <img v-if="badgePreview" :src="badgePreview" class="upload-preview" alt="" />
+            <div v-else class="upload-preview empty"><i class="fa-solid fa-image"></i></div>
+            <input type="file" accept="image/*" class="inp" @change="pickBadgeImage" />
+          </div>
+          <span class="hint">PNG / JPG / WEBP / SVG — بحد أقصى 2 ميجابايت</span>
+          <span v-if="badgeUploadForm.errors.image" class="err">{{ badgeUploadForm.errors.image }}</span>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="closeBadgeUpload">إلغاء</button>
+          <button class="btn-confirm"
+                  :disabled="!badgeUploadForm.name || !badgeUploadForm.image || badgeUploadForm.processing"
+                  @click="uploadBadge">
+            {{ badgeUploadForm.processing ? 'جاري الرفع...' : 'رفع ومنح' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Upload Certificate Modal -->
+    <div v-if="certUploadModal" class="modal-bg" @click.self="closeCertUpload">
+      <div class="modal">
+        <h3 class="modal-title">رفع شهادة للطالب</h3>
+
+        <div class="field">
+          <label>اختر المسار</label>
+          <select v-model="certUploadForm.enrollment_id" class="inp">
+            <option :value="null" disabled>— اختر مسار —</option>
+            <option v-for="e in enrollments" :key="e.id" :value="e.id">{{ e.path_title }} ({{ e.progress }}%)</option>
+          </select>
+          <span v-if="certUploadForm.errors.enrollment_id" class="err">{{ certUploadForm.errors.enrollment_id }}</span>
+        </div>
+
+        <div class="field">
+          <label>ملف الشهادة</label>
+          <input type="file" accept=".pdf,image/*" class="inp" @change="pickCertFile" />
+          <span v-if="certFileName" class="file-name"><i class="fa-solid fa-paperclip"></i> {{ certFileName }}</span>
+          <span class="hint">PDF أو صورة — بحد أقصى 10 ميجابايت. سيستبدل الملف الحالي إن وُجد.</span>
+          <span v-if="certUploadForm.errors.file" class="err">{{ certUploadForm.errors.file }}</span>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-cancel" @click="closeCertUpload">إلغاء</button>
+          <button class="btn-confirm"
+                  :disabled="!certUploadForm.enrollment_id || !certUploadForm.file || certUploadForm.processing"
+                  @click="uploadCertificate">
+            {{ certUploadForm.processing ? 'جاري الرفع...' : 'رفع الشهادة' }}
+          </button>
+        </div>
+      </div>
+    </div>
   </AdminLayout>
 </template>
 
@@ -280,6 +360,50 @@ const grantBadge = () => badgeForm.post(route('admin.students.grant-badge', prop
 const grantCertificate = () => certForm.post(route('admin.students.grant-certificate', props.student.id), {
   preserveScroll: true,
   onSuccess: () => { certModal.value = false; certForm.reset() },
+})
+
+// ── رفع شارة مخصّصة ──
+const badgeUploadModal = ref(false)
+const badgePreview = ref(null)
+const badgeUploadForm = useForm({ name: '', description: '', image: null })
+
+const pickBadgeImage = (e) => {
+  const file = e.target.files?.[0] ?? null
+  badgeUploadForm.image = file
+  badgePreview.value = file ? URL.createObjectURL(file) : null
+}
+const closeBadgeUpload = () => {
+  badgeUploadModal.value = false
+  badgeUploadForm.reset()
+  badgeUploadForm.clearErrors()
+  badgePreview.value = null
+}
+const uploadBadge = () => badgeUploadForm.post(route('admin.students.upload-badge', props.student.id), {
+  preserveScroll: true,
+  forceFormData: true,
+  onSuccess: () => closeBadgeUpload(),
+})
+
+// ── رفع ملف شهادة جاهز ──
+const certUploadModal = ref(false)
+const certFileName = ref('')
+const certUploadForm = useForm({ enrollment_id: null, file: null })
+
+const pickCertFile = (e) => {
+  const file = e.target.files?.[0] ?? null
+  certUploadForm.file = file
+  certFileName.value = file?.name ?? ''
+}
+const closeCertUpload = () => {
+  certUploadModal.value = false
+  certUploadForm.reset()
+  certUploadForm.clearErrors()
+  certFileName.value = ''
+}
+const uploadCertificate = () => certUploadForm.post(route('admin.students.upload-certificate', props.student.id), {
+  preserveScroll: true,
+  forceFormData: true,
+  onSuccess: () => closeCertUpload(),
 })
 function toggle(id) {
   expanded.has(id) ? expanded.delete(id) : expanded.add(id)
@@ -414,6 +538,29 @@ function formatDt(d) {
 .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: .75rem; margin-top: .5rem; }
 .badge-item { text-align: center; background: #F8FAFC; border-radius: 10px; padding: .8rem .5rem; }
 .badge-icon { font-size: 1.6rem; margin-bottom: .3rem; }
+.badge-img { width: 54px; height: 54px; object-fit: contain; margin: 0 auto .35rem; display: block; }
+
+/* أزرار رأس القسم */
+.head-actions { display: flex; align-items: center; gap: .45rem; flex-wrap: wrap; }
+.btn-grant.upload { background: #F5F3FF; color: #5f4398; border-color: #C9B4F0; }
+.btn-grant.upload:hover:not(:disabled) { background: #EDE7FB; }
+
+/* رفع الملفات داخل النوافذ */
+.upload-row { display: flex; align-items: center; gap: .7rem; }
+.upload-preview { width: 64px; height: 64px; border-radius: 12px; object-fit: contain; background: #F1F5F9; flex-shrink: 0; }
+.upload-preview.empty { display: flex; align-items: center; justify-content: center; color: #94A3B8; border: 1px dashed #CBD5E1; }
+.hint { display: block; font-size: .74rem; color: #94A3B8; margin-top: .35rem; }
+.err { display: block; color: #DC2626; font-size: .76rem; font-weight: 700; margin-top: .35rem; }
+.file-name { display: inline-flex; align-items: center; gap: .35rem; font-size: .78rem; color: #0E7490; font-weight: 700; margin-top: .4rem; }
+
+/* رابط عرض ملف الشهادة */
+.cert-body { flex: 1; }
+.cert-view {
+  width: 32px; height: 32px; border-radius: 9px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: #EFF6FF; color: #0E7490; text-decoration: none; transition: background .2s ease;
+}
+.cert-view:hover { background: #DBEAFE; }
 .badge-name { font-weight: 700; font-size: .78rem; color: #1E293B; }
 .badge-date { font-size: .7rem; color: #94A3B8; margin-top: .2rem; }
 

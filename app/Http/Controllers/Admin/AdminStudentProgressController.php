@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Badge;
+use App\Models\Certificate;
 use App\Models\Enrollment;
 use App\Models\LessonProgress;
 use App\Models\Notification;
@@ -13,6 +14,7 @@ use App\Models\User;
 use App\Services\AchievementService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class AdminStudentProgressController extends Controller
@@ -110,6 +112,7 @@ class AdminStudentProgressController extends Controller
             'id'        => $b->id,
             'name'      => $b->name,
             'icon'      => $b->icon,
+            'image'     => $b->image ? Storage::disk('public')->url($b->image) : null,
             'earned_at' => $b->pivot->earned_at,
         ]);
 
@@ -118,6 +121,7 @@ class AdminStudentProgressController extends Controller
             'path_title'    => $c->path->title ?? '',
             'cert_number'   => $c->cert_number,
             'issued_at'     => $c->issued_at?->toDateString(),
+            'file_url'      => $c->pdf_path ? Storage::disk('public')->url($c->pdf_path) : null,
         ]);
 
         return Inertia::render('Admin/StudentProgressDetail', [
@@ -195,6 +199,107 @@ class AdminStudentProgressController extends Controller
         $this->notify($student, $request->user()->id, 'success', 'حصلت على شهادة جديدة! 🎓', "تهانينا! تم إصدار شهادة إتمام مسار \"{$enrollment->path->title}\".");
 
         return back()->with('success', 'تم إصدار الشهادة بنجاح');
+    }
+
+    /**
+     * رفع شارة مخصّصة (صورة) ومنحها للطالب مباشرة.
+     * تُنشأ الشارة كـ "special" ثم تُربط بالطالب.
+     */
+    public function uploadBadge(Request $request, User $student): RedirectResponse
+    {
+        abort_unless($student->role === 'student', 404);
+
+        $data = $request->validate([
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string|max:1000',
+            'image'       => 'required|image|mimes:jpg,jpeg,png,webp,svg|max:2048',
+        ]);
+
+        $path = $request->file('image')->store('badges', 'public');
+        $this->makeReadable($path);
+
+        $badge = Badge::create([
+            'name'        => $data['name'],
+            'description' => $data['description'] ?? null,
+            'image'       => $path,
+            'type'        => 'special',
+        ]);
+
+        StudentBadge::create([
+            'student_id' => $student->id,
+            'badge_id'   => $badge->id,
+            'earned_at'  => now(),
+            'seen'       => false,
+        ]);
+
+        $this->notify($student, $request->user()->id, 'success', 'حصلت على شارة جديدة! 🏅', "تهانينا! منحك المشرف شارة \"{$badge->name}\".");
+
+        return back()->with('success', 'تم رفع الشارة ومنحها للطالب');
+    }
+
+    /**
+     * رفع ملف شهادة جاهز (PDF أو صورة) وربطه بأحد مسارات الطالب.
+     * إن وُجدت شهادة للمسار نستبدل ملفها، وإلا أنشأنا سجلاً جديداً.
+     */
+    public function uploadCertificate(Request $request, User $student): RedirectResponse
+    {
+        abort_unless($student->role === 'student', 404);
+
+        $data = $request->validate([
+            'enrollment_id' => 'required|exists:enrollments,id',
+            'file'          => 'required|file|mimes:pdf,jpg,jpeg,png|max:10240',
+        ]);
+
+        $enrollment = Enrollment::with('path')
+            ->where('id', $data['enrollment_id'])
+            ->where('student_id', $student->id)
+            ->firstOrFail();
+
+        $certificate = Certificate::firstOrNew([
+            'student_id'    => $student->id,
+            'enrollment_id' => $enrollment->id,
+        ]);
+
+        if (! $certificate->exists) {
+            $certificate->path_id     = $enrollment->path_id;
+            $certificate->cert_number = $this->nextCertNumber();
+            $certificate->issued_at   = now();
+            $certificate->qr_code     = route('certificates.verify', $certificate->cert_number);
+        }
+
+        // احذف الملف القديم إن كان مرفوعاً سابقاً
+        if ($certificate->pdf_path && Storage::disk('public')->exists($certificate->pdf_path)) {
+            Storage::disk('public')->delete($certificate->pdf_path);
+        }
+
+        $path = $request->file('file')->store('certificates', 'public');
+        $this->makeReadable($path);
+
+        $certificate->pdf_path = $path;
+        $certificate->save();
+
+        $this->notify($student, $request->user()->id, 'success', 'حصلت على شهادة جديدة! 🎓', "تهانينا! تم إصدار شهادة إتمام مسار \"{$enrollment->path->title}\".");
+
+        return back()->with('success', 'تم رفع الشهادة بنجاح');
+    }
+
+    /** رقم شهادة جديد بنفس صيغة AchievementService. */
+    private function nextCertNumber(): string
+    {
+        $year = now()->year;
+        $count = Certificate::whereYear('issued_at', $year)->count() + 1;
+
+        return sprintf('BARE3-%d-%05d', $year, $count);
+    }
+
+    /** بعض الاستضافات تكتب الملفات بصلاحيات لا يقرأها خادم الويب (403). */
+    private function makeReadable(string $path): void
+    {
+        try {
+            @chmod(Storage::disk('public')->path($path), 0644);
+        } catch (\Throwable) {
+            // تجاهل — الرفع نجح على أي حال
+        }
     }
 
     private function notify(User $student, int $adminId, string $type, string $title, string $body): void

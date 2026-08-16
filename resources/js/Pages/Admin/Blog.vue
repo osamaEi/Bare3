@@ -521,7 +521,7 @@ const previewPost = (post) => {
 .empty-state i { font-size: 3rem; margin-bottom: 1rem; display: block; }
 
 /* EDITOR */
-.editor-wrap { display: flex; flex-direction: column; height: calc(100vh - 100px); }
+.editor-wrap { display: flex; flex-direction: column; min-height: calc(100vh - 100px); }
 .editor-topbar { display: flex; align-items: center; justify-content: space-between; padding: .8rem 0 1rem; margin-bottom: 1rem; border-bottom: 1px solid #E2E8F0; flex-wrap: wrap; gap: .6rem; }
 .btn-back { background: none; border: 1.5px solid #E2E8F0; color: #475569; font-family: inherit; font-weight: 700; font-size: .88rem; padding: .55rem 1.1rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: .5rem; }
 .editor-status { font-size: .82rem; color: #16A34A; display: flex; align-items: center; gap: .4rem; }
@@ -529,8 +529,9 @@ const previewPost = (post) => {
 .btn-draft { background: #F1F5F9; border: none; color: #475569; font-family: inherit; font-weight: 700; font-size: .88rem; padding: .6rem 1.2rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: .4rem; }
 .btn-publish { background: #EC4899; border: none; color: white; font-family: inherit; font-weight: 700; font-size: .88rem; padding: .6rem 1.4rem; border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: .4rem; }
 
-.editor-layout { display: grid; grid-template-columns: 1fr 280px; gap: 1.2rem; flex: 1; overflow: hidden; }
-.editor-main { display: flex; flex-direction: column; background: white; border-radius: 16px; box-shadow: 0 1px 8px rgba(0,0,0,.05); overflow: hidden; }
+.editor-layout { display: grid; grid-template-columns: 1fr 280px; gap: 1.2rem; flex: 1; align-items: start; }
+.editor-main { display: flex; flex-direction: column; background: white; border-radius: 16px; box-shadow: 0 1px 8px rgba(0,0,0,.05); overflow: hidden;
+  position: sticky; top: 0; max-height: calc(100vh - 120px); }
 .post-title-input { padding: 1.2rem 1.4rem; border: none; border-bottom: 1px solid #F1F5F9; font-family: inherit; font-size: 1.4rem; font-weight: 800; color: #1E293B; width: 100%; }
 .post-title-input:focus { outline: none; }
 .post-title-input::placeholder { color: #CBD5E1; }
@@ -547,8 +548,9 @@ const previewPost = (post) => {
 .editor-footer-bar { display: flex; gap: 1rem; padding: .6rem 1.4rem; border-top: 1px solid #F1F5F9; font-size: .78rem; color: #94A3B8; background: #FAFAFA; }
 
 /* EDITOR SIDEBAR */
-.editor-sidebar { display: flex; flex-direction: column; gap: .8rem; overflow-y: auto; }
-.sidebar-card { background: white; border-radius: 14px; box-shadow: 0 1px 8px rgba(0,0,0,.05); overflow: hidden; }
+/* العمود الجانبي يتمدّد مع الصفحة — البطاقات تظهر كاملة دون قصّ */
+.editor-sidebar { display: flex; flex-direction: column; gap: .8rem; padding-bottom: 1rem; }
+.sidebar-card { background: white; border-radius: 14px; box-shadow: 0 1px 8px rgba(0,0,0,.05); overflow: visible; flex-shrink: 0; }
 .sc-header { padding: .8rem 1rem; border-bottom: 1px solid #F1F5F9; font-size: .85rem; font-weight: 800; color: #1E293B; display: flex; align-items: center; gap: .4rem; }
 .sc-header i { color: #EC4899; }
 .sc-body { padding: .8rem 1rem; display: flex; flex-direction: column; gap: .7rem; }

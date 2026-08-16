@@ -33,9 +33,9 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
 
     <!-- ============ HEADER ============ -->
     <header class="w-full border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-xl z-50">
-      <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-4">
-        <Link href="/" class="flex items-center">
-          <img src="/images/logo.png" alt="بارع" class="h-10 sm:h-12 w-auto">
+      <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5">
+        <Link href="/" class="flex items-center shrink-0 -my-2 sm:-my-4">
+          <img src="/images/logo.png" alt="بارع" class="h-16 sm:h-28 w-auto">
         </Link>
 
         <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-base lg:text-lg font-medium text-gray-800">

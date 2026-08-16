@@ -20,6 +20,7 @@
           تصفّح المسارات
         </Link>
       </div>
+      <img src="/images/characters/26.png" alt="" class="hero-char" aria-hidden="true" />
     </div>
 
     <!-- Stats -->
@@ -55,7 +56,7 @@
         <div v-if="paths.length === 0" class="empty">لم تبدأ أي مسار بعد — اختر مهارة وابدأ مغامرتك!</div>
 
         <Link v-for="p in paths" :key="p.id" :href="route('student.journey', p.id)" class="story-item">
-          <div class="story-cover" :style="{ background: (p.color || '#38BDF8') + '22', color: p.color || '#38BDF8' }">
+          <div class="story-cover" :style="{ background: (p.color || '#7c5cbf') + '22', color: p.color || '#7c5cbf' }">
             <span class="mi">{{ p.icon || 'menu_book' }}</span>
           </div>
           <div class="story-info">
@@ -106,24 +107,27 @@ defineProps({
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons+Round');
 
 .hero-banner, .stats-row, .main-grid {
-  --sky:#38BDF8; --sky-light:#E0F4FF; --sky-mid:#7DD3F8; --sky-dark:#0E7490;
-  --pink:#EC4899; --pink-light:#FCE7F3; --pink-mid:#F9A8D4; --pink-dark:#9D174D;
-  --lime:#84CC16; --lime-light:#F0FDF4; --lime-mid:#BEF264; --lime-dark:#3F6212;
-  --amber:#F59E0B; --amber-light:#FEF3C7;
-  --dark:#0F172A; --gray:#64748B; --light:#F1F5F9; --white:#fff; --border:#E2E8F0;
+  --sky:#7c5cbf; --sky-light:#f3effb; --sky-mid:#c9b4f0; --sky-dark:#5f4398;
+  --pink:#f0806a; --pink-light:#fdeeea; --pink-mid:#f6b5a6; --pink-dark:#c2513c;
+  --lime:#4bb5a8; --lime-light:#eaf7f5; --lime-mid:#9fdcd3; --lime-dark:#2f8a7e;
+  --amber:#f2b866; --amber-light:#fdf3e3;
+  --dark:#1e1b2e; --gray:#6B7280; --light:#f5f4f9; --white:#fff; --border:#f0eef7;
   --radius-xl:24px; --radius-md:14px;
   --shadow-sm:0 2px 12px rgba(15,23,42,.06); --shadow-md:0 6px 28px rgba(15,23,42,.10);
 }
 * { box-sizing:border-box; }
 .mi { font-family:'Material Icons Round'; font-style:normal; line-height:1; display:inline-flex; align-items:center; justify-content:center; vertical-align:middle; }
 
-.hero-banner { border-radius:28px; background:linear-gradient(130deg,#0E7490 0%,#0369A1 40%,#7C3AED 100%);
-  position:relative; overflow:hidden; margin-bottom:1.6rem; box-shadow:0 12px 40px rgba(14,116,144,.28); display:flex; }
+.hero-banner { border-radius:28px; background:linear-gradient(135deg,#5f4398 0%,#7c5cbf 100%);
+  position:relative; overflow:hidden; margin-bottom:1.6rem; box-shadow:0 12px 40px rgba(124,92,191,.28); display:flex; }
 .hero-banner-bg { position:absolute; inset:0; pointer-events:none;
-  background:radial-gradient(circle at 15% 50%,rgba(56,189,248,.25) 0%,transparent 50%),radial-gradient(circle at 85% 20%,rgba(139,92,246,.3) 0%,transparent 45%); }
+  background:radial-gradient(circle at 15% 40%,rgba(242,184,102,.30) 0%,transparent 45%),radial-gradient(circle at 85% 60%,rgba(61,110,165,.30) 0%,transparent 45%); }
 .hero-grid-overlay { position:absolute; inset:0; pointer-events:none;
   background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px); background-size:32px 32px; }
 .hero-content { position:relative; z-index:1; padding:2rem 2.5rem; flex:1; display:flex; align-items:center; justify-content:space-between; gap:1.5rem; flex-wrap:wrap; }
+.hero-char { position:relative; z-index:1; width:150px; height:auto; align-self:flex-end; margin-left:2rem;
+  filter:drop-shadow(0 16px 28px rgba(0,0,0,.25)); }
+@media(max-width:900px) { .hero-char { display:none; } }
 .hero-text { color:#fff; }
 .hero-tag { display:inline-flex; align-items:center; gap:.4rem; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.25);
   border-radius:50px; padding:.28rem .9rem; font-size:.8rem; font-weight:700; margin-bottom:.7rem; backdrop-filter:blur(6px); }
@@ -150,7 +154,7 @@ defineProps({
 .stat-card.c-sky .stat-icon-wrap { background:var(--sky-light); color:var(--sky-dark); }
 .stat-card.c-pink .stat-icon-wrap { background:var(--pink-light); color:var(--pink-dark); }
 .stat-card.c-lime .stat-icon-wrap { background:var(--lime-light); color:var(--lime-dark); }
-.stat-card.c-amber .stat-icon-wrap { background:var(--amber-light); color:#92400E; }
+.stat-card.c-amber .stat-icon-wrap { background:var(--amber-light); color:#a06a1f; }
 .stat-val { font-size:1.8rem; font-weight:800; line-height:1.1; }
 .stat-lbl { font-size:.8rem; color:var(--gray); font-weight:600; margin-top:.15rem; }
 
@@ -159,7 +163,7 @@ defineProps({
 .card-hd { display:flex; align-items:center; justify-content:space-between; margin-bottom:1.2rem; }
 .card-title { font-size:1.02rem; font-weight:800; display:flex; align-items:center; gap:.5rem; color:var(--dark); }
 .card-title .mi { font-size:1.15rem; }
-.t-sky { color:var(--sky-dark); } .t-amber { color:#92400E; }
+.t-sky { color:var(--sky-dark); } .t-amber { color:#a06a1f; }
 .card-more { font-size:.82rem; font-weight:700; color:var(--sky-dark); cursor:pointer; display:flex; align-items:center; gap:.2rem; text-decoration:none; }
 .card-more .mi { font-size:.9rem; }
 .card-more:hover { text-decoration:underline; }
@@ -173,7 +177,7 @@ defineProps({
 .story-info { flex:1; min-width:0; }
 .story-name { font-weight:800; font-size:.93rem; margin-bottom:.3rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
 .story-prog-row { display:flex; align-items:center; gap:.5rem; }
-.story-bar { flex:1; height:6px; background:#E2E8F0; border-radius:99px; overflow:hidden; }
+.story-bar { flex:1; height:6px; background:#f0eef7; border-radius:99px; overflow:hidden; }
 .story-fill { height:100%; border-radius:99px; background:linear-gradient(90deg,var(--sky),var(--pink)); }
 .story-pct { font-size:.76rem; font-weight:800; color:var(--sky-dark); }
 .story-tag { font-size:.7rem; font-weight:800; padding:.22rem .7rem; border-radius:50px; flex-shrink:0; }
@@ -190,9 +194,9 @@ defineProps({
 .badge-icon-wrap { width:40px; height:40px; border-radius:12px; display:flex; align-items:center; justify-content:center; margin:0 auto .4rem; }
 .badge-icon-wrap .mi { font-size:1.35rem; }
 .badge-tile.earned .badge-icon-wrap { background:rgba(245,158,11,.15); color:var(--amber); }
-.badge-tile:not(.earned) .badge-icon-wrap { background:#F1F5F9; color:var(--gray); }
+.badge-tile:not(.earned) .badge-icon-wrap { background:#f5f4f9; color:var(--gray); }
 .badge-tile-name { font-size:.68rem; font-weight:800; color:var(--gray); }
-.badge-tile.earned .badge-tile-name { color:#92400E; }
+.badge-tile.earned .badge-tile-name { color:#a06a1f; }
 
 @media(max-width:1100px) { .stats-row { grid-template-columns:repeat(2,1fr); } .main-grid { grid-template-columns:1fr; } }
 </style>

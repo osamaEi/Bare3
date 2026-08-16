@@ -12,7 +12,7 @@ const props = defineProps({
 
 const insights = computed(() => props.latestPosts.slice(0, 5))
 
-// المسارات الخمسة — بالعبارات التسويقية المخصّصة + بيانات الـ hover
+// المسارات الة — بالعبارات التسويقية المخصّصة + بيانات الـ hover
 const tracks = [
   {
     key: 'creativity', title: 'الإبداع والابتكار والتفكير التصميمي', icon: 'fa-lightbulb', color: '#f0806a',
@@ -95,12 +95,12 @@ function submitContact() {
               براعتك تبدأ من هنا
             </span>
 
-            <h1 data-aos="fade-up" class="mt-7 text-4xl sm:text-5xl md:text-6xl font-black leading-[1.25] text-[var(--ink)]">
+            <h1 data-aos="fade-up" class="mt-7 text-3xl sm:text-4xl md:text-5xl font-black leading-[1.3] text-[var(--ink)]">
               لأن المستقبل لا ينتظر..<br>
               <span class="text-[var(--brand)]">نصقل مهارات جيل اليوم</span> ليقود المستقبل بثقة
             </h1>
 
-            <p data-aos="fade-up" data-aos-delay="150" class="mt-6 text-lg sm:text-xl text-gray-500 leading-loose max-w-2xl mx-auto lg:mx-0">
+            <p data-aos="fade-up" data-aos-delay="150" class="mt-6 text-base sm:text-lg text-gray-500 leading-loose max-w-2xl mx-auto lg:mx-0">
               رحلة تعليمية تفاعلية وقصصية ترافق أبناءكم من المدرسة للجامعة، وتصقل منظومة متكاملة من المهارات لصناعة روّاد وقادة الغد.
             </p>
 
@@ -136,7 +136,7 @@ function submitContact() {
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
           <span class="text-[var(--brand)] font-bold">مساراتنا التعليمية</span>
-          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">خمس مهارات.. تصنع شخصية قيادية متكاملة</h2>
+          <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3"> مهارات.. تصنع شخصية قيادية متكاملة</h2>
           <p class="text-gray-500 mt-4 leading-loose">مرّر على كل مسار لتكتشف تفاصيله والمهارة التي يكتسبها طفلك.</p>
         </div>
 
@@ -177,7 +177,7 @@ function submitContact() {
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
           <span class="text-[var(--brand)] font-bold">داخل المنصة</span>
-          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">تجربة تعليمية متكاملة</h2>
+          <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3">تجربة تعليمية متكاملة</h2>
           <p class="text-gray-500 mt-4 leading-loose">كل ما يحتاجه الطالب وولي الأمر في منصة واحدة.</p>
         </div>
 
@@ -204,7 +204,7 @@ function submitContact() {
 
           <div class="text-center lg:text-right">
             <span class="text-[var(--brand)] font-bold" data-aos="fade-up">عن بارع</span>
-            <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">رعاية تُثمر استدامة</h2>
+            <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">رعاية تُثمر استدامة</h2>
             <p class="text-gray-500 mt-6 leading-loose text-lg" data-aos="fade-up" data-aos-delay="100">
               منصة بارع التعليمية هي وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين — عبر رحلة تعليمية تفاعلية تربط المعرفة بمتطلبات المستقبل، وتشارك في صناعة روّاد وقادة الغد.
             </p>
@@ -222,7 +222,7 @@ function submitContact() {
       <div class="max-w-7xl mx-auto px-6">
         <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
           <span class="text-[var(--brand)] font-bold">رؤانا</span>
-          <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">أحدث المقالات</h2>
+          <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3">أحدث المقالات</h2>
           <p class="text-gray-500 mt-4 leading-loose">رؤى تربوية تساعدك على إعداد جيل واعٍ ومبتكر.</p>
         </div>
 
@@ -256,7 +256,7 @@ function submitContact() {
           <img src="/images/characters/05.png" alt="" class="contact-char" aria-hidden="true" />
           <div class="contact-head-text">
             <span class="text-[var(--brand)] font-bold">تواصل معنا</span>
-            <h2 class="text-3xl sm:text-4xl font-black text-[var(--ink)] mt-3">عندك سؤال؟ راسلنا</h2>
+            <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3">عندك سؤال؟ راسلنا</h2>
             <p class="text-gray-500 mt-4">سيعود إليك فريقنا خلال يوم عمل واحد.</p>
           </div>
         </div>

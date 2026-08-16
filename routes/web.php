@@ -166,6 +166,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     Route::get('/students/{student}/progress', [AdminStudentProgressController::class, 'show'])->name('students.progress.show');
     Route::post('/students/{student}/grant-badge', [AdminStudentProgressController::class, 'grantBadge'])->name('students.grant-badge');
     Route::post('/students/{student}/grant-certificate', [AdminStudentProgressController::class, 'grantCertificate'])->name('students.grant-certificate');
+    Route::post('/students/{student}/upload-badge', [AdminStudentProgressController::class, 'uploadBadge'])->name('students.upload-badge');
+    Route::post('/students/{student}/upload-certificate', [AdminStudentProgressController::class, 'uploadCertificate'])->name('students.upload-certificate');
 
     // Tickets
     Route::get('/tickets', [AdminTicketController::class, 'index'])->name('tickets');

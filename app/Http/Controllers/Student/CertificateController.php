@@ -37,9 +37,12 @@ class CertificateController extends Controller
         abort_unless($certificate->student_id === $request->user()->id, 403);
         abort_unless($certificate->pdf_path && Storage::disk('public')->exists($certificate->pdf_path), 404);
 
+        // قد يكون الملف PDF أو صورة مرفوعة من الإدارة — نحافظ على الامتداد الأصلي
+        $ext = pathinfo($certificate->pdf_path, PATHINFO_EXTENSION) ?: 'pdf';
+
         return Storage::disk('public')->download(
             $certificate->pdf_path,
-            "certificate-{$certificate->cert_number}.pdf"
+            "certificate-{$certificate->cert_number}.{$ext}"
         );
     }
 
