@@ -95,23 +95,23 @@ const formatDate = (d) => d ? new Date(d).toLocaleDateString('ar-EG') : '—'
 
 .child-pick { background: #fff; border: 1.5px solid #E2E8F0; border-radius: 14px; padding: 1.2rem; margin-bottom: 1.5rem; }
 .child-label { display: flex; align-items: center; gap: .5rem; font-weight: 800; color: #1E293B; font-size: .95rem; margin-bottom: .9rem; }
-.child-label i { color: #38BDF8; }
+.child-label i { color: #7c5cbf; }
 .no-children { color: #94A3B8; font-size: .88rem; font-weight: 600; }
 .child-options { display: flex; flex-wrap: wrap; gap: .7rem; }
 .child-chip { display: inline-flex; align-items: center; gap: .5rem; background: #F8FAFC; border: 2px solid #E2E8F0; border-radius: 50px; padding: .45rem 1rem .45rem .5rem; font-family: inherit; font-weight: 700; font-size: .88rem; color: #475569; cursor: pointer; transition: all .2s; }
 .child-chip:hover { border-color: #BAE6FD; }
-.child-chip.active { border-color: #38BDF8; background: #F0F9FF; color: #0E7490; }
-.ch-avatar { width: 28px; height: 28px; border-radius: 50%; background: #38BDF8; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .85rem; }
+.child-chip.active { border-color: #7c5cbf; background: #faf8fe; color: #5f4398; }
+.ch-avatar { width: 28px; height: 28px; border-radius: 50%; background: #7c5cbf; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: .85rem; }
 
 .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.2rem; margin-bottom: 2rem; }
 .plan { background: #fff; border: 2px solid #E2E8F0; border-radius: 18px; padding: 1.5rem; cursor: pointer; transition: border-color .2s, box-shadow .2s; position: relative; }
 .plan:hover { border-color: #BAE6FD; }
-.plan.selected { border-color: #38BDF8; box-shadow: 0 4px 18px rgba(56,189,248,.18); }
+.plan.selected { border-color: #7c5cbf; box-shadow: 0 4px 18px rgba(124,92,191,.18); }
 .radio { position: absolute; top: 1.3rem; left: 1.3rem; width: 20px; height: 20px; border: 2px solid #CBD5E1; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
-.plan.selected .radio { border-color: #38BDF8; }
-.radio span { width: 10px; height: 10px; border-radius: 50%; background: #38BDF8; }
+.plan.selected .radio { border-color: #7c5cbf; }
+.radio span { width: 10px; height: 10px; border-radius: 50%; background: #7c5cbf; }
 .plan-name { font-size: 1.2rem; font-weight: 900; color: #1E293B; margin-bottom: .5rem; }
-.plan-price { font-size: 1.8rem; font-weight: 900; color: #38BDF8; margin-bottom: 1rem; }
+.plan-price { font-size: 1.8rem; font-weight: 900; color: #7c5cbf; margin-bottom: 1rem; }
 .plan-price span { font-size: .8rem; font-weight: 700; color: #94A3B8; }
 .plan-feats { list-style: none; padding: 0; margin: 0; }
 .plan-feats li { display: flex; align-items: center; gap: .5rem; font-size: .85rem; color: #475569; padding: .25rem 0; }

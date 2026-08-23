@@ -304,4 +304,25 @@ Route::get('/storage-link', function () {
     return response(Artisan::output(), 200)->header('Content-Type', 'text/plain');
 })->name('storage.link');
 
+// ── Trigger: cache config/routes/views (php artisan optimize) ───
+Route::get('/optimize', function () {
+    $out = [];
+
+    // امسح الكاش القديم أولاً حتى لا تبقى مسارات أو إعدادات قديمة
+    foreach (['optimize:clear', 'optimize'] as $cmd) {
+        Artisan::call($cmd);
+        $out[] = "\$ php artisan {$cmd}".PHP_EOL.trim(Artisan::output());
+    }
+
+    return response(implode(PHP_EOL.PHP_EOL, $out), 200)
+        ->header('Content-Type', 'text/plain');
+})->name('optimize');
+
+// ── Trigger: clear all caches only ─────────────────────────────
+Route::get('/optimize-clear', function () {
+    Artisan::call('optimize:clear');
+
+    return response(Artisan::output(), 200)->header('Content-Type', 'text/plain');
+})->name('optimize.clear');
+
 require __DIR__.'/auth.php';

@@ -22,87 +22,138 @@ const formatDate = (d) => d ? new Date(d).toLocaleDateString('ar-EG') : '—'
   <Head :title="success ? 'تم الدفع بنجاح' : 'لم تكتمل العملية'" />
 
   <div class="result-page" dir="rtl">
-    <div class="blob blob1"></div>
-    <div class="blob blob2"></div>
+    <!-- أشكال 3D تجريدية — نفس هوية الصفحة الرئيسية -->
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
 
-    <div class="card" :class="success ? 'ok' : 'fail'">
-      <div class="icon-wrap" :class="success ? 'ok' : 'fail'">
-        <i :class="success ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+    <div class="result-shell">
+      <!-- شخصية بارع -->
+      <div class="res-char-wrap">
+        <div class="res-char-glow"></div>
+        <img :src="success ? '/images/characters/26.png' : '/images/characters/09.png'"
+             alt="شخصية بارع" class="res-char" />
       </div>
 
-      <h1 class="title">{{ success ? 'تم الدفع بنجاح! 🎉' : 'لم تكتمل عملية الدفع' }}</h1>
-      <p class="sub">
-        {{ success
-          ? 'تم تفعيل الاشتراك وإضافته إلى حسابك. استمتع بالتعلّم!'
-          : 'لم يتم خصم أي مبلغ، أو حدثت مشكلة أثناء الدفع. يمكنك المحاولة مرة أخرى.' }}
-      </p>
+      <div class="card" :class="success ? 'ok' : 'fail'">
+        <Link href="/" class="card-logo"><img src="/images/logo.png" alt="بارع" /></Link>
 
-      <div class="details">
-        <div v-if="plan_name" class="row"><span>الباقة</span><b>{{ plan_name }}</b></div>
-        <div class="row"><span>المبلغ</span><b>{{ amount.toLocaleString('ar-EG') }} <i class="fa-solid fa-saudi-riyal-symbol"></i></b></div>
-        <div v-if="success && ends_at" class="row"><span>صالح حتى</span><b>{{ formatDate(ends_at) }}</b></div>
-        <div class="row"><span>رقم العملية</span><b class="mono">{{ reference }}</b></div>
-      </div>
+        <div class="icon-wrap" :class="success ? 'ok' : 'fail'">
+          <i :class="success ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>
+        </div>
 
-      <div class="actions">
-        <a :href="homeUrl()" class="btn primary">
-          <i class="fa-solid fa-house"></i> {{ success ? 'الذهاب للوحة التحكم' : 'العودة للرئيسية' }}
-        </a>
-        <Link v-if="!success" :href="route('payment.checkout')" class="btn ghost">
-          <i class="fa-solid fa-rotate-right"></i> حاول مرة أخرى
-        </Link>
+        <h1 class="title">{{ success ? 'تم الدفع بنجاح!' : 'لم تكتمل عملية الدفع' }}</h1>
+        <p class="sub">
+          {{ success
+            ? 'تم تفعيل الاشتراك وإضافته إلى حسابك. استمتع بالتعلّم!'
+            : 'لم يتم خصم أي مبلغ، أو حدثت مشكلة أثناء الدفع. يمكنك المحاولة مرة أخرى.' }}
+        </p>
+
+        <div class="details">
+          <div v-if="plan_name" class="row"><span>الباقة</span><b>{{ plan_name }}</b></div>
+          <div class="row"><span>المبلغ</span><b>{{ amount.toLocaleString('ar-EG') }} <i class="fa-solid fa-saudi-riyal-symbol"></i></b></div>
+          <div v-if="success && ends_at" class="row"><span>صالح حتى</span><b>{{ formatDate(ends_at) }}</b></div>
+          <div class="row"><span>رقم العملية</span><b class="mono">{{ reference }}</b></div>
+        </div>
+
+        <div class="actions">
+          <a :href="homeUrl()" class="btn primary">
+            <span>{{ success ? 'الذهاب للوحة التحكم' : 'العودة للرئيسية' }}</span>
+            <i class="fa-solid fa-arrow-left"></i>
+          </a>
+          <Link v-if="!success" :href="route('payment.checkout')" class="btn ghost">
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>حاول مرة أخرى</span>
+          </Link>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@500;700;800&display=swap');
-
+/* ── هوية بارع — نفس متغيّرات الصفحة الرئيسية ── */
 .result-page {
+  --brand:#7c5cbf; --brand-dark:#5f4398; --brand-soft:#f3effb; --ink:#1e1b2e;
+  --coral:#f0806a; --teal:#4bb5a8; --amber:#f2b866; --navy:#3d6ea5;
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
-  padding: 1.5rem; position: relative; overflow: hidden;
-  font-family: 'ThmanyahSans', 'Baloo Bhaijaan 2', 'Segoe UI', Tahoma, sans-serif;
-  background: linear-gradient(135deg, #F5F3FF 0%, #E0F4FF 50%, #FCE7F3 100%);
+  padding: 2rem 1.5rem; position: relative; overflow: hidden;
+  font-family: 'Tajawal', 'Poppins', sans-serif;
+  background: #FAFAFB; color: var(--ink);
 }
-.blob { position: absolute; border-radius: 50%; pointer-events: none; }
-.blob1 { width: 360px; height: 360px; background: #38BDF8; opacity: .12; top: -90px; right: -90px; }
-.blob2 { width: 300px; height: 300px; background: #EC4899; opacity: .12; bottom: -80px; left: -80px; }
 
-.card {
-  position: relative; z-index: 1; background: #fff; width: 100%; max-width: 460px;
-  border-radius: 28px; padding: 2.6rem 2.2rem; text-align: center;
-  box-shadow: 0 20px 60px rgba(15,23,42,.15); border-top: 6px solid #38BDF8;
+/* أشكال 3D تجريدية (blobs) */
+.blob { position:absolute; border-radius:50%; filter:blur(60px); opacity:.5; pointer-events:none; }
+.blob-1 { width:420px; height:420px; background:radial-gradient(circle,#c9b4f0,#7c5cbf); top:-120px; right:-80px; }
+.blob-2 { width:340px; height:340px; background:radial-gradient(circle,#ffd9b0,#f0806a); bottom:-100px; left:-60px; opacity:.35; }
+.blob-3 { width:260px; height:260px; background:radial-gradient(circle,#b8ede6,#4bb5a8); top:45%; left:12%; opacity:.3; }
+
+/* التخطيط: شخصية + بطاقة */
+.result-shell {
+  position: relative; z-index: 1; width: 100%; max-width: 900px;
+  display: grid; grid-template-columns: 1fr; gap: 2.5rem; align-items: center;
 }
-.card.ok { border-top-color: #16A34A; }
-.card.fail { border-top-color: #DC2626; }
+@media (min-width: 1024px) { .result-shell { grid-template-columns: .8fr 1fr; } }
+
+.res-char-wrap { position: relative; display: none; justify-content: center; }
+@media (min-width: 1024px) { .res-char-wrap { display: flex; } }
+.res-char {
+  position: relative; z-index: 2; width: 100%; max-width: 300px; height: auto;
+  filter: drop-shadow(0 24px 40px rgba(30,27,46,.18));
+  animation: float-char 6s ease-in-out infinite;
+}
+.res-char-glow {
+  position: absolute; z-index: 1; bottom: 6%; left: 50%; transform: translateX(-50%);
+  width: 78%; aspect-ratio: 1/1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,191,.30), transparent 68%); filter: blur(26px);
+}
+@keyframes float-char { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-16px); } }
+@media (prefers-reduced-motion: reduce) { .res-char { animation: none; } }
+
+/* بطاقة زجاجية — نفس أسلوب الصفحة الرئيسية */
+.card {
+  position: relative; background: rgba(255,255,255,.7); backdrop-filter: blur(16px);
+  width: 100%; max-width: 460px; margin: 0 auto;
+  border: 1px solid #f0eef7; border-radius: 28px;
+  padding: 2.4rem 2.2rem; text-align: center;
+  box-shadow: 0 12px 40px rgba(30,27,46,.07);
+  border-top: 5px solid var(--brand);
+}
+.card.ok { border-top-color: var(--teal); }
+.card.fail { border-top-color: var(--coral); }
+
+.card-logo { display: block; margin-bottom: 1.2rem; }
+.card-logo img { width: 130px; max-width: 60%; }
 
 .icon-wrap {
-  width: 88px; height: 88px; border-radius: 50%; margin: 0 auto 1.3rem;
-  display: flex; align-items: center; justify-content: center; font-size: 2.6rem;
+  width: 84px; height: 84px; border-radius: 50%; margin: 0 auto 1.3rem;
+  display: flex; align-items: center; justify-content: center; font-size: 2.5rem;
 }
-.icon-wrap.ok { background: #F0FDF4; color: #16A34A; }
-.icon-wrap.fail { background: #FEF2F2; color: #DC2626; }
+.icon-wrap.ok { background: #eaf7f5; color: var(--teal); }
+.icon-wrap.fail { background: #fdeeea; color: var(--coral); }
 
-.title { font-size: 1.5rem; font-weight: 800; color: #1C1C2E; margin-bottom: .6rem; }
-.sub { color: #64748B; font-size: .95rem; line-height: 1.8; margin-bottom: 1.6rem; }
+.title { font-size: 1.6rem; font-weight: 900; color: var(--ink); margin-bottom: .6rem; }
+.sub { color: #6B7280; font-size: .95rem; line-height: 1.9; margin-bottom: 1.7rem; }
 
-.details { background: #F8FAFC; border-radius: 16px; padding: 1.1rem 1.3rem; margin-bottom: 1.6rem; }
-.row { display: flex; justify-content: space-between; align-items: center; padding: .5rem 0; font-size: .9rem; border-bottom: 1px dashed #E2E8F0; }
+.details { background: #fafafb; border: 1px solid #f0eef7; border-radius: 18px; padding: 1.1rem 1.3rem; margin-bottom: 1.7rem; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: .55rem 0; font-size: .9rem; border-bottom: 1px solid #f3f2f7; }
 .row:last-child { border-bottom: none; }
-.row span { color: #94A3B8; font-weight: 600; }
-.row b { color: #1E293B; font-weight: 800; }
+.row span { color: #94A3B8; font-weight: 700; }
+.row b { color: var(--ink); font-weight: 800; }
 .mono { font-family: ui-monospace, monospace; font-size: .8rem; }
 
 .actions { display: flex; flex-direction: column; gap: .7rem; }
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
-  padding: .85rem 1.5rem; border-radius: 50px; font-weight: 800; font-size: .95rem;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 15px 30px; border-radius: 9999px; font-weight: 700; font-size: 1rem;
   text-decoration: none; cursor: pointer; border: none; font-family: inherit;
+  transition: all .25s ease;
 }
-.btn.primary { background: #38BDF8; color: #fff; box-shadow: 0 5px 0 #0E7490; }
-.btn.primary:hover { transform: translateY(-2px); }
-.btn.ghost { background: #F1F5F9; color: #475569; }
-.btn.ghost:hover { background: #E2E8F0; }
+.btn.primary { background: var(--brand); color: #fff; box-shadow: 0 8px 24px rgba(124,92,191,.28); }
+.btn.primary:hover { background: var(--brand-dark); transform: translateY(-2px); }
+.btn.ghost { background: #fff; color: var(--ink); border: 2px solid #ece8f5; }
+.btn.ghost:hover { border-color: var(--brand); color: var(--brand); }
+
+@media (max-width: 480px) { .card { padding: 2rem 1.4rem; } }
 </style>
