@@ -13,6 +13,12 @@ use Inertia\Response;
 
 class PublicPageController extends Controller
 {
+    /** Public accessor for shared header/footer content (used by other public controllers). */
+    public function sharedContent(): array
+    {
+        return $this->shared();
+    }
+
     /** Shared homepage content (merged with admin edits) for consistent header/footer. */
     private function shared(): array
     {
@@ -32,9 +38,24 @@ class PublicPageController extends Controller
     {
         $content = $this->shared();
 
+        // الباقات من قاعدة البيانات (المصدر المعتمد)، ونرجع لإعدادات homepage إن كانت فارغة
+        $plans = \App\Models\Plan::where('is_active', true)->orderBy('price')->get();
+
+        $pricing = $plans->isNotEmpty()
+            ? $plans->map(fn ($p) => [
+                'badge'    => $p->billing_cycle === 'yearly' ? 'سنوي' : 'شهري',
+                'amount'   => rtrim(rtrim(number_format((float) $p->price, 2, '.', ''), '0'), '.'),
+                'unit'     => $p->billing_cycle === 'yearly' ? '/سنوياً' : '',
+                'name'     => $p->name,
+                'featured' => $p->slug === 'full-path',
+                'features' => $p->features ?? [],
+                'btn'      => 'اشترك الآن',
+            ])->values()->all()
+            : $content['pricing'];
+
         return Inertia::render('Public/Subscribe', [
             'brand'   => $content['brand'],
-            'pricing' => $content['pricing'],
+            'pricing' => $pricing,
             'footer'  => $content['footer'],
         ]);
     }
@@ -83,11 +104,23 @@ class PublicPageController extends Controller
     {
         $content = $this->shared();
 
+        $gradeLabels = ['primary' => 'المرحلة الابتدائية', 'middle' => 'المرحلة المتوسطة', 'high' => 'المرحلة الثانوية', 'all' => 'كل المراحل'];
+
         $paths = \App\Models\Path::where('is_active', true)
             ->withCount('lessons')
+            ->with(['lessons' => fn ($q) => $q->where('is_active', true)->orderBy('sort_order')])
             ->orderBy('sort_order')
             ->get()
             ->map(fn ($p) => [
+                // المواضيع مجمّعة حسب المرحلة الدراسية
+                'stages' => collect(['primary', 'middle', 'high', 'all'])
+                    ->map(fn ($g) => [
+                        'key'    => $g,
+                        'label'  => $gradeLabels[$g],
+                        'topics' => $p->lessons->where('grade_level', $g)->pluck('title')->values(),
+                    ])
+                    ->filter(fn ($s) => $s['topics']->isNotEmpty())
+                    ->values(),
                 'slug'         => $p->slug,
                 'title'        => $p->title,
                 'description'  => $p->description,

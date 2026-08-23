@@ -27,6 +27,7 @@ use App\Http\Controllers\Student\NotificationController as StudentNotificationCo
 use App\Http\Controllers\PublicPageController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -76,6 +77,10 @@ Route::get('/about',     [PublicPageController::class, 'about'])->name('about');
 Route::get('/privacy-policy', [PublicPageController::class, 'privacyPolicy'])->name('privacy.policy');
 Route::get('/terms', [PublicPageController::class, 'terms'])->name('terms');
 Route::get('/contact',   [PublicPageController::class, 'contact'])->name('contact');
+
+// صفحة استقطاب المدربين والخبراء
+Route::get('/trainers',  [\App\Http\Controllers\TrainerController::class, 'index'])->name('trainers');
+Route::post('/trainers', [\App\Http\Controllers\TrainerController::class, 'store'])->name('trainers.store');
 Route::post('/contact',  [PublicPageController::class, 'contactStore'])->name('contact.store');
 Route::get('/courses',       [PublicPageController::class, 'courses'])->name('courses');
 Route::get('/blog',          [PublicPageController::class, 'blog'])->name('blog');
@@ -303,6 +308,52 @@ Route::get('/storage-link', function () {
 
     return response(Artisan::output(), 200)->header('Content-Type', 'text/plain');
 })->name('storage.link');
+
+// ── Trigger: migrate + seed the approved subscription plans ────
+// يشغّل الهجرات أولاً ثم يزرع الباقات المعتمدة.
+// ملاحظة: السيدر يعطّل الباقات القديمة التي لها اشتراكات بدل حذفها
+// (حفاظاً على سجلات العملاء)، ويحذف فقط الباقات غير المستخدمة.
+//
+// نُعطّل وسيط الجلسة لأن SESSION_DRIVER=database — أي أن أي مسار عادي
+// يحتاج قاعدة البيانات قبل تنفيذ الكود، فيفشل هذا المسار الصيانيّ نفسه
+// عندما تكون القاعدة غير متاحة أو الجداول غير مهاجَرة بعد.
+Route::withoutMiddleware([
+    \Illuminate\Session\Middleware\StartSession::class,
+    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+    \Illuminate\Foundation\Http\Middleware\ValidateCsrfToken::class,
+    \App\Http\Middleware\HandleInertiaRequests::class,
+])->get('/seed-plans', function () {
+    $out = [];
+
+    // تأكّد من الاتصال بقاعدة البيانات أولاً حتى نُظهر رسالة واضحة بدل صفحة الخطأ
+    try {
+        DB::connection()->getPdo();
+    } catch (\Throwable $e) {
+        return response(
+            'ERROR: تعذّر الاتصال بقاعدة البيانات.'.PHP_EOL.$e->getMessage(),
+            500
+        )->header('Content-Type', 'text/plain');
+    }
+
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        $out[] = '$ php artisan migrate'.PHP_EOL.trim(Artisan::output());
+
+        Artisan::call('db:seed', [
+            '--class' => \Database\Seeders\PlansSeeder::class,
+            '--force' => true,
+        ]);
+        $out[] = '$ php artisan db:seed --class=PlansSeeder'.PHP_EOL.trim(Artisan::output());
+    } catch (\Throwable $e) {
+        $out[] = 'ERROR: '.$e->getMessage();
+
+        return response(implode(PHP_EOL.PHP_EOL, $out), 500)
+            ->header('Content-Type', 'text/plain');
+    }
+
+    return response(implode(PHP_EOL.PHP_EOL, $out), 200)
+        ->header('Content-Type', 'text/plain');
+})->name('seed.plans');
 
 // ── Trigger: cache config/routes/views (php artisan optimize) ───
 Route::get('/optimize', function () {

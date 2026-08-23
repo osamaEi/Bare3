@@ -15,7 +15,7 @@ defineProps({
     <section class="hero-band">
       <div class="hero-content">
         <span class="eyebrow">ابدأ رحلة تعليمية ممتعة</span>
-        <h1>اختر الباقة المناسبة لأبنائك وابدأ اليوم</h1>
+        <h1>استثمر في مستقبل ابنك.. اختر الباقة المناسبة وابدأ الآن</h1>
         <p>باقات مرنة، محتوى تفاعلي، ومتابعة آمنة تساعد طفلك على النمو بثقة ونموّ متوازن.</p>
         <div class="hero-actions">
           <a href="#plans" class="primary-btn">عرض الباقات</a>

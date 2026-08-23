@@ -204,9 +204,9 @@ function submitContact() {
 
           <div class="text-center lg:text-right">
             <span class="text-[var(--brand)] font-bold" data-aos="fade-up">عن بارع</span>
-            <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">رعاية تُثمر استدامة</h2>
+            <h2 class="text-2xl sm:text-3xl font-black text-[var(--ink)] mt-3" data-aos="fade-up">أكثر من مجرد تعليم.. رحلة تفاعلية تبني الشخصية وتصنع القادة</h2>
             <p class="text-gray-500 mt-6 leading-loose text-lg" data-aos="fade-up" data-aos-delay="100">
-              منصة بارع التعليمية هي وجهتك الأولى لتمكين الأجيال الناشئة والشباب من مهارات القرن الحادي والعشرين — عبر رحلة تعليمية تفاعلية تربط المعرفة بمتطلبات المستقبل، وتشارك في صناعة روّاد وقادة الغد.
+              منصة بارِع التعليمية هي وجهتك الأولى لتمكين الناشئة والأطفال من مهارات القرن الحادي والعشرين — عبر رحلة تعليمية تفاعلية تربط المعرفة بمتطلبات المستقبل، وتشارك في صناعة روّاد وقادة الغد
             </p>
             <Link :href="route('about')" class="cta-primary mt-8 inline-flex" data-aos="fade-up" data-aos-delay="150">
               <span>تعرّف علينا أكثر</span>

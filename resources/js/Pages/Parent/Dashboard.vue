@@ -5,7 +5,7 @@
     <div class="page-head">
       <div>
         <h1 class="title">مرحباً بك في بوابة ولي الأمر 👋</h1>
-        <p class="sub">تابع تقدّم أبنائك وأدِر اشتراكاتك من مكان واحد</p>
+        <p class="sub">تابع تقدّم ابنك وأدِر اشتراكاتك من مكان واحد</p>
       </div>
       <button class="btn-add" @click="modal = true"><i class="fa-solid fa-plus"></i> إضافة طفل</button>
     </div>

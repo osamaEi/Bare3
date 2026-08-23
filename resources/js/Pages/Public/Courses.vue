@@ -1,8 +1,12 @@
 <script setup>
+import { ref } from 'vue'
 import { Head } from '@inertiajs/vue3'
 import Bare3Layout from '@/Layouts/Bare3Layout.vue'
 
 defineProps({ brand: Object, footer: Object, paths: { type: Array, default: () => [] } })
+
+const open = ref(null)
+const toggle = (slug) => { open.value = open.value === slug ? null : slug }
 </script>
 
 <template>
@@ -15,7 +19,7 @@ defineProps({ brand: Object, footer: Object, paths: { type: Array, default: () =
         <div class="text-center lg:text-right">
           <h1 class="text-5xl md:text-6xl font-black mb-6" data-aos="fade-up">المسارات</h1>
           <p class="text-2xl text-purple-100 max-w-2xl mx-auto lg:mx-0" data-aos="fade-up" data-aos-delay="200">
-            حلول تخصصية علمية وعملية ترافق الإنسان وتمكّن الكيان
+            مسارات مهارية متكاملة.. تبني الشخصية وتصنع قادة المستقبل
           </p>
         </div>
         <img src="/images/characters/05.png" alt="شخصية بارع"
@@ -59,6 +63,26 @@ defineProps({ brand: Object, footer: Object, paths: { type: Array, default: () =
                 {{ p.lessons_count }} درس
               </div>
 
+              <!-- مواضيع المسار مقسّمة حسب المرحلة -->
+              <div v-if="p.stages?.length" class="topics">
+                <button class="topics-toggle" :style="{ color: p.color }" @click="toggle(p.slug)">
+                  <i class="fa-solid" :class="open === p.slug ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+                  {{ open === p.slug ? 'إخفاء المواضيع' : 'عرض مواضيع المسار' }}
+                </button>
+
+                <div v-if="open === p.slug" class="topics-body">
+                  <div v-for="s in p.stages" :key="s.key" class="stage">
+                    <div class="stage-label" :style="{ background: p.color }">{{ s.label }}</div>
+                    <ul class="topic-list">
+                      <li v-for="(t, ti) in s.topics" :key="ti">
+                        <i class="fa-solid fa-circle-check" :style="{ color: p.color }"></i>
+                        <span>{{ t }}</span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
               <a :href="route('subscribe')"
                  class="mt-10 block w-full text-center text-white py-4 rounded-2xl font-medium transition hover:brightness-90"
                  :style="{ background: p.color }">
@@ -91,6 +115,22 @@ defineProps({ brand: Object, footer: Object, paths: { type: Array, default: () =
 .cover-fallback { display: flex; align-items: center; justify-content: center; }
 .cover-fallback-icon { width: 96px; height: 96px; filter: brightness(0) invert(1); opacity: .45; }
 .courses-hero-char { width: 300px; height: auto; filter: drop-shadow(0 24px 40px rgb(0 0 0 / .28)); }
+
+/* ── مواضيع المسار ── */
+.topics { margin-top: 1.25rem; border-top: 1px solid #f0eef7; padding-top: 1rem; }
+.topics-toggle {
+  display: inline-flex; align-items: center; gap: .5rem; background: none; border: none;
+  font-family: inherit; font-weight: 800; font-size: .9rem; cursor: pointer; padding: 0;
+}
+.topics-toggle:hover { text-decoration: underline; }
+.topics-body { margin-top: 1rem; display: flex; flex-direction: column; gap: 1.1rem; }
+.stage-label {
+  display: inline-block; color: #fff; font-weight: 800; font-size: .75rem;
+  padding: .3rem .9rem; border-radius: 9999px; margin-bottom: .6rem;
+}
+.topic-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: .5rem; }
+.topic-list li { display: flex; align-items: flex-start; gap: .55rem; font-size: .88rem; color: #4b5563; line-height: 1.7; }
+.topic-list li i { font-size: .8rem; margin-top: .35rem; flex-shrink: 0; }
 .cover-badge {
   position: absolute; top: 1rem; inset-inline-start: 1rem;
   color: #fff; font-weight: 800; font-size: 1rem;

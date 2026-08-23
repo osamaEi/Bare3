@@ -8,6 +8,16 @@ const props = defineProps({ brand: Object, footer: Object })
 const page = usePage()
 const flash = computed(() => page.props.flash?.success)
 
+const SUPPORT_PHONE = '+966558223189'
+const SUPPORT_EMAIL = 'info@bareaedu.sa'
+
+const requestTypes = [
+  'استفسار عن باقة / اشتراك',
+  'استفسار أولياء الأمور',
+  'شراكات المدارس والجهات (B2B)',
+  'الدعم الفني والتقني',
+]
+
 const form = useForm({ name: '', email: '', phone: '', subject: '', message: '' })
 const submit = () => form.post(route('contact.store'), {
   preserveScroll: true,
@@ -20,16 +30,34 @@ const submit = () => form.post(route('contact.store'), {
   <Bare3Layout active="contact">
     <section class="hero-band">
       <h1>تواصل معنا</h1>
-      <p>عندك سؤال أو اقتراح؟ يسعدنا أن نسمع منك</p>
+      <p>نحن هنا لمساعدتك وشرح رحلة التعلم الخاصة بابنك</p>
     </section>
 
     <section class="contact-wrap">
       <!-- Info -->
       <div class="contact-info">
         <h2>معلومات التواصل</h2>
-        <div class="info-row"><i class="fa-solid fa-location-dot"></i><span>{{ footer.contact_location }}</span></div>
-        <div class="info-row"><i class="fa-solid fa-phone"></i><span>{{ footer.contact_phone }}</span></div>
-        <div class="info-row"><i class="fa-solid fa-envelope"></i><span>{{ footer.contact_email }}</span></div>
+        <a class="info-row" :href="`https://wa.me/${SUPPORT_PHONE.replace(/\D/g, '')}`" target="_blank" rel="noopener">
+          <i class="fa-brands fa-whatsapp"></i>
+          <span>
+            <b>الهاتف / واتساب الدعم</b>
+            <bdi dir="ltr">{{ SUPPORT_PHONE }}</bdi>
+          </span>
+        </a>
+        <a class="info-row" :href="`mailto:${SUPPORT_EMAIL}`">
+          <i class="fa-solid fa-envelope"></i>
+          <span>
+            <b>البريد الإلكتروني</b>
+            <bdi dir="ltr">{{ SUPPORT_EMAIL }}</bdi>
+          </span>
+        </a>
+        <div class="info-row">
+          <i class="fa-solid fa-location-dot"></i>
+          <span>
+            <b>مقر المؤسسة</b>
+            مؤسسة رؤية بارع التجارية — الرياض، المملكة العربية السعودية
+          </span>
+        </div>
         <div class="socials" v-if="footer.socials">
           <a v-for="(s, i) in footer.socials" :key="i" :href="s.href"><i :class="s.icon"></i></a>
         </div>
@@ -37,10 +65,13 @@ const submit = () => form.post(route('contact.store'), {
 
       <!-- Form -->
       <div class="contact-form">
+        <h2 class="form-title">راسلنا</h2>
+        <p class="form-sub">اترك لنا رسالة وسيقوم فريق الدعم بالتواصل معك فوراً.</p>
+
         <div v-if="flash" class="flash-ok"><i class="fa-solid fa-circle-check"></i> {{ flash }}</div>
         <div class="grid2">
           <div class="field">
-            <label>الاسم</label>
+            <label>الاسم الكامل</label>
             <input v-model="form.name" class="inp" />
             <span v-if="form.errors.name" class="err">{{ form.errors.name }}</span>
           </div>
@@ -50,16 +81,21 @@ const submit = () => form.post(route('contact.store'), {
             <span v-if="form.errors.email" class="err">{{ form.errors.email }}</span>
           </div>
           <div class="field">
-            <label>الهاتف (اختياري)</label>
-            <input v-model="form.phone" class="inp" />
+            <label>رقم الجوال</label>
+            <input v-model="form.phone" class="inp" dir="ltr" />
+            <span v-if="form.errors.phone" class="err">{{ form.errors.phone }}</span>
           </div>
           <div class="field">
-            <label>الموضوع (اختياري)</label>
-            <input v-model="form.subject" class="inp" />
+            <label>نوع الطلب</label>
+            <select v-model="form.subject" class="inp">
+              <option value="" disabled>— اختر نوع الطلب —</option>
+              <option v-for="t in requestTypes" :key="t" :value="t">{{ t }}</option>
+            </select>
+            <span v-if="form.errors.subject" class="err">{{ form.errors.subject }}</span>
           </div>
         </div>
         <div class="field">
-          <label>الرسالة</label>
+          <label>موضوع الرسالة</label>
           <textarea v-model="form.message" rows="5" class="inp"></textarea>
           <span v-if="form.errors.message" class="err">{{ form.errors.message }}</span>
         </div>
@@ -186,7 +222,15 @@ const submit = () => form.post(route('contact.store'), {
   font-size: .92rem;
   font-weight: 600;
   color: #334155;
+  text-decoration: none;
 }
+a.info-row:hover { color: #5f4398; }
+.info-row span { display: flex; flex-direction: column; gap: .15rem; min-width: 0; }
+.info-row b { font-size: .82rem; color: #1C1C2E; font-weight: 800; }
+.info-row bdi { font-family: ui-monospace, monospace; font-size: .86rem; }
+
+.form-title { font-family: 'Baloo Bhaijaan 2', sans-serif; font-size: 1.3rem; font-weight: 800; color: #1C1C2E; margin-bottom: .3rem; }
+.form-sub { color: #64748B; font-size: .88rem; font-weight: 600; margin-bottom: 1.4rem; }
 
 .info-row i {
   width: 42px;

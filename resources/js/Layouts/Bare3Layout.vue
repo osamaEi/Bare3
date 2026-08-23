@@ -44,6 +44,7 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
           <Link :href="route('courses')" class="nav-link pb-2" :class="active === 'courses' ? 'active' : 'hover:text-[var(--brand)]'">المسارات</Link>
           <Link :href="route('subscribe')" class="nav-link pb-2" :class="active === 'subscribe' ? 'active' : 'hover:text-[var(--brand)]'">الباقات</Link>
           <Link :href="route('blog')" class="nav-link pb-2" :class="active === 'blog' ? 'active' : 'hover:text-[var(--brand)]'">المدونة</Link>
+          <Link :href="route('trainers')" class="nav-link pb-2" :class="active === 'trainers' ? 'active' : 'hover:text-[var(--brand)]'">انضم كمدرب</Link>
         </nav>
 
         <div class="flex items-center gap-4">
@@ -81,6 +82,7 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
           <Link :href="route('courses')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">المسارات</Link>
           <Link :href="route('subscribe')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">الباقات</Link>
           <Link :href="route('blog')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">المدونة</Link>
+          <Link :href="route('trainers')" class="w-full text-right py-2 hover:text-[var(--brand)]" @click="mobileOpen = false">انضم كمدرب</Link>
           <div class="w-full mt-2 pt-3 border-t border-gray-100">
             <span class="block text-right text-xs text-gray-400 mb-1">تسجيل الدخول</span>
             <Link v-for="o in loginOptions" :key="o.key" :href="route(o.route)"

@@ -39,7 +39,7 @@ const badgeColors = ['bg-purple-100 text-purple-700', 'bg-teal-100 text-teal-700
       <div class="max-w-5xl mx-auto px-6 text-center">
         <h1 class="text-5xl md:text-6xl font-black mb-6" data-aos="fade-up">المدونة</h1>
         <p class="text-2xl text-purple-100 max-w-2xl mx-auto" data-aos="fade-up" data-aos-delay="200">
-          رؤى عميقة ومقالات متخصصة حول الصحة النفسية وجودة الحياة
+          رؤى عميقة ومقالات متخصصة حول مهارات القرن الحادي والعشرين ومهارات المستقبل
         </p>
       </div>
     </section>
