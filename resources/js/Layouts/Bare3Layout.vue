@@ -36,8 +36,8 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
     <!-- ============ HEADER ============ -->
     <header class="w-full border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-xl z-50">
       <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5">
-        <Link href="/" class="flex items-center shrink-0 -my-2 sm:-my-4">
-          <img src="/images/logo-horizontal.png" alt="بارع" class="h-16 sm:h-28 w-auto">
+        <Link href="/" class="flex items-center shrink-0">
+          <img src="/images/logo-horizontal.png" alt="بارع" class="h-10 sm:h-14 w-auto">
         </Link>
 
         <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-base lg:text-lg font-medium text-gray-800">
@@ -109,7 +109,7 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
 
         <!-- العمود 1: التعريف والهوية -->
         <div>
-          <img src="/images/logo-horizontal.png" alt="بارع" class="h-12 w-auto ml-auto mb-5 brightness-0 invert">
+          <img src="/images/logo-horizontal.png" alt="بارع" class="h-9 w-auto ml-auto mb-5 brightness-0 invert">
           <p class="text-sm leading-loose text-white/70">
             منصة تعليمية رقمية لتمكين الأجيال والشباب من مهارات القرن الـ21 عبر رحلات تفاعلية ممتعة.
           </p>
