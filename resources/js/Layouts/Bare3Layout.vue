@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
-import { Link } from '@inertiajs/vue3'
+import { computed, ref, onMounted, onBeforeUnmount } from 'vue'
+import { Link, usePage } from '@inertiajs/vue3'
 
 defineProps({
   active: { type: String, default: 'home' }, // home | about | courses | subscribe | blog
@@ -9,6 +9,8 @@ defineProps({
 const mobileOpen = ref(false)
 const loginOpen = ref(false)
 const loginWrap = ref(null)
+const page = usePage()
+const publicPaths = computed(() => page.props.publicPaths ?? [])
 
 const loginOptions = [
   { key: 'student', label: 'طالب',   icon: 'fa-user-graduate',    route: 'login.student' },
@@ -35,7 +37,7 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
     <header class="w-full border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-xl z-50">
       <div class="max-w-7xl mx-auto flex items-center justify-between px-4 sm:px-6 py-2 sm:py-2.5">
         <Link href="/" class="flex items-center shrink-0 -my-2 sm:-my-4">
-          <img src="/images/logo.png" alt="بارع" class="h-16 sm:h-28 w-auto">
+          <img src="/images/logo-horizontal.png" alt="بارع" class="h-16 sm:h-28 w-auto">
         </Link>
 
         <nav class="hidden md:flex items-center gap-8 lg:gap-10 text-base lg:text-lg font-medium text-gray-800">
@@ -107,7 +109,7 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
 
         <!-- العمود 1: التعريف والهوية -->
         <div>
-          <img src="/images/logo.png" alt="بارع" class="h-12 w-auto ml-auto mb-5 brightness-0 invert">
+          <img src="/images/logo-horizontal.png" alt="بارع" class="h-12 w-auto ml-auto mb-5 brightness-0 invert">
           <p class="text-sm leading-loose text-white/70">
             منصة تعليمية رقمية لتمكين الأجيال والشباب من مهارات القرن الـ21 عبر رحلات تفاعلية ممتعة.
           </p>
@@ -132,11 +134,9 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
         <div>
           <h4 class="font-bold text-lg mb-5">المسارات</h4>
           <ul class="space-y-3 text-sm text-white/70">
-            <li><Link :href="route('courses')" class="footer-link">مسار التفكير الناقد والابتكار</Link></li>
-            <li><Link :href="route('courses')" class="footer-link">مسار الذكاء العاطفي والاجتماعي</Link></li>
-            <li><Link :href="route('courses')" class="footer-link">مسار الوعي المالي الذكي</Link></li>
-            <li><Link :href="route('courses')" class="footer-link">مسار التمكين التقني</Link></li>
-            <li><Link :href="route('courses')" class="footer-link">مسار القيادة واتخاذ القرار</Link></li>
+            <li v-for="path in publicPaths" :key="path.slug">
+              <Link :href="route('courses')" class="footer-link">{{ path.title }}</Link>
+            </li>
           </ul>
         </div>
 
@@ -147,13 +147,10 @@ onBeforeUnmount(() => document.removeEventListener('click', closeLogin))
             <li><Link :href="route('privacy.policy')" class="footer-link">سياسة الخصوصية</Link></li>
             <li><Link :href="route('terms')" class="footer-link">شروط وأحكام الاستخدام</Link></li>
             <li dir="ltr" class="text-right"><a href="mailto:info@bareaedu.sa" class="footer-link">info@bareaedu.sa</a></li>
-            <li dir="ltr" class="text-right"><a href="https://wa.me/966500000000" class="footer-link"><i class="fa-brands fa-whatsapp ml-1"></i> واتساب الدعم</a></li>
           </ul>
           <div class="flex justify-end gap-3 mt-6">
             <a href="https://instagram.com/bareaedu.sa" class="social-ic"><i class="fa-brands fa-instagram"></i></a>
             <a href="https://twitter.com/Bareaedusa" class="social-ic"><i class="fa-brands fa-x-twitter"></i></a>
-            <a href="#" class="social-ic"><i class="fa-brands fa-linkedin-in"></i></a>
-            <a href="#" class="social-ic"><i class="fa-brands fa-youtube"></i></a>
           </div>
         </div>
       </div>

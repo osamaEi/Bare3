@@ -30,7 +30,7 @@ const submit = () => {
 
         <div class="auth-card">
             <Link href="/" class="auth-logo">
-                <img src="/images/logo.png" alt="بارع" />
+                <img src="/images/logo-horizontal.png" alt="بارع" />
             </Link>
 
             <h1 class="auth-title">أهلاً بعودتك! 👋</h1>

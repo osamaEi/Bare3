@@ -1,12 +1,24 @@
 <script setup>
 import { Head } from '@inertiajs/vue3'
+import { computed, ref } from 'vue'
 import Bare3Layout from '@/Layouts/Bare3Layout.vue'
 
-defineProps({
+const props = defineProps({
   brand:   Object,
   pricing: { type: Array, default: () => [] },
   footer:  Object,
 })
+
+const selectedCycle = ref('monthly')
+
+const planCycle = (plan) => {
+  if (plan.billing_cycle) return plan.billing_cycle
+  return String(plan.badge ?? '').includes('سنوي') ? 'yearly' : 'monthly'
+}
+
+const filteredPricing = computed(() =>
+  props.pricing.filter(plan => planCycle(plan) === selectedCycle.value)
+)
 </script>
 
 <template>
@@ -32,9 +44,28 @@ defineProps({
         <p>كل باقة تشمل محتوى تعليمي مخصص، أنشطة تفاعلية، ومتابعة سهلة لأولياء الأمور.</p>
       </div>
 
+      <div class="billing-toggle" role="group" aria-label="دورة الفوترة">
+        <button
+          type="button"
+          :class="{ active: selectedCycle === 'monthly' }"
+          :aria-pressed="selectedCycle === 'monthly'"
+          @click="selectedCycle = 'monthly'"
+        >
+          شهري
+        </button>
+        <button
+          type="button"
+          :class="{ active: selectedCycle === 'yearly' }"
+          :aria-pressed="selectedCycle === 'yearly'"
+          @click="selectedCycle = 'yearly'"
+        >
+          سنوي
+        </button>
+      </div>
+
       <div class="pricing-grid">
-        <div v-for="(p, i) in pricing"
-             :key="i"
+        <div v-for="(p, i) in filteredPricing"
+             :key="p.id ?? `${selectedCycle}-${i}`"
              class="price-card"
              :class="{ featured: p.featured }">
 
@@ -59,6 +90,10 @@ defineProps({
 
           <button class="btn-price">{{ p.btn }}</button>
         </div>
+
+        <p v-if="filteredPricing.length === 0" class="empty-plans">
+          لا توجد باقات متاحة لهذه المدة حالياً.
+        </p>
       </div>
 
       <p class="note">يمكنك الإلغاء في أي وقت • آمن للأطفال ١٠٠٪ • دعم سريع ومباشر</p>
@@ -241,6 +276,50 @@ defineProps({
   grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
   gap: 1.25rem;
   align-items: stretch;
+}
+
+.billing-toggle {
+  width: fit-content;
+  margin: 0 auto 2rem;
+  padding: .35rem;
+  display: flex;
+  gap: .35rem;
+  direction: rtl;
+  border: 1px solid #e8e1f8;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(30, 27, 46, .07);
+}
+
+.billing-toggle button {
+  min-width: 110px;
+  padding: .75rem 1.4rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: #6b7280;
+  cursor: pointer;
+  font: inherit;
+  font-weight: 800;
+  transition: background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+
+.billing-toggle button.active {
+  color: #fff;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  box-shadow: 0 6px 16px rgba(95, 67, 152, .24);
+}
+
+.empty-plans {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 2rem;
+  border: 1px dashed #d9cfee;
+  border-radius: 22px;
+  background: #fff;
+  color: #6b7280;
+  text-align: center;
+  font-weight: 700;
 }
 
 .price-card {

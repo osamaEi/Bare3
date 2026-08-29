@@ -36,7 +36,7 @@ const formatDate = (d) => d ? new Date(d).toLocaleDateString('ar-EG') : '—'
       </div>
 
       <div class="card" :class="success ? 'ok' : 'fail'">
-        <Link href="/" class="card-logo"><img src="/images/logo.png" alt="بارع" /></Link>
+        <Link href="/" class="card-logo"><img src="/images/logo-horizontal.png" alt="بارع" /></Link>
 
         <div class="icon-wrap" :class="success ? 'ok' : 'fail'">
           <i :class="success ? 'fa-solid fa-circle-check' : 'fa-solid fa-circle-xmark'"></i>

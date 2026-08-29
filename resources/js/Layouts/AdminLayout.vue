@@ -4,7 +4,7 @@
     <!-- SIDEBAR -->
     <aside class="sidebar" :class="{ collapsed: sidebarCollapsed }">
       <div class="sidebar-header">
-        <img src="/images/logo.png" alt="بارع" class="sidebar-logo" v-if="!sidebarCollapsed" />
+        <img src="/images/logo-horizontal.png" alt="بارع" class="sidebar-logo" v-if="!sidebarCollapsed" />
         <span class="sidebar-logo-sm" v-else>ب</span>
         <button class="collapse-btn" @click="sidebarCollapsed = !sidebarCollapsed">
           <i :class="sidebarCollapsed ? 'fa-solid fa-angles-left' : 'fa-solid fa-angles-right'"></i>

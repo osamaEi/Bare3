@@ -2,7 +2,7 @@
   <div dir="rtl" class="portal-shell">
     <aside class="sidebar" :class="{ collapsed }">
       <div class="sidebar-header">
-        <img src="/images/logo.png" alt="بارع" class="sidebar-logo" v-if="!collapsed" />
+        <img src="/images/logo-horizontal.png" alt="بارع" class="sidebar-logo" v-if="!collapsed" />
         <span class="sidebar-logo-sm" v-else>ب</span>
         <button class="collapse-btn" @click="collapsed = !collapsed">
           <i :class="collapsed ? 'fa-solid fa-angles-left' : 'fa-solid fa-angles-right'"></i>

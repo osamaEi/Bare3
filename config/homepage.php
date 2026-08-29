@@ -12,7 +12,7 @@
 return [
 
     'brand' => [
-        'logo' => '/images/logo.png',
+        'logo' => '/images/logo-horizontal.png',
     ],
 
     'nav' => [
@@ -197,13 +197,12 @@ return [
     ],
 
     'footer' => [
-        'logo'    => '/images/logo.png',
+        'logo'    => '/images/logo-horizontal.png',
         'desc'    => 'منصة تعليمية تفاعلية للأطفال<br>من سن ٤ إلى ١٢ سنة',
         'socials' => [
             ['icon' => 'fab fa-instagram',   'href' => 'https://instagram.com/bareaedu.sa'],
             ['icon' => 'fab fa-x-twitter',   'href' => 'https://twitter.com/Bareaedusa'],
             ['icon' => 'fab fa-facebook-f',  'href' => '#'],
-            ['icon' => 'fab fa-linkedin-in', 'href' => '#'],
             ['icon' => 'fab fa-youtube',     'href' => '#'],
         ],
         'col_pages_title' => 'الصفحات',

@@ -4,7 +4,7 @@
     <!-- ═══ SIDEBAR ═══ -->
     <aside class="sidebar" :class="{ open: mobileOpen }">
       <div class="sb-logo">
-        <img src="/images/logo.png" alt="بارع" />
+        <img src="/images/logo-horizontal.png" alt="بارع" />
       </div>
 
       <div class="sb-profile">

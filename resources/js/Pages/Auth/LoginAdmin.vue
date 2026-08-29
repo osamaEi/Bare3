@@ -16,7 +16,7 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
             <div class="glow glow2"></div>
 
             <div class="brand-top">
-                <img src="/images/logo.png" alt="بارع" class="brand-logo" />
+                <img src="/images/logo-horizontal.png" alt="بارع" class="brand-logo" />
             </div>
 
             <div class="brand-mid">

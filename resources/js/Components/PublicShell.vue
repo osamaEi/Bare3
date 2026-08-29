@@ -2,7 +2,7 @@
 import { Link } from '@inertiajs/vue3'
 
 defineProps({
-  brand:  { type: Object, default: () => ({ logo: '/images/logo.png' }) },
+  brand:  { type: Object, default: () => ({ logo: '/images/logo-horizontal.png' }) },
   footer: { type: Object, default: () => ({}) },
 })
 </script>

@@ -44,6 +44,7 @@ class PublicPageController extends Controller
         $pricing = $plans->isNotEmpty()
             ? $plans->map(fn ($p) => [
                 'badge'    => $p->billing_cycle === 'yearly' ? 'سنوي' : 'شهري',
+                'billing_cycle' => $p->billing_cycle,
                 'amount'   => rtrim(rtrim(number_format((float) $p->price, 2, '.', ''), '0'), '.'),
                 'unit'     => $p->billing_cycle === 'yearly' ? '/سنوياً' : '',
                 'name'     => $p->name,

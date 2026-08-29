@@ -21,7 +21,7 @@ const submit = () => form.post(route('login'), { onFinish: () => form.reset('pas
             </div>
 
             <div class="auth-card">
-                <Link href="/" class="auth-logo"><img src="/images/logo.png" alt="بارع" /></Link>
+                <Link href="/" class="auth-logo"><img src="/images/logo-horizontal.png" alt="بارع" /></Link>
 
                 <div class="role-chip">
                     <i class="fa-solid fa-user-shield"></i> بوابة ولي الأمر

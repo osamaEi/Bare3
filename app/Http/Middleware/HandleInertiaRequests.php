@@ -38,6 +38,14 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
+            'publicPaths' => fn () => \App\Models\Path::query()
+                ->where('is_active', true)
+                ->orderBy('sort_order')
+                ->get(['slug', 'title'])
+                ->map(fn ($path) => [
+                    'slug'  => $path->slug,
+                    'title' => $path->title,
+                ]),
             // إشعارات مختصرة للقائمة المنسدلة في الشريط العلوي
             'notifications' => fn () => $request->user()
                 ? [
